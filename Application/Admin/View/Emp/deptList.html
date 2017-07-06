@@ -1,0 +1,100 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['EMP']['DEPTADD'];
+    $updateNode = $access_list['ADMIN']['EMP']['DEPTUPDATE'];
+    $deleteNode = $access_list['ADMIN']['EMP']['DEPTDELETE'];
+    $sortNode = $access_list['ADMIN']['EMP']['DEPTSORT'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-flag"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='addNode'>
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('deptAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                        <notempty name="sortNode">
+                            <button url="{:U('deptSort')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal-sort" ><i class="fa fa-sort"></i> {$Think.lang.SYSTEM_ACTION_SORT}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" class="form-horizontal-sort">
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_EMP_SERIAL}</th>
+                            <th>{$Think.lang.TEMP_EMP_DEPT_NAME}</th>
+                            <!--<th>{$Think.lang.TEMP_EMP_DEPT_PROPERTY}</th>-->
+                            <th>{$Think.lang.SYSTEM_ACTION_SORT}</th>
+                            <th>{$Think.lang.TEMP_EMP_DEPT_REMARK}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <notempty name="list">
+                            <volist name="list" id="vo">
+                                <tr>
+                                    <td>
+                                        {$i}
+                                        <input type="hidden" name="ids[]" value="{$vo.id}"/>
+                                    </td>
+                                    <td>
+                                        <if condition="$vo['treeLevel'] GT 1">
+                                            <for start="1" end="$vo['treeLevel']">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </for>
+                                            |--
+                                        </if>
+                                        {$vo.name}
+                                    </td>
+                                    <!--<td>-->
+                                        <!--<eq name="vo.property" value="0">-->
+                                            <!--<span class="label label-warning">{$vo.property_text}</span>-->
+                                        <!--<else/>-->
+                                            <!--<span class="label label-success">{$vo.property_text}</span>-->
+                                        <!--</eq>-->
+                                    <!--</td>-->
+                                    <td><input class="form-control input-sm" style="width: 50px; height:20px;font-size:10px" type="text" name="sort[]" value="{$vo.sort}" maxlength="3" /></td>
+                                    <td>{$vo.remark}</td>
+                                    <td>
+                                        <notempty name="addNode">
+                                            <a class="func-dialog" title="{$Think.lang.TEMP_EMP_DEPT_ADD_CHILD}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('deptAdd?pid='.$vo['id'])}">&nbsp;<i class="fa fa-plus"></i></a>
+                                        </notempty>
+                                        <notempty name="updateNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('deptUpdate?id='.$vo['id'])}">&nbsp;<i class="fa fa-edit"></i></a>
+                                        </notempty>
+                                        <notempty name="deleteNode">
+                                            <a class="ajax-get confirm" title="{$Think.lang.TEMP_EMP_ROLE_ACCESS}" href="{:U('deptDelete?id='.$vo['id'])}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else/> 
+                            <td colspan="6" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                        </notempty>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+     $(function(){
+        $("#projectListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

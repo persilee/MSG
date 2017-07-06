@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+	<title>{$Think.lang.TEMP_USER_LOGIN_TITLE}</title>
+	<link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/cloud-admin.css" >
+	<link href="__ROOT__/Public/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<!-- STYLESHEETS --><!--[if lt IE 9]>
+	<script src="js/flot/excanvas.min.js"></script>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+	<script src="__ROOT__/Public/js/flot/excanvas.min.js"></script>
+	<script src="__ROOT__/Public/js/ie8/html5.js"></script>
+	<script src="__ROOT__/Public/js/ie8/respond.min.js"></script>
+	<!-- DATE RANGE PICKER -->
+	<!-- <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/bootstrap-daterangepicker/daterangepicker-bs3.css" /> -->
+	<!-- UNIFORM -->
+	<!-- <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/uniform/css/uniform.default.min.css" /> -->
+	<!-- ANIMATE -->
+	<!-- <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/animatecss/animate.min.css" /> -->
+	<!-- FONTS -->
+	<!-- <link href='http://fonts.useso.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'> -->
+</head>
+<body class="login">
+	<!-- PAGE -->
+	<section id="page">
+			<!-- HEADER -->
+			<header>
+				<!-- NAV-BAR -->
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 col-md-offset-4">
+							<div id="logo">
+								<a href="index.html"><img src="__ROOT__/Public/img/logo/logo.png" height="40" alt="logo name" /></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--/NAV-BAR -->
+			</header>
+			<!--/HEADER -->
+			<!-- LOGIN -->
+			<section id="login" class="visible">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 col-md-offset-4">
+							<div class="login-box-plain">
+								<h2 class="bigintro">{$Think.lang.TEMP_USER_LOGIN_TITLE}</h2>
+								<div class="divide-40"></div>
+								<form action="{:U('login')}" method="post" role="form">
+								  	<div class="form-group">
+										<label>{$Think.lang.TEMP_USER_LOGIN_NAME}</label>
+										<i class="fa fa-envelope"></i>
+										<input type="text" name="user" class="form-control" />
+								  	</div>
+								  	<div class="form-group">
+										<label>{$Think.lang.TEMP_USER_LOGIN_PASSWORD}</label>
+										<i class="fa fa-lock"></i>
+										<input type="password" name="password" class="form-control"/>
+								  	</div>
+								  	<neq name="Think.config.VERIFY_SWITCH" value="0">
+						                <div class="form-group">
+						                    <label>{$Think.lang.TEMP_USER_LOGIN_VERIFY}</label>
+						                   	<div class="input-group">
+						                   		<i class="fa fa-keyboard-o"></i>
+					                        	<input type="text" name="verify" id="verify" class="form-control" maxlength="4" />
+						                        <div class="input-group-btn">
+						                            <cite><img id="verifycode" style="max-height:32px;}" /></cite>
+						                        </div>
+						                    </div>
+						                </div>
+						            </neq>
+						            <label check-tips>
+				                        <font color="red"><cite class="check-tips"></cite></font>
+				                    </label>
+								  	<div class="form-actions">
+										<button type="submit" class="btn btn-danger"  id="submit_btn">{$Think.lang.TEMP_USER_LOGIN_SUBMIT}</button>
+								  	</div>
+								</form>
+								<!-- SOCIAL LOGIN -->
+								<!-- <div class="divide-20"></div> -->
+								<!-- /SOCIAL LOGIN -->
+								<!-- <div class="login-helpers">
+									<a href="#" onclick="swapScreen('forgot');return false;">{$Think.lang.TEMP_USER_LOGIN_FORGOT}</a>
+								</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!--/LOGIN -->
+	</section>
+	<!--/PAGE -->
+	<!-- JAVASCRIPTS -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<!-- JQUERY -->
+	<script src="__ROOT__/Public/js/jquery/jquery-1.7.1.min.js"></script>
+	<!-- JQUERY UI-->
+	<!-- // <script src="__ROOT__/Public/js/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script> -->
+	<!-- BOOTSTRAP -->
+	<!--<script src="__ROOT__/Public/bootstrap-dist/js/bootstrap.min.js"></script>-->
+	<!-- UNIFORM -->
+	<!-- // <script type="text/javascript" src="__ROOT__/Public/js/uniform/jquery.uniform.min.js"></script> -->
+	<!-- CUSTOM SCRIPT -->
+</body>
+</html>
+<script language="javascript">
+    $(function(){
+        //初始化选中用户名输入框
+        $(".container").find("input[name=user]").focus();
+        //初始化验证码
+//        var verifyurl = "{:U('verify','','')}";
+        var verifyurl = "{:U('verify','','')}";
+        $("#verifycode").attr("src",verifyurl + '/' + Math.random());
+        //验证码点击更新事件
+        $("#verifycode").bind("click",function(){
+            $(this).attr("src",verifyurl + '/' + Math.random());
+        });
+        $("form").submit(function(){
+            $('#submit_btn').text("{$Think.lang.TEMP_USER_LOGIN_LOGGING}");
+            $('#submit_btn').attr('disabled','disabled');
+            var self = $(this);
+            $.post(self.attr("action"), self.serialize(), success, "json");
+            return false;
+
+            function success(data){
+                if(data.status){
+                    window.location.href = data.url;
+                } else {
+                    $('#submit_btn').removeAttr('disabled','disabled');
+                    $('#submit_btn').text("{$Think.lang.TEMP_USER_LOGIN_SUBMIT}");
+                    self.find(".check-tips").text(data.info);
+                    // 清空密码及验证码
+                    $("#password").val("");
+                    $("#verify").val("");
+                    // 刷新验证码
+                    $("#verifycode").click();
+                }
+            }
+        });
+    });
+</script>

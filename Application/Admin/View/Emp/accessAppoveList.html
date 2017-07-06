@@ -1,0 +1,50 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $appoveNode = $access_list['ADMIN']['EMP']['ACCESSAPPOVE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-shield"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_EMP_ROLE_NAME}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_REQUEST}</th>
+                            <th>{$Think.lang.SYSTEM_TERM_MAKER}</th>
+                            <th>{$Think.lang.SYSTEM_TERM_TIME}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <notempty name="list">
+                        <volist name="list" id="vo">
+                            <tr>
+                                <td>{$vo.role_name}</td>
+                                <td>{$vo.func_text}</td>
+                                <td>{$vo.makername}</td>
+                                <td>{$vo.time|time_format}</td>
+                                <td>
+                                    <notempty name="appoveNode">
+                                        <a class="ajax-forward" title="{$Think.lang.SYSTEM_ACTION_APPOVE}" href="{:U('accessAppove',array('date'=>$vo['date'],'seq'=>$vo['seq']))}">&nbsp;<i class="fa fa-search"></i></a>
+                                    </notempty>
+                                </td>
+                            </tr>
+                        </volist>
+                        <else/>
+                        <td colspan="5" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                    </notempty>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

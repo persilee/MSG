@@ -1,0 +1,60 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-gears"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+                <div class="tabbable header-tabs">
+
+                    <ul class="nav nav-tabs"> 
+                        <volist name="Think.lang.CONFIG_GROUP_LIST_TEXT" id="group">
+                            <neq name="key" value='9'>
+                                <li class="<if condition='$grouping eq $key'>active</if>">
+                                    <a class="ajax-forward" data-toggle="tab" href="{:U('configSet',array('grouping'=>$key))}"><span class="hidden-inline-mobile">{$group}</span></a>
+                                </li>
+                            </neq>
+                        </volist>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <form action="{:U('configSet')}" method="post" class="configSetForm" role="form">
+                                <volist name="list" id="config">
+                                    <div class="form-group">
+                                        <span class="control-label">{$config.title}<if condition="!empty($config['remark'])"><i>（{$config.remark}）</i></if></span>
+                                        <switch name="config.type">
+                                            <case value="0">
+                                                <input type="text" class="form-control" name="config[{$config.name}]" value="{$config.value}">
+                                            </case>
+                                            <case value="1">
+                                                <input type="text" class="form-control " name="config[{$config.name}]" value="{$config.value}">
+                                            </case>
+                                            <case value="2">
+                                                <input type="text" class="form-control" name="config[{$config.name}]" value="{$config.value}">
+                                            </case>
+                                            <case value="3">
+                                                <textarea name="config[{$config.name}]" rows="5" class="form-control" maxlength="1000">{$config.value|default=''}</textarea>
+                                            </case>
+                                            <case value="4">
+                                                <select name="config[{$config.name}]" class="form-control">
+                                                    <volist name=":parse_config_attr($config['extra'])" id="vo">
+                                                        <option value="{$key}" <eq name="config.value" value="$key">selected</eq>>&nbsp;&nbsp;{$vo}</option>
+                                                    </volist>
+                                                </select>
+                                            </case>
+                                        </switch>
+                                    </div>
+                                </volist>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary ajax-post" target-form="configSetForm"><i class="fa fa-save"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

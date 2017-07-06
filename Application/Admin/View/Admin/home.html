@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=9">
+        <title>{:C('COMPANY_NAME')} | {$Think.lang.TEMP_SYSTEM_TITLE}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- bootstrap 3.0.2 -->
+        <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/cloud-admin.css" >
+        <link rel="stylesheet" type="text/css"  href="__ROOT__/Public/css/themes/default.css" id="skin-switcher" >
+        <link rel="stylesheet" type="text/css"  href="__ROOT__/Public/css/responsive.css" >
+        <!-- STYLESHEETS --><!--[if lt IE 9]>
+        <script src="js/flot/excanvas.min.js"></script>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+        <![endif]-->
+        <link href="__ROOT__/Public/css/print.css" rel="stylesheet" media="print"/>
+        <link href="__ROOT__/Public/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <!-- ANIMATE -->
+        <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/animatecss/animate.min.css" />
+        <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/common.css" />
+        <!--<link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/select2/select2.min.css" />-->
+        <!-- DATE RANGE PICKER -->
+        <!-- <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/bootstrap-daterangepicker/daterangepicker-bs3.css" /> -->
+        <!-- TODO -->
+        <!-- <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/jquery-todo/css/styles.css" /> -->
+        <!-- FULL CALENDAR -->
+        <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/fullcalendar/fullcalendar.min.css" />
+        <!-- GRITTER -->
+        <!--<link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/gritter/css/jquery.gritter.css" />-->
+        <!-- FONTS -->
+        <!--<link href='http://fonts.useso.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'/>-->
+        <!-- BOOTSTRAP SWITCH -->
+        <!--<link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/bootstrap-switch/bootstrap-switch.min.css" />-->
+        <!-- JAVASCRIPTS -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="__ROOT__/Public/js/flot/excanvas.min.js"></script>
+        <script src="__ROOT__/Public/js/ie8/html5.js"></script>
+        <script src="__ROOT__/Public/js/ie8/respond.min.js"></script>
+        <!-- JQUERY -->
+        <script src="__ROOT__/Public/js/jquery/jquery-1.7.1.min.js"></script>
+        <!--<script src="__ROOT__/Public/js/jquery/jquery-2.0.3.min.js"></script>-->
+        <!-- JQUERY UI-->
+        <script src="__ROOT__/Public/js/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
+        <!-- BOOTSTRAP -->
+        <script src="__ROOT__/Public/js/bootstrap-dist/js/bootstrap.min.js"></script>
+        <!-- DATE RANGE PICKER -->
+        <!-- // <script src="__ROOT__/Public/js/bootstrap-daterangepicker/moment.min.js"></script> -->
+        <!-- // <script src="__ROOT__/Public/js/bootstrap-daterangepicker/daterangepicker.min.js"></script> -->
+        <!-- SLIMSCROLL -->
+        <script type="text/javascript" src="__ROOT__/Public/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.min.js"></script>
+        <script type="text/javascript" src="__ROOT__/Public/js/jQuery-slimScroll-1.3.0/slimScrollHorizontal.min.js"></script>
+        <!-- BLOCK UI -->
+        <script type="text/javascript" src="__ROOT__/Public/js/jQuery-BlockUI/jquery.blockUI.min.js"></script>
+        <!-- SPARKLINES -->
+        <!-- // <script type="text/javascript" src="__ROOT__/Public/js/sparklines/jquery.sparkline.min.js"></script> -->
+        <!-- EASY PIE CHART -->
+        <!-- // <script src="__ROOT__/Public/js/jquery-easing/jquery.easing.min.js"></script> -->
+        <!-- // <script type="text/javascript" src="__ROOT__/Public/js/easypiechart/jquery.easypiechart.min.js"></script> -->
+        <!-- FLOT CHARTS -->
+        <!-- <script src="__ROOT__/Public/js/flot/jquery.flot.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.time.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.selection.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.resize.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.pie.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.stack.min.js"></script>
+        // <script src="__ROOT__/Public/js/flot/jquery.flot.crosshair.min.js"></script> -->
+        <!-- TODO -->
+        <!-- // <script type="text/javascript" src="__ROOT__/Public/js/jquery-todo/js/paddystodolist.js"></script> -->
+        <!-- TIMEAGO -->
+        <!-- // <script type="text/javascript" src="__ROOT__/Public/js/timeago/jquery.timeago.min.js"></script> -->
+        <!-- FULL CALENDAR -->
+        <script type="text/javascript" src="__ROOT__/Public/js/fullcalendar/fullcalendar.min.js"></script>
+        <!-- COOKIE -->
+        <script type="text/javascript" src="__ROOT__/Public/js/jQuery-Cookie/jquery.cookie.min.js"></script>
+        <!-- GRITTER -->
+        <!--<script type="text/javascript" src="__ROOT__/Public/js/gritter/js/jquery.gritter.min.js"></script>-->
+        <!-- SELECT2 -->
+        <!--<script type="text/javascript" src="__ROOT__/Public/js/select2/select2.min.js"></script>-->
+        <!-- CUSTOM SCRIPT -->
+        <script type="text/javascript" src="__ROOT__/Public/js/script.js"></script>
+        <script type="text/javascript" src="__ROOT__/Public/js/common.js"></script>
+        <script type="text/javascript" src="__ROOT__/Public/js/DatePicker/WdatePicker.js"></script>
+        <script type="text/javascript" src="__ROOT__/Public/js/jquery-upload/js/jquery.fileupload.min.js"></script>
+        <!-- BOOTSTRAP SWITCH -->
+        <!--<script type="text/javascript" src="__ROOT__/Public/js/bootstrap-switch/bootstrap-switch.min.js"></script>-->
+        <!-- CKEDITOR -->
+        <script type="text/javascript" src="__ROOT__/Public/js/ckeditor/ckeditor.js"></script>
+        <!-- RATY -->
+        <!--<script type="text/javascript" src="__ROOT__/Public/js/jquery-raty/jquery.raty.min.js"></script>-->
+    </head>
+    <body>
+        <!-- <div> -->
+        <include file="Base:top" />
+        <!-- </div>  -->
+        <!-- <div class="wrapper row-offcanvas row-offcanvas-left"> -->
+        <section id="page">
+            <!-- <div class=sidebar> -->
+            <include file="Base:left" />
+            <!-- </div> -->
+            <!-- <div class=content> -->
+            <div id="main-content">
+                <!-- 提示信息框 -->
+                <div id="top-alert" class="fixed alert alert-error" style="display: none;">
+                    <button class="close fixed" style="margin-top: 4px;">&times;</button>
+                    <div class="alert-content">这是内容</div>
+                </div>
+                <!-- Content Header (Page header) -->
+                <div class="container">
+                    <div class="row">
+                        <div id="content" class="col-lg-12">
+                            <!-- PAGE HEADER-->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="page-header">
+                                        <!-- BREADCRUMBS -->
+                                        <ul class="breadcrumb">
+                                            <li>
+                                                <i class="fa fa-home"></i>
+                                                {$Think.lang.TEMP_SYSTEM_HOME}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 弹出功能窗口 -->
+                    <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="dialog-div">
+                            </div>
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+
+                    <div class="modal fade" id="compose-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="dialog-div">
+                            </div>
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
+<script>
+    jQuery(document).ready(function() {
+        App.init(); //Initialise plugins and elements
+    });
+</script>

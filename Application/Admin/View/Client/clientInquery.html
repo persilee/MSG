@@ -1,0 +1,240 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $acInqueryNode = $access_list['ADMIN']['CLIENT']['ACCOUNTINQUERY'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-user"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+                <div class="tabbable header-tabs">
+                    <ul class="nav nav-tabs">
+                        <!--<li><a class="" data-toggle="tab" href="#tab_3"><i class="fa fa-map-marker"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_ADDR_INF}</span></a></li>-->
+                        <li class=""><a class="" data-toggle="tab" href="#tab_3"><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_EXRATE_SPREAD}</span></a></li>
+                        <li><a class="" data-toggle="tab" href="#tab_2"><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_RATE_SPREAD}</span></a></li>
+                        <li class="active"><a class="" data-toggle="tab" href="#tab_1"><i class="fa fa-user"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_BASE_INF}</span></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab_1">
+                            <div class="row">
+                                <div class="col-md-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_NO}</label>
+                                        <div class="col-sm-4">
+                                            <input name="ci_no" type="text" class="form-control" value="{$result.ci_no}" disabled="disabled" />
+                                        </div>
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_TYPE}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<select name="type" class="form-control" disabled="disabled">-->
+                                                <!--<foreach name="Think.lang.TEMP_CLIENT_TYPE_TEXT" item="vo">-->
+                                                    <!--<option value="{$key}" <if condition="$key eq $result['type']">selected</if>>{$vo}</option>-->
+                                                <!--</foreach>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_ID_TYPE}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<select name="id_type" class="form-control" disabled="disabled">-->
+                                                <!--<option></option>-->
+                                                <!--<foreach name="Think.config.CLIENT_ID_TYPE" item="vo">-->
+                                                    <!--<option value="{$key}" <if condition="$key eq $result['id_type']">selected</if>>{$vo}</option>-->
+                                                <!--</foreach>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_ID_CODE}</label>
+                                        <div class="col-sm-4">
+                                            <input name="id_code" type="text" class="form-control" disabled="disabled" value="{$result.id_code}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_NAME}</label>
+                                        <div class="col-sm-10">
+                                            <input name="name" type="text" class="form-control" disabled="disabled"  value="{$result.name}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_OT_NAME}</label>
+                                        <div class="col-sm-10">
+                                            <input name="ot_name" type="text" class="form-control" disabled="disabled" value="{$result.ot_name}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_TPL_PRIORITY_LANG}</label>
+                                        <div class="col-sm-10">
+                                            <select name="tpl_priority_lang" class="form-control" disabled="disabled">
+                                                <option></option>
+                                                <foreach name="Think.lang.CLIENT_TPL_PRIORITY_TEXT" item="vo">
+                                                    <option value="{$key}" <if condition="$key eq $result['tpl_priority_lang']">selected</if>>{$vo}</option>
+                                                </foreach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_AUTO_EMAIL}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" item="vo">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="uniform" name="auto_email_flag" value="{$key}" <if condition="$result['auto_email_flag'] eq $key">checked</if> disabled="disabled"> {$vo}
+                                                </label>
+                                            </foreach>
+                                        </div>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MAIL_SEND_TIME}</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input class="form-control" value="{$result.mail_plan_time}" disabled/>
+                                                <span class="input-group-addon">HH:mm</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_AUTO_EX_EMAIL}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" item="vo">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="uniform" name="auto_email_ex_rate_flag" value="{$key}" <if condition="$result['auto_email_ex_rate_flag'] eq $key">checked</if> disabled="disabled"> {$vo}
+                                                </label>
+                                            </foreach>
+                                        </div>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EX_MAIL_SEND_TIME}</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input name="mail_plan_ex_rate_time" class="form-control" value="{$result.mail_plan_ex_rate_time}" disabled/>
+                                                <span class="input-group-addon">HH:mm</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EMAIL}</label>
+                                        <div class="col-sm-10">
+                                            <input name="email" type="text" class="form-control" disabled="disabled" value="{$result.email}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_INTEREST_RATE_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" name="inst_rate_mailtpl" disabled>
+                                                <option></option>
+                                                <foreach name="instRateMailtplArr" item="vo">
+                                                    <option value="{$key}" <if condition="$key eq $result['inst_rate_mailtpl']">selected</if>>{$vo}</option>
+                                                </foreach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EX_RATE_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" name="ex_rate_mailtpl" disabled>
+                                                <option></option>
+                                                <foreach name="exRateMailtplArr" item="vo">
+                                                    <option value="{$key}" <if condition="$key eq $result['ex_rate_mailtpl']">selected</if>>{$vo}</option>
+                                                </foreach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" name="market_mailtpl" disabled>
+                                                <option></option>
+                                                <foreach name="marketMailtplArr" item="vo">
+                                                    <option value="{$key}" <if condition="$key eq $result['market_mailtpl']">selected</if>>{$vo}</option>
+                                                </foreach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_AUTO_PHONE}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" item="vo">-->
+                                                <!--<label class="radio-inline">-->
+                                                    <!--<input type="radio" class="uniform" name="auto_phone_flag" value="{$key}" <if condition="$result['auto_phone_flag'] eq $key">checked</if> disabled="disabled"> {$vo}-->
+                                                <!--</label>-->
+                                            <!--</foreach>-->
+                                        <!--</div>-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_PHONE}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<input name="phone" type="text" class="form-control" disabled="disabled" value="{$result.phone}"/>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_CUSTOMER_GROUP}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<select name="cust_group" class="form-control" disabled="disabled">-->
+                                                <!--<option></option>-->
+                                                <!--<foreach name="Think.config.CUSTOMER_GROUP" item="vo">-->
+                                                    <!--<option value="{$key}" <if condition="$result['cust_group'] eq $key">selected</if>>{$vo}</option>-->
+                                                <!--</foreach>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_CUSTOMER_CREDIT_RATE}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<div id="credit_rate_star"></div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_CUSTOMER_EDUCATION}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<select name="education" class="form-control" disabled="disabled">-->
+                                                <!--<option></option>-->
+                                                <!--<foreach name="Think.config.CUSTOMER_EDUCATION" item="vo">-->
+                                                    <!--<option value="{$key}" <if condition="$result['education'] eq $key">selected</if>>{$vo}</option>-->
+                                                <!--</foreach>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_CUSTOMER_AREA}</label>-->
+                                        <!--<div class="col-sm-4">-->
+                                            <!--<select name="area" class="form-control" disabled="disabled">-->
+                                                <!--<option></option>-->
+                                                <!--<foreach name="Think.config.CUSTOMER_AREA" item="vo">-->
+                                                    <!--<option value="{$key}" <if condition="$result['area'] eq $key">selected</if>>{$vo}</option>-->
+                                                <!--</foreach>-->
+                                            <!--</select>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_NEGATIVE_RATE_ALLOW}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.CLIENT_NEGATIVE_RATE_ALLOW_TEXT" item="vo">
+                                                    <input type="radio" class="uniform" name="negative_rate" value="{$key}" <if condition="$result['negative_rate'] eq $key">checked</if> disabled="disabled"> {$vo}
+                                                </label>
+                                            </foreach>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_REMARK}</label>
+                                        <div class="col-sm-10">
+                                            <textarea name="remark" cols="" rows="5" class="form-control" disabled="disabled">{$result.remark}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-sm-2 control-label">&nbsp;</span>
+                                        <div class="col-sm-10">
+                                            <button type="submit" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="tab_2">
+                            <include file="rateFloatInfoInq" />
+                        </div>
+
+                        <div class="tab-pane fade" id="tab_3">
+                            <include file="exRateFloatInfoInq" />
+                        </div>
+
+                        <!--<div class="tab-pane fade" id="tab_3">-->
+                            <!--<include file="addressList" />-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

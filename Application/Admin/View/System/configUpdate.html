@@ -1,0 +1,71 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+			{$__PLACE__.1}
+        </h4>
+    </div>
+	<eq name="func" value="A">
+		<form action="{:U('configAdd')}" method="post" class="form-horizontal-update">
+	<else/>
+		<form action="{:U('configUpdate')}" method="post" class="form-horizontal-update">
+	</eq>
+		<input type="hidden" name="id" value="{$result.id|default=''}">
+		<div class="modal-body">
+            <div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_NAME}</strong><i>（{$Think.lang.TEMP_SYSTEM_CONF_NAME_DESC}）</i></label>
+				<input type="text" class="form-control" name="name" value="{$result.name}">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_TITLE_EN}</strong><i>（{$Think.lang.TEMP_SYSTEM_CONF_TITLE_DESC}）</i></label>
+				<input type="text" class="form-control" name="title_en" value="{$result.title_en|default=''}">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_TITLE_ZH}</strong><i>（{$Think.lang.TEMP_SYSTEM_CONF_TITLE_DESC}）</i></label>
+				<input type="text" class="form-control" name="title_zh" value="{$result.title_zh|default=''}">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.SYSTEM_ACTION_SORT}</strong></label>
+				<input type="text" class="form-control" name="sort" value="{$result.sort|default=10}" maxlength="3" />
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_TYPE}</strong><i>({$Think.lang.TEMP_SYSTEM_CONF_TYPE_DESC})</i></label>
+					<select name="type" class="form-control">
+						<option value=""></option>
+						<volist name="Think.config.CONFIG_TYPE_LIST" id="type">
+							<option value="{$key}" <if condition="$key eq $result['type']">selected</if>>{$type}</option>
+						</volist>
+					</select>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_GROUP}</strong></label>
+					<select name="grouping" class="form-control">
+						<option value=""></option>
+						<volist name="Think.config.CONFIG_GROUP_LIST" id="group">
+							<option value="{$key}" <if condition="$key eq $result['grouping']">selected</if>>{$group}</option>
+						</volist>
+					</select>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_VALUE}</strong></label>
+				<textarea name="value" class="form-control">{$result.value|default=''}</textarea>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_ITEM}</strong><i>（{$Think.lang.TEMP_SYSTEM_CONF_ITEM_DESC})</i></label>
+				<textarea name="extra" class="form-control" maxlength="255">{$result.extra|default=''}</textarea>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_DESC_EN}</strong></label>
+				<textarea name="remark_en" class="form-control" maxlength="100">{$result.remark_en|default=''}</textarea>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail1"><strong>{$Think.lang.TEMP_SYSTEM_CONF_DESC_ZH}</strong></label>
+				<textarea name="remark_zh" class="form-control" maxlength="100">{$result.remark_zh|default=''}</textarea>
+			</div>
+		</div>
+	</form>
+	<div class="modal-footer clearfix">
+    	<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+    	<button type="submit" class="btn btn-primary pull-left ajax-post" target-form="form-horizontal-update"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+	</div>
+</div>

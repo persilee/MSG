@@ -1,0 +1,156 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['CLIENT']['RATEADD'];
+    $updateNode = $access_list['ADMIN']['CLIENT']['RATEUPDATE'];
+    $deleteNode = $access_list['ADMIN']['CLIENT']['RATEDELETE'];
+    $downloadNode = $access_list['ADMIN']['CLIENT']['RATEDOWNLOAD'];
+    $uploadNode = $access_list['ADMIN']['CLIENT']['RATEUPLOAD'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='downloadNode'>
+                            <button class="btn-info btn-xs" id="downloadButton" type="button"><i class="fa fa-download"></i> {$Think.lang.SYSTEM_ACTION_DOWNLOAD}</button>
+                        </notempty>
+                        <!--<notempty name='uploadNode'>-->
+                            <!--<button class="btn-info btn-xs" id="uploadButton" type="button"><i class="fa fa-upload"></i> {$Think.lang.SYSTEM_ACTION_UPLOAD}</button>-->
+                        <!--</notempty>-->
+                    </div>
+                </div>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('rateList')}" id="rateListForm" method="post" class="form-horizontal">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_RATE_DATE}</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <input name="date" type="text" value="{$date}" class="form-control"  placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}"  onClick="WdatePicker()"/>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <div class="col-md-12">
+                    <div id="scroller">
+                        <table class="table table-striped" style="min-width:1024px">
+                            <volist name="list" id="vo" offset="1" length='1'>
+                                <thead>
+                                    <tr>
+                                        <th>{$Think.lang.TEMP_CLIENT_RATE_TENOR}</th>
+                                        <foreach name="vo" item="item" key="itemkey">
+                                            <th>{$itemkey}</th>
+                                        </foreach>
+                                    </tr>
+                                </thead>
+                            </volist>
+                            <notempty name="list">
+                                <tbody>
+                                    <foreach name="list" item="vo" key="tenorValue">
+                                        <tr>
+                                            <td>{$tenorValue}</td>
+                                            <foreach name="vo" item="item" key="ccyValue">
+                                                <td>
+                                                    <div class="input-group">
+                                                        <notempty name="item">
+                                                            <input type="text" value="{$item|delZero}" class="form-control input-sm" style="width:50px;" disabled/>
+                                                            <span class="input-group-addon">
+                                                                <notempty name="updateNode">
+                                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('rateUpdate').'?date='.$date.'&tenor='.$tenorValue.'&ccy='.$ccyValue}"> <i class="fa fa-edit"></i></a>
+                                                                </notempty>
+                                                                <notempty name="deleteNode">
+                                                                    <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('rateDelete').'?date='.$date.'&tenor='.$tenorValue.'&ccy='.$ccyValue}"> <i class="fa fa-trash-o"></i></a>
+                                                                </notempty>
+                                                            </span>
+                                                        <else/>
+                                                            <span class="input-group-addon">
+                                                                <notempty name="addNode">
+                                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('rateAdd').'?date='.$date.'&tenor='.$tenorValue.'&ccy='.$ccyValue}"> <i class="fa fa-plus"></i></a>
+                                                                </notempty>
+                                                            </span>
+                                                        </notempty>
+                                                    </div>
+                                                </td>
+                                            </foreach>
+                                        </tr>
+                                    </foreach>
+                                </tbody>
+                            </notempty>
+                        </table>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<notempty name="downloadNode">
+    <div style="display:none">
+        <iframe name="ajaxDownload"></iframe>
+        <form action="{:U('rateDownload')}" method="post" target="ajaxDownload" id="downloadform">
+            <input name="date" type="hidden" value="{$date}"/>
+        </form>
+    </div>
+</notempty>
+<!--<notempty name="uploadNode">-->
+    <!--<div style="display:none;">-->
+        <!--<input name="date" type="hidden" value="{$date}" id="upload_date"/>-->
+        <!--<input id="fileupload_input" type="file" name="temp_file" multiple />-->
+    <!--</div>-->
+<!--</notempty>-->
+
+<script type="text/javascript">
+    $(function(){
+
+        $('#scroller').slimScrollHorizontal({
+            size: '10px',
+            color: '#a1b2bd',
+            width: 'AUTO',
+            alwaysVisible: true,
+            railVisible: true,
+            railOpacity: 0.1,
+            disableFadeOut: true
+        });
+
+        $("#rateListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+
+        // 下载
+        $("#downloadButton").bind("click",function(){
+            $("#downloadform").submit();
+        });
+
+        //上传
+//        $("#uploadButton").bind('click',function(){
+//            $("#fileupload_input").click();
+//        });
+//
+//        $("#fileupload_input").fileupload({
+//            url:"{:U('rateUpload')}",//文件上传地址，当然也可以直接写在input的data-url属性
+//            formData:{date:$('#upload_date').val()},//如果需要额外添加参数可以在这里添加
+//            done:function(e,result){
+//                $('#content').html(result.result);
+//            }
+//        });
+    });
+</script>

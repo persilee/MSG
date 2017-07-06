@@ -1,0 +1,160 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $sortNode = $access_list['ADMIN']['SYSTEM']['NODESORT'];
+    $catalogItemNode = $access_list['ADMIN']['SYSTEM']['CATALOGITEM'];
+    $addNode = $access_list['ADMIN']['SYSTEM']['NODEADD'];
+    $updateNode = $access_list['ADMIN']['SYSTEM']['NODEUPDATE'];
+    $deleteNode = $access_list['ADMIN']['SYSTEM']['NODEDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-ellipsis-h"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name="addNode">
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('nodeAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_APP}</button>
+                        </notempty>
+                        <notempty name="sortNode">
+                            <button url="{:U('nodeSort')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal-item" ><i class="fa fa-sort"></i> {$Think.lang.SYSTEM_ACTION_SORT}</button>
+                        </notempty>
+                        <eq name="level" value="0">
+                            <notempty name="catalogItemNode">
+                                <button url="{:U('catalogItem')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal-item" ><i class="fa fa-bars"></i> {$Think.lang.SYSTEM_ACTION_MODIFY}{$Think.lang.SYSTEM_TERM_CATALOG}</button>
+                            </notempty>
+                        </eq>
+                        <button url="{:U('nodeList',array('style'=>'W'))}" class="btn-info btn-xs ajax-forward"><i class="fa fa-retweet"></i> {$Think.lang.SYSTEM_ACTION_CHANGE}{$Think.lang.SYSTEM_TERM_STYLE}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('nodeList')}" id="nodeListForm" method="get" class="form-horizontal">
+                    <div class="form-group">   
+                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_SYSTEM_NODE_TYPE}</label>
+                        <div class="col-sm-10"> 
+                            <div class="input-group"> 
+                                <select name="level" class="form-control">
+                                    <option value="0"></option>
+                                    <option value="1" <if condition="$level eq 1">selected</if>>{$Think.lang.TEMP_SYSTEM_NODE_APP}</option>
+                                    <option value="2" <if condition="$level eq 2">selected</if>>{$Think.lang.TEMP_SYSTEM_NODE_CONT}</option>
+                                </select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <form method="post" class="form-horizontal-item">
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>{$Think.lang.SYSTEM_TERM_LEVEL}</th>
+                            <th>{$Think.lang.TEMP_SYSTEM_NODE_NAME}</th>
+                            <th>{$Think.lang.TEMP_SYSTEM_NODE_TITLE_EN}</th>
+                            <th>{$Think.lang.TEMP_SYSTEM_NODE_TITLE_ZH}</th>
+                            <th>{$Think.lang.TEMP_SYSTEM_NODE_TYPE}</th>
+                            <eq name="level" value="0">
+                                <th>{$Think.lang.TEMP_SYSTEM_IS_CATALOG}</th>
+                            </eq>
+                            <th>{$Think.lang.SYSTEM_ACTION_SORT}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <notempty name="list">
+                                <volist name="list" id="vo">
+                                    <tr>
+                                        <td>
+                                            {$vo.level}
+                                            <input type="hidden" name="ids[]" value="{$vo.id}"/>
+                                        </td>
+                                        <td>
+                                            {$vo.name}
+                                        </td>
+                                        <td>
+                                            <if condition="$vo['level'] GT 1">
+                                                <for start="1" end="$vo['level']">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                </for>
+                                                |--
+                                            </if>
+                                            {$vo.title_en}
+                                        </td>
+                                        <td>
+                                            <if condition="$vo['level'] GT 1">
+                                                <for start="1" end="$vo['level']">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                </for>
+                                                |--
+                                            </if>
+                                            {$vo.title_zh}
+                                        </td>
+                                        <td>
+                                            <switch name="vo.level">
+                                            <case value="1">{$Think.lang.TEMP_SYSTEM_NODE_APP}</case>
+                                            <case value="2">{$Think.lang.TEMP_SYSTEM_NODE_CONT}</case>
+                                            <default/>{$Think.lang.TEMP_SYSTEM_NODE_ACTION}
+                                            </switch>
+                                        </td>
+                                        <eq name="level" value="0">
+                                            <td>
+                                                <input type="checkbox" name="catalog[]" value="{$vo.id}" <if condition="$vo['catalog_item'] eq 1">checked="checked"</if>/>
+                                            </td>
+                                        </eq>
+                                        <td>
+                                            <input class="form-control input-sm" style="width: 50px; height:20px;font-size:10px" type="text" name="sort[]" value="{$vo.sort}" maxlength="3" />
+                                        </td>
+                                        <td>
+                                            <notempty name="addNode">
+                                                <switch name="vo.level" >
+                                                <case value="1">
+                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_CONT}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('nodeAdd',array('pid'=>$vo['id']))}">&nbsp;<i class="fa fa-plus"></i></a>
+                                                </case>
+                                                <case value="2">
+                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_ACTION}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('nodeAdd',array('pid'=>$vo['id']))}">&nbsp;<i class="fa fa-plus"></i></a>
+                                                </case>
+                                                <default />
+                                                </switch>
+                                            </notempty>
+                                            <notempty name="updateNode">
+                                                <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('nodeUpdate',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                            </notempty>
+                                            <notempty name="deleteNode">
+                                                <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('nodeDelete',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                            </notempty>
+                                        </td>
+                                    </tr>
+                                </volist>
+                                <else/>
+                                <eq name="level" value="0">
+                                    <td colspan="7" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                                <else/>
+                                    <td colspan="8" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                                </eq>
+                            </notempty>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(function(){
+        $("#nodeListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

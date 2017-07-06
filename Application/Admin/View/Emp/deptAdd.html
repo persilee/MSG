@@ -1,0 +1,44 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(deptAdd)}" method="post" class="form-horizontal deptAddForm">
+        <input type="hidden" name="pid" value="{$pid}"/>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_DEPT_NAME}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-8">
+                    <input name="name" type="text" class="form-control" maxlength="30"/>
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_DEPT_PROPERTY}<font color="red"><b>＊</b></font></label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<select name="property" class="form-control">-->
+                        <!--<foreach name="Think.lang.TEMP_EMP_DEPT_PROPERTY_TEXT" item="vo">-->
+                            <!--<option value="{$key}" <if condition="$key eq $status">selected</if>>{$vo}</option>-->
+                        <!--</foreach>-->
+                    <!--</select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.SYSTEM_ACTION_SORT}</label>
+                <div class="col-sm-8">
+                    <input name="sort" type="text" class="form-control" value="100" maxlength="3"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_DEPT_REMARK}</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" cols="" rows="5" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="deptAddForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,65 @@
+<extend name="Public/base"/>
+
+<block name="header">
+    <ul class="nav nav-pills nav-justified steps">
+        <li class="active">
+            <a href="#" data-toggle="tab" class="wiz-step">
+                <span class="step-number">1</span>
+                <span class="step-name"> 安装协议 </span>   
+            </a>
+        </li>
+        <li class="active">
+            <a href="#" data-toggle="tab" class="wiz-step">
+                <span class="step-number">2</span>
+                <span class="step-name"> 环境检测 </span>   
+            </a>
+        </li>
+        <li class="active">
+            <a href="#" data-toggle="tab" class="wiz-step">
+                <span class="step-number">3</span>
+                <span class="step-name"> 创建数据库 </span>   
+            </a> 
+        </li>
+        <li class="active">
+            <a href="#" data-toggle="tab" class="wiz-step">
+                <span class="step-number">4</span>
+                <span class="step-name"> 安装 </span>   
+            </a> 
+        </li>
+        <li>
+            <a href="#" data-toggle="tab" class="wiz-step">
+                <span class="step-number">5</span>
+                <span class="step-name"> 完成 </span>   
+            </a> 
+        </li>
+    </ul>
+</block>
+
+<block name="progress">
+    <div class="progress progress-striped active">
+        <div class="progress-bar"  role="progressbar" aria-valuenow="4" aria-valuemin="0" aria-valuemax="5" style="width: 80%"></div>
+    </div>
+</block>
+
+<block name="body">
+    <!---
+    <h1><eq name="Think.session.update" value="1">升级<else/>安装</eq></h1>
+    -->
+    <div id="show-list" class="install-database">
+    </div>
+    <script type="text/javascript">
+        var list   = document.getElementById('show-list');
+        function showmsg(msg, classname){
+            var li = document.createElement('p'); 
+            li.innerHTML = msg;
+            classname && li.setAttribute('class', classname);
+            list.appendChild(li);
+            document.scrollTop += 30;
+        }
+    </script>
+</block>
+
+<block name="footer">
+	<center><img src="__IMG__/loaders/11.gif"/><br/><br/></center>
+    <center><button class="btn btn-warning btn-large disabled">正在<eq name="Think.session.update" value="1">升级<else/>安装</eq>，请稍后...</button></center>
+</block>

@@ -1,0 +1,78 @@
+<div class="box box-success">
+    <div class="box-header">
+        <h3 class="box-title"><i class="fa fa-comments-o"></i> 消息</h3>
+    </div>
+    <div class="box-body chat" id="chat-box">
+        <foreach name="msgResult" item="vo">
+            <!-- chat item -->
+            <div class="item">
+                <php>
+                    if($vo[send_emp] != UID){
+                        echo '<img src="__ROOT__/Public/img/avatar04.png" class="offline"/>';
+                    }else{
+                        echo '<img src="__ROOT__/Public/img/avatar5.png" class="online"/>';
+                    }
+                </php>
+                <p class="message">
+                    <a href="#" class="name">
+                        <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {$vo.create_time|time_format}</small>
+                        <font color="#000000">FROM:</font>
+                        <php>
+                            if($vo[send_emp] == UID){
+                                echo '<font color="#00FF00">我</font>';
+                            }else{
+                                echo $vo['send_empname'];
+                            }
+                        </php>
+                         <font color="#000000"> - TO:</font>
+                         <php>
+                            if($vo[recv_emp] == UID){
+                                echo '<font color="#00FF00">我</font>';
+                            }else{
+                                echo $vo['recv_empname'];
+                            }
+                        </php>
+                    </a>
+                    {$vo.content}
+                </p>
+            </div><!-- /.item -->
+        </foreach>
+    </div><!-- /.chat -->
+    <div class="box-footer">
+        <form action="{:U('Account/msgSend')}" id="msgSendForm" method="post" >
+            <input type="hidden" name="group_id" value="{$group_id}"/>
+            <php>
+                if($vo[send_emp] == UID){
+                    echo '<input type="hidden" name="recv_emp" value="'.$vo['recv_emp'].'"/>';
+                }else{
+                    echo '<input type="hidden" name="recv_emp" value="'.$vo['send_emp'].'"/>';
+                }
+            </php>
+            <div class="input-group">
+                <input class="form-control" name="content" placeholder="输入消息..."/>
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#msgSendForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                if (data.status==0) {
+                    updateAlert(data.info,'alert-error');
+                    setTimeout(function(){
+                        $('#top-alert').find('button').click();
+                    },1500);
+                }else{
+                    $('#msgContent').html(data);
+                }
+            }
+        });
+    });
+</script>

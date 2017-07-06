@@ -1,0 +1,446 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $rejectNode = $access_list['ADMIN']['CLIENT']['CLIENTREJECT'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-check"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+                <div class="tabbable header-tabs">
+                    <ul class="nav nav-tabs">
+                      <nheq name="func" value="A">
+                          <li><a class="" data-toggle="tab" href="#tab_3"><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_EXRATE_SPREAD}</span></a></li>
+                      </nheq>
+                      <nheq name="func" value="A">
+                          <li><a class="" data-toggle="tab" href="#tab_2"><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_RATE_SPREAD}</span></a></li>
+                      </nheq>
+                      <li class="active"><a class="" data-toggle="tab" href="#tab_1"><i class="fa fa-user"></i><span class="hidden-inline-mobile">{$Think.lang.TEMP_CLIENT_BASE_INF}</span></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab_1">
+                            <div class="row">
+                                <div class="col-md-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.SYSTEM_ACTION_ACTION}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.COMMON_ACTION_TEXT" item="vo">
+                                                <if condition="$key heq $func">
+                                                    <input class="form-control" value="{$vo}" disabled/>
+                                                </if>
+                                            </foreach>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_NO}</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" value="{$appoveResult.ci_no}" disabled/>
+                                        </div>
+                                        <if condition="$clientResult['id_code'] nheq $appoveResult['id_code']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_ID_CODE}</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.id_code}" disabled
+                                                <if condition="$clientResult['id_code'] nheq $appoveResult['id_code']">title="{$clientResult.id_code}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['id_code'] nheq $appoveResult['id_code']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['name'] nheq $appoveResult['name']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_NAME}</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.name}" disabled
+                                                <if condition="$clientResult['name'] nheq $appoveResult['name']">title="{$clientResult.name}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['name'] nheq $appoveResult['name']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['ot_name'] nheq $appoveResult['ot_name']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_OT_NAME}</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.ot_name}" disabled
+                                                <if condition="$clientResult['ot_name'] nheq $appoveResult['ot_name']">title="{$clientResult.ot_name}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['ot_name'] nheq $appoveResult['ot_name']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['tpl_priority_lang'] nheq $appoveResult['tpl_priority_lang']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_TPL_PRIORITY_LANG}</label>
+                                            <div class="col-sm-10">
+                                                <foreach name="Think.lang.CLIENT_TPL_PRIORITY_TEXT" item="vo">
+                                                    <if condition="$key eq $appoveResult['tpl_priority_lang']">
+                                                        <input class="form-control tip" value="{$vo}" disabled
+                                                        <if condition="$clientResult['tpl_priority_lang'] nheq $appoveResult['tpl_priority_lang']">
+                                                            <foreach name="Think.lang.CLIENT_TPL_PRIORITY_TEXT" key="key1" item="item">
+                                                                <if condition="$key1 eq $clientResult['tpl_priority_lang']">
+                                                                    title="{$item}"
+                                                                </if>
+                                                            </foreach>
+                                                        </if>
+                                                        />
+                                                    </if>
+                                                </foreach>
+                                            </div>
+                                        <if condition="$clientResult['tpl_priority_lang'] nheq $appoveResult['tpl_priority_lang']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['auto_email_flag'] nheq $appoveResult['auto_email_flag']"><div class="has-error"></if>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_AUTO_EMAIL}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" item="vo">
+                                                <if condition="$key eq $appoveResult['auto_email_flag']">
+                                                    <input class="form-control tip" value="{$vo}" disabled
+                                                    <if condition="$clientResult['auto_email_flag'] nheq $appoveResult['auto_email_flag']">
+                                                        <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" key="key1" item="item">
+                                                            <if condition="$key1 eq $clientResult['auto_email_flag']">
+                                                                title="{$item}"
+                                                            </if>
+                                                        </foreach>
+                                                    </if>
+                                                    />
+                                                </if>
+                                            </foreach>
+                                        </div>
+                                        <if condition="$clientResult['auto_email_flag'] nheq $appoveResult['auto_email_flag']"></div></if>
+                                        <if condition="$clientResult['mail_plan_time'] nheq $appoveResult['mail_plan_time']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MAIL_SEND_TIME}</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.mail_plan_time}" disabled
+                                                <if condition="$clientResult['mail_plan_time'] nheq $appoveResult['mail_plan_time']">title="{$clientResult.mail_plan_time}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['mail_plan_time'] nheq $appoveResult['mail_plan_time']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['auto_email_ex_rate_flag'] nheq $appoveResult['auto_email_ex_rate_flag']"><div class="has-error"></if>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_AUTO_EX_EMAIL}</label>
+                                        <div class="col-sm-4">
+                                            <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" item="vo">
+                                                <if condition="$key eq $appoveResult['auto_email_ex_rate_flag']">
+                                                    <input class="form-control tip" value="{$vo}" disabled
+                                                    <if condition="$clientResult['auto_email_ex_rate_flag'] nheq $appoveResult['auto_email_ex_rate_flag']">
+                                                        <foreach name="Think.lang.CLIENT_AUTO_SEND_FLAG_TEXT" key="key1" item="item">
+                                                            <if condition="$key1 eq $clientResult['auto_email_ex_rate_flag']">
+                                                                title="{$item}"
+                                                            </if>
+                                                        </foreach>
+                                                    </if>
+                                                    />
+                                                </if>
+                                            </foreach>
+                                        </div>
+                                        <if condition="$clientResult['auto_email_ex_rate_flag'] nheq $appoveResult['auto_email_ex_rate_flag']"></div></if>
+                                        <if condition="$clientResult['mail_plan_ex_rate_time'] nheq $appoveResult['mail_plan_ex_rate_time']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EX_MAIL_SEND_TIME}</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.mail_plan_ex_rate_time}" disabled
+                                                <if condition="$clientResult['mail_plan_ex_rate_time'] nheq $appoveResult['mail_plan_ex_rate_time']">title="{$clientResult.mail_plan_ex_rate_time}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['mail_plan_ex_rate_time'] nheq $appoveResult['mail_plan_ex_rate_time']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['email'] nheq $appoveResult['email']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EMAIL}</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control tip" value="{$appoveResult.email}" disabled
+                                                <if condition="$clientResult['email'] nheq $appoveResult['email']">title="{$clientResult.email}"</if>
+                                                />
+                                            </div>
+                                        <if condition="$clientResult['email'] nheq $appoveResult['email']"></div></if>
+                                    </div>
+                                    <!--<div class="form-group">-->
+                                        <!--<if condition="$clientResult['bcc_email'] nheq $appoveResult['bcc_email']"><div class="has-error"></if>-->
+                                        <!--<label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_BCC_EMAIL}</label>-->
+                                        <!--<div class="col-sm-10">-->
+                                            <!--<input type="text" class="form-control tip" value="{$appoveResult.bcc_email}" disabled-->
+                                            <!--<if condition="$clientResult['bcc_email'] nheq $appoveResult['bcc_email']">title="{$clientResult.bcc_email}"</if>-->
+                                            <!--/>-->
+                                        <!--</div>-->
+                                        <!--<if condition="$clientResult['bcc_email'] nheq $appoveResult['bcc_email']"></div></if>-->
+                                    <!--</div>-->
+                                    <div class="form-group">
+                                        <if condition="$clientResult['inst_rate_mailtpl'] nheq $appoveResult['inst_rate_mailtpl']"><div class="has-error"></if>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_INTEREST_RATE_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <notempty name="appoveResult.inst_rate_mailtpl">
+                                                <foreach name="instRateMailtplArr" item="vo">
+                                                    <if condition="$key eq $appoveResult['inst_rate_mailtpl']">
+                                                        <input class="form-control tip" value="{$vo}" disabled
+                                                        <if condition="$clientResult['inst_rate_mailtpl'] nheq $appoveResult['inst_rate_mailtpl']">
+                                                            <foreach name="instRateMailtplArr" key="key1" item="item">
+                                                                <if condition="$key1 eq $clientResult['inst_rate_mailtpl']">
+                                                                    title="{$item}"
+                                                                </if>
+                                                            </foreach>
+                                                        </if>
+                                                        />
+                                                    </if>
+                                                </foreach>
+                                            <else/>
+                                                <input class="form-control tip" value="" disabled
+                                                <if condition="$clientResult['inst_rate_mailtpl'] nheq $appoveResult['inst_rate_mailtpl']">
+                                                    <foreach name="instRateMailtplArr" key="key1" item="item">
+                                                        <if condition="$key1 eq $clientResult['inst_rate_mailtpl']">
+                                                            title="{$item}"
+                                                        </if>
+                                                    </foreach>
+                                                </if>
+                                                />
+                                            </notempty>
+                                        </div>
+                                        <if condition="$clientResult['inst_rate_mailtpl'] nheq $appoveResult['inst_rate_mailtpl']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['ex_rate_mailtpl'] nheq $appoveResult['ex_rate_mailtpl']"><div class="has-error"></if>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_EX_RATE_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <notempty name="appoveResult.ex_rate_mailtpl">
+                                                <foreach name="exRateMailtplArr" item="vo">
+                                                    <if condition="$key eq $appoveResult['ex_rate_mailtpl']">
+                                                        <input class="form-control tip" value="{$vo}" disabled
+                                                        <if condition="$clientResult['ex_rate_mailtpl'] nheq $appoveResult['ex_rate_mailtpl']">
+                                                            <foreach name="exRateMailtplArr" key="key1" item="item">
+                                                                <if condition="$key1 eq $clientResult['ex_rate_mailtpl']">
+                                                                    title="{$item}"
+                                                                </if>
+                                                            </foreach>
+                                                        </if>
+                                                        />
+                                                    </if>
+                                                </foreach>
+                                            <else/>
+                                                <input class="form-control tip" value="" disabled
+                                                <if condition="$clientResult['ex_rate_mailtpl'] nheq $appoveResult['ex_rate_mailtpl']">
+                                                    <foreach name="exRateMailtplArr" key="key1" item="item">
+                                                        <if condition="$key1 eq $clientResult['ex_rate_mailtpl']">
+                                                            title="{$item}"
+                                                        </if>
+                                                    </foreach>
+                                                </if>
+                                                />
+                                            </notempty>
+                                        </div>
+                                        <if condition="$clientResult['ex_rate_mailtpl'] nheq $appoveResult['ex_rate_mailtpl']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['market_mailtpl'] nheq $appoveResult['market_mailtpl']"><div class="has-error"></if>
+                                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_EMAILTPL}</label>
+                                        <div class="col-sm-10">
+                                            <notempty name="appoveResult.market_mailtpl">
+                                                <foreach name="marketMailtplArr" item="vo">
+                                                    <if condition="$key eq $appoveResult['market_mailtpl']">
+                                                        <input class="form-control tip" value="{$vo}" disabled
+                                                        <if condition="$clientResult['market_mailtpl'] nheq $appoveResult['market_mailtpl']">
+                                                            <foreach name="marketMailtplArr" key="key1" item="item">
+                                                                <if condition="$key1 eq $clientResult['market_mailtpl']">
+                                                                    title="{$item}"
+                                                                </if>
+                                                            </foreach>
+                                                        </if>
+                                                        />
+                                                    </if>
+                                                </foreach>
+                                            <else/>
+                                                <input class="form-control tip" value="" disabled
+                                                <if condition="$clientResult['market_mailtpl'] nheq $appoveResult['market_mailtpl']">
+                                                    <foreach name="marketMailtplArr" key="key1" item="item">
+                                                        <if condition="$key1 eq $clientResult['market_mailtpl']">
+                                                            title="{$item}"
+                                                        </if>
+                                                    </foreach>
+                                                </if>
+                                                />
+                                            </notempty>
+                                        </div>
+                                        <if condition="$clientResult['market_mailtpl'] nheq $appoveResult['market_mailtpl']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <if condition="$clientResult['remark'] nheq $appoveResult['remark']"><div class="has-error"></if>
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_REMARK}</label>
+                                            <div class="col-sm-10">
+                                                <textarea cols="" rows="5" class="form-control tip" maxlength="255" disabled
+                                                <if condition="$clientResult['remark'] nheq $appoveResult['remark']">title="{$clientResult.remark}"</if>
+                                                >{$appoveResult.remark}</textarea>
+                                            </div>
+                                        <if condition="$clientResult['remark'] nheq $appoveResult['remark']"></div></if>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-sm-2 control-label">&nbsp;</span>
+                                        <div class="col-sm-10">
+                                            <button type="button" href="{:U(clientAppove,array('date'=>$date,'seq'=>$seq,'flag'=>'A'))}" class="btn btn-primary ajax-get confirm" ><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_APPOVE}</button>
+                                            <button type="button" href="{:U(clientReject,array('date'=>$date,'seq'=>$seq))}" class="btn btn-warning ajax-get confirm"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_REJECT}</button>
+                                            <button type="button" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <nheq name="func" value="A">
+                            <div class="tab-pane fade" id="tab_2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box-body table-responsive">
+                                            <div class="scroller" data-width="AUTO" data-always-visible="1" data-rail-visible="0">
+                                                <table class="table table-striped" style="min-width:960px">
+                                                    <volist name="appoveRateArr" id="vo" offset="1" length='1'>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                            </th>
+                                                            <foreach name="vo" item="item" key="itemkey">
+                                                                <th>{$itemkey}</th>
+                                                            </foreach>
+                                                        </tr>
+                                                        </thead>
+                                                    </volist>
+                                                    <notempty name="appoveRateArr">
+                                                        <tbody>
+                                                        <foreach name="appoveRateArr" item="vo" key="tenorValue">
+                                                            <tr>
+                                                                <td>
+                                                                    {$tenorValue}
+                                                                </td>
+                                                                <foreach name="vo" item="item" key="ccyValue">
+                                                                    <td>
+                                                                        <php>
+                                                                            $value1 = $appoveRateArr[$tenorValue][$ccyValue]['value'];
+                                                                            $value2 = $rateArr[$tenorValue][$ccyValue]['value'];
+                                                                        </php>
+                                                                        <if condition="$value1 nheq $value2"><div class="has-error"></if>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon">
+                                                                                <input type="checkbox" class="" <nheq name="value1" value="">checked</nheq> disabled="disabled"/> <i class="fa fa-check-circle"></i>
+                                                                                <input type="checkbox" class="" <eq name="item['is_rate']" value="1">checked</eq> disabled="disabled"/> <i class="fa fa-bar-chart-o"></i>
+                                                                            </span>
+                                                                            <input type="text" value="{$value1|delZero}" class="form-control input-sm float_value tip" disabled="disabled" style="width:50px;"
+                                                                            <if condition="$value1 nheq $value2">
+                                                                                title="{$value2}"
+                                                                            </if>
+                                                                            />
+                                                                        </div>
+                                                                        <if condition="$value1 nheq $value2"></div></if>
+                                                                    </td>
+                                                                </foreach>
+                                                            </tr>
+                                                        </foreach>
+                                                        </tbody>
+                                                    </notempty>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="col-sm-12">
+                                            <button type="button" class="btn btn-primary ajax-get confirm" href="{:U(clientAppove,array('date'=>$date,'seq'=>$seq,'flag'=>'A'))}"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_APPOVE}</button>
+                                            <notempty name="rejectNode">
+                                                <button type="button" class="btn btn-warning ajax-get confirm" href="{:U(clientReject,array('date'=>$date,'seq'=>$seq))}"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_REJECT}</button>
+                                            </notempty>
+                                            <button type="button" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nheq>
+                        <nheq name="func" value="A">
+                            <div class="tab-pane fade" id="tab_3">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box-body table-responsive">
+                                            <div class="scroller" data-width="AUTO" data-always-visible="1" data-rail-visible="0">
+                                                <table class="table table-striped" style="min-width:960px">
+                                                    <volist name="appoveExRateArr" id="vo" offset="1" length='1'>
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                            </th>
+                                                            <foreach name="vo" item="item" key="itemkey">
+                                                                <th>{$itemkey}</th>
+                                                            </foreach>
+                                                        </tr>
+                                                        </thead>
+                                                    </volist>
+                                                    <notempty name="appoveExRateArr">
+                                                        <tbody>
+                                                        <foreach name="appoveExRateArr" item="vo" key="exchangeValue">
+                                                            <tr>
+                                                                <td>
+                                                                    {$exchangeValue}
+                                                                </td>
+                                                                <foreach name="vo" item="item" key="targetValue">
+                                                                    <td>
+                                                                        <php>
+                                                                            $value1 = $appoveExRateArr[$exchangeValue][$targetValue]['value'];
+                                                                            $value2 = $exRateArr[$exchangeValue][$targetValue]['value'];
+                                                                        </php>
+                                                                        <if condition="$value1 nheq $value2"><div class="has-error"></if>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon">
+                                                                                <input type="checkbox" class="" <nheq name="value1" value="">checked</nheq> disabled="disabled"/> <i class="fa fa-check-circle"></i>
+                                                                                <input type="checkbox" class="" <eq name="item['is_exRate']" value="1">checked</eq> disabled="disabled"/> <i class="fa fa-bar-chart-o"></i>
+                                                                            </span>
+                                                                            <input type="text" value="{$value1|delZero}" class="form-control input-sm float_value tip" disabled="disabled" style="width:50px;"
+                                                                            <if condition="$value1 nheq $value2">
+                                                                                title="{$value2}"
+                                                                            </if>
+                                                                            />
+                                                                        </div>
+                                                                        <if condition="$value1 nheq $value2"></div></if>
+                                                                    </td>
+                                                                </foreach>
+                                                            </tr>
+                                                        </foreach>
+                                                        </tbody>
+                                                    </notempty>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="col-sm-12">
+                                            <button type="button" class="btn btn-primary ajax-get confirm" href="{:U(clientAppove,array('date'=>$date,'seq'=>$seq,'flag'=>'A'))}"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_APPOVE}</button>
+                                            <notempty name="rejectNode">
+                                                <button type="button" class="btn btn-warning ajax-get confirm" href="{:U(clientReject,array('date'=>$date,'seq'=>$seq))}"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_REJECT}</button>
+                                            </notempty>
+                                            <button type="button" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </nheq>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#clientAppoveListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+
+        $('.scroller').each(function () {
+            $(this).slimScrollHorizontal({
+                size: '10px',
+                color: '#a1b2bd',
+                width: $(this).attr("data-width"),
+                alwaysVisible: ($(this).attr("data-always-visible") == "1" ? true : false),
+                railVisible: ($(this).attr("data-rail-visible") == "1" ? true : false),
+                railOpacity: 0.1,
+                disableFadeOut: true
+            });
+        });
+    });
+</script>

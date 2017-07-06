@@ -1,0 +1,259 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $uploadNode = $access_list['ADMIN']['PARAMETER']['CALENDARUPLOAD'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-calendar"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='uploadNode'>
+                            <button class="btn-info btn-xs" id="uploadButton" type="button"><i class="fa fa-upload"></i> {$Think.lang.SYSTEM_ACTION_UPLOAD}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="box-body pad table-responsive">-->
+                <!--<div class="col-md-12 form-horizontal">-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-sm-4 control-label">{$Think.lang.TEMP_PARAMETER_CALENDAR_CODE}</label>-->
+                        <!--<div class="col-sm-8">-->
+                            <!--<select class="form-control" id="calendar_code">-->
+                                <!--<option value=""></option>-->
+                                <!--<foreach name="Think.config.CALENDAR_CODE" item="vo">-->
+                                    <!--<option value="{$key}">{$key} - {$vo}</option>-->
+                                <!--</foreach>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="box-body table-responsive">
+                <!-- THE CALENDAR -->
+                <div id="calendar"></div>
+            </div><!-- /.box-body -->
+        </div><!-- /. box -->
+    </div><!-- /.col -->
+</div>
+<!-- 弹出功能窗口 -->
+<div class="modal fade" id="compose-modal-calendar" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="dialog-div">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"> {$Think.lang.TEMP_PARAMETER_CALENDAR_SIGN}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.SYSTEM_TERM_DATE}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-9">
+                                <input name="date" type="text" class="form-control" id="calendarsign_date" readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.TEMP_PARAMETER_CALENDAR_DATE_FLAG}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-9">
+                                <foreach name="Think.lang.TEMP_PARM_CALENDAR_FLAG_TEXT" item="vo" key="k">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="calendarsign_flag" class="uniform" value="{$k}"> {$vo} 
+                                    </label>
+                                </foreach>
+                            </div>
+                        </div>
+                        <div class="modal-footer clearfix">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                            <button type="button" class="btn btn-primary pull-left" id="calendarsign_submit"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+    <!-- <div class="col-md-6">
+        <div class="box border primary"> -->
+
+            <!-- <div class="box-title">
+                <h4><i class="fa fa-calendar"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div> -->
+            <!-- <div class="box-body pad table-responsive"> -->
+            <!-- <div class="box-body big">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label">{$Think.lang.SYSTEM_TERM_START_DATE}</label>
+                        <input type="text" class="form-control" id="startdate" readonly placeholder="点击日期视图选择日期"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">{$Think.lang.SYSTEM_TERM_END_DATE}</label>
+                        <input type="text" class="form-control" id="enddate" readonly placeholder="点击日期视图选择日期"/>
+                    </div>
+                    <div class="form-group"> 
+                            <button type="button" class="btn btn-success btn-flat calendarsign" valueKey="1">{$Think.lang.TEMP_SYSTEM_HOLIDAY_MARK}</button>
+                            <button type="button" class="btn btn-warning btn-flat calendarsign" valueKey="0">{$Think.lang.TEMP_SYSTEM_WORKDAY_MARK}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+<notempty name="uploadNode">
+    <div style="display:none;">
+        <input id="fileupload_input" type="file" name="temp_file" multiple />
+    </div>
+</notempty>
+<script type="text/javascript">
+    $(function() {
+//        var htmlContent = "{$Think.lang.TEMP_PARAMETER_PLS_SELECT_CAL_CODE}";
+        if (navigator.userLanguage) {
+            baseLang = navigator.userLanguage.substring(0,5).toLowerCase();
+        } else {
+            baseLang = navigator.language.substring(0,5).toLowerCase();
+        }
+//        $("#calendar_code").change(function(){
+//            var calendar_code = $(this).val();
+//            if("" == calendar_code){
+//                $("#calendar").html(htmlContent);
+//            }else{
+//                $("#calendar").html("");
+        /* initialize the calendar
+         -----------------------------------------------------------------*/
+        //Date for the calendar events (dummy data)
+        var clickNum = 0;
+        var date = new Date();
+        var d = date.getDate();
+            m = date.getMonth();
+            y = date.getFullYear();
+        if('zh-cn' != baseLang){
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'today'
+                },
+                //This is to add icons to the visible buttons
+                buttonText: {
+                    prev: "<span class='fa fa-caret-left'></span>",
+                    next: "<span class='fa fa-caret-right'></span>",
+                    today: 'Today'
+                },
+                viewDisplay: function (view) {
+                    var viewStart = $.fullCalendar.formatDate(view.visStart, "yyyy-MM-dd");
+                    var viewEnd = $.fullCalendar.formatDate(view.visEnd, "yyyy-MM-dd");
+                    $("#calendar").fullCalendar('removeEvents');
+                    $.post("{:U(calendarList)}", {start: viewStart, end: viewEnd }, function (data) {
+                        var resultCollection = jQuery.parseJSON(data);
+                        $.each(resultCollection, function (index, term) {
+                            $("#calendar").fullCalendar('renderEvent', term, true);
+                        });
+                    });
+                    $(".fc-sat").css('backgroundColor','#c4e1ff');//这个是周六的TD
+                    $(".fc-sun").css('backgroundColor','#c4e1ff');//这个是周日的TD
+                },
+                editable: true,
+                dayClick:function(date){
+                    $("#calendarsign_date").val($.fullCalendar.formatDate(date, "yyyy-MM-dd"));
+                    $("#compose-modal-calendar").modal('show');
+                },
+                eventClick:function(calEvent, jsEvent, view){
+                    $("#calendarsign_date").val($.fullCalendar.formatDate(calEvent.start,"yyyy-MM-dd"));
+                    $("#compose-modal-calendar").modal('show');
+                },
+            });
+        }else{
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: '今天'
+                },
+                //This is to add icons to the visible buttons
+                buttonText: {
+                    prev: "<span class='fa fa-caret-left'></span>",
+                    next: "<span class='fa fa-caret-right'></span>",
+                    today: 'Today'
+                },
+                monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                dayNames: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+                dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+                viewDisplay: function (view) {
+                    var viewStart = $.fullCalendar.formatDate(view.visStart, "yyyy-MM-dd");
+                    var viewEnd = $.fullCalendar.formatDate(view.visEnd, "yyyy-MM-dd");
+                    $("#calendar").fullCalendar('removeEvents');
+                    $.post("{:U(calendarList)}", { start: viewStart, end: viewEnd }, function (data) {
+                        var resultCollection = jQuery.parseJSON(data);
+                        $.each(resultCollection, function (index, term) {
+                            $("#calendar").fullCalendar('renderEvent', term, true);
+                        });
+                    });
+                    $(".fc-sat").css('backgroundColor','#c4e1ff');//这个是周六的TD
+                    $(".fc-sun").css('backgroundColor','#c4e1ff');//这个是周日的TD
+                },
+                editable: true,
+                dayClick:function(date){
+                    $("#calendarsign_date").val($.fullCalendar.formatDate(date, "yyyy-MM-dd"));
+                    $("#compose-modal-calendar").modal('show');
+                },
+                eventClick:function(calEvent, jsEvent, view){
+                    $("#calendarsign_date").val($.fullCalendar.formatDate(calEvent.start,"yyyy-MM-dd"));
+                    $("#compose-modal-calendar").modal('show');
+                },
+            });
+        }
+//            }
+//        });
+
+        $("#calendarsign_submit").bind("click",function(){
+            var date = $("#calendarsign_date").val();
+//            var calendar_code = $("#calendar_code").val();
+            var flag = $('input[name="calendarsign_flag"]:checked').val();
+            $('#calendarsign_submit').addClass('disabled').prop('disabled',true);
+            $.post(
+                "{:U(calendarSign)}", 
+                {date:date,flag:flag},
+                function (data) {
+                    if(data.status){
+                        $("#compose-modal-calendar").modal('hide'); 
+                        $('input[name="calendarsign_flag"]').removeAttr('checked');
+                        var view = $("#calendar").fullCalendar('getView');
+                        var viewStart = $.fullCalendar.formatDate(view.visStart, "yyyy-MM-dd");
+                        var viewEnd = $.fullCalendar.formatDate(view.visEnd, "yyyy-MM-dd");
+//                        var calendar_code = $("#calendar_code").val();
+                        $("#calendar").fullCalendar('removeEvents');
+                        $.post("{:U(calendarList)}", { start: viewStart, end: viewEnd }, function (data) {
+                            var resultCollection = jQuery.parseJSON(data);
+                            $.each(resultCollection, function (index, term) {
+                                $("#calendar").fullCalendar('renderEvent', term, true);
+                            });
+                        });
+                    } else {
+                        updateAlert(data.info,'alert-error');
+                        setTimeout(function(){
+                            $('#top-alert').find('button').click();
+                        },3000);
+                    }
+                    $('#calendarsign_submit').removeClass('disabled').prop('disabled',false);
+                }
+            );
+        });
+
+        //上传
+        $("#uploadButton").bind('click',function(){
+            $("#fileupload_input").click();
+        });
+
+        $("#fileupload_input").fileupload({
+            url:"{:U('calendarUpload')}",//文件上传地址，当然也可以直接写在input的data-url属性
+            done:function(e,result){
+                $('#content').html(result.result);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,68 @@
+<header class="navbar clearfix" id="header">
+    <div class="container">
+        <div class="navbar-brand">
+            <!-- COMPANY LOGO -->
+            <a>
+                <img src="__ROOT__/Public/img/logo/logo.png" alt="Cloud Admin Logo" class="img-responsive" height="30" width="120">
+            </a>
+            <!-- /COMPANY LOGO -->
+            <!-- SIDEBAR COLLAPSE -->
+            <div id="sidebar-collapse" class="sidebar-collapse btn">
+                <i class="fa fa-bars" 
+                    data-icon1="fa fa-bars" 
+                    data-icon2="fa fa-bars" ></i>
+            </div>
+            <!-- /SIDEBAR COLLAPSE -->
+        </div>
+        <!-- NAVBAR LEFT -->
+        <ul class="nav navbar-nav pull-left hidden-xs" id="navbar-left">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-cog"></i>
+                    <span class="name">{$Think.lang.TEMP_SKINS_NAME}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu skins">
+                    <li class="dropdown-title">
+                        <span><i class="fa fa-leaf"></i> {$Think.lang.TEMP_SKINS_THEME}</span>
+                    </li>
+                    <li><a href="#" data-skin="default">{$Think.lang.TEMP_SKINS_SUBTLE}</a></li>
+                    <li><a href="#" data-skin="night">{$Think.lang.TEMP_SKINS_NIGHT}</a></li>
+                    <li><a href="#" data-skin="earth">{$Think.lang.TEMP_SKINS_EARTH}</a></li>
+                    <li><a href="#" data-skin="utopia">{$Think.lang.TEMP_SKINS_UTOPIA}</a></li>
+                    <li><a href="#" data-skin="nature">{$Think.lang.TEMP_SKINS_NATURE}</a></li>
+                    <li><a href="#" data-skin="graphite">{$Think.lang.TEMP_SKINS_GRAPHITE}</a></li>
+                 </ul>
+            </li>
+        </ul>
+        <!-- /NAVBAR LEFT -->
+
+        <!-- BEGIN TOP NAVIGATION MENU -->                  
+        <ul class="nav navbar-nav pull-right">
+        <!-- BEGIN USER LOGIN DROPDOWN -->
+            <li class="dropdown user" id="header-user">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <img alt="" src="{$Think.session.img_url}" />
+                    <span class="username">{$Think.session.user_auth.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{:U('Account/account')}" class="ajax-forward"><i class="fa fa-user"></i> {$Think.lang.TEMP_SYSTEM_SETTING}</a></li>
+                    <li><a href="{:U('Index/logout')}" class="ajax-get-full confirm"><i class="fa fa-power-off"></i> {$Think.lang.TEMP_SYSTEM_LOGOUT}</a></li>
+                </ul>
+            </li>
+            <!-- END USER LOGIN DROPDOWN -->
+        </ul>
+        <!-- END TOP NAVIGATION MENU -->
+    </div>
+</header>
+<script type="text/javascript">
+     $(function(){
+         setInterval(function() {
+             $.ajax({
+                 url: '{:U("Common/refresh")}',
+                 cache: false
+             });
+         }, 300000);
+     });
+</script>

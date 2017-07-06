@@ -1,0 +1,83 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(mailSend)}" method="post" class="form-horizontal rateMailSendForm">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_NO}</label>
+                <div class="col-sm-8">
+                    <input name="ci_no" type="text" value="{$result.ci_no}" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_NAME}</label>
+                <div class="col-sm-8">
+                    <input type="text" value="{$result.name}" class="form-control" disabled/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_OT_NAME}</label>
+                <div class="col-sm-8">
+                    <input type="text" value="{$result.ot_name}" class="form-control" disabled/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_EMAIL_TYPE}</label>
+                <div class="col-sm-8">
+                  <select name="mail_type" class="form-control" id="temp_mail_type">
+                      <option value="-1"></option>
+                      <foreach name="Think.config.M_TYPE" item="vo">
+                          <option value="{$key}">{$vo}</option>
+                      </foreach>
+                  </select>
+                </div>
+            </div>
+            <div class="form-group mailtpl inst">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_INTEREST_RATE_EMAILTPL}</label>
+                <div class="col-sm-8">
+                    <select name="mailtpl_id" class="form-control">
+                        <foreach name="instRateMailtplArr" item="vo">
+                            <if condition="$key eq $result['inst_rate_mailtpl']">
+                                <option value="{$key}">{$key} - {$vo}</option>
+                            </if>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group mailtpl ex">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_EX_RATE_EMAILTPL}</label>
+                <div class="col-sm-8">
+                    <select name="mailtpl_id" class="form-control">
+                        <foreach name="exRateMailtplArr" item="vo">
+                            <if condition="$key eq $result['ex_rate_mailtpl']">
+                                <option value="{$key}">{$key} - {$vo}</option>
+                            </if>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="rateMailSendForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SEND}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+      $('.mailtpl').css('display','none');
+    });
+    $('#temp_mail_type').change(function(){
+      if($(this).val() == 0){
+        $('.mailtpl.inst').css('display','block').find('select').removeAttr('disabled');
+        $('.mailtpl.ex').css('display','none').find('select').attr('disabled','disabled');
+      }else if($(this).val() == 1){
+        $('.mailtpl.ex').css('display','block').find('select').removeAttr('disabled');
+        $('.mailtpl.inst').css('display','none').find('select').attr('disabled','disabled');
+      }else if($(this).val() == -1){
+        $('.mailtpl').css('display','none');
+      }
+    })
+</script>

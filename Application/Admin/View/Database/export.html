@@ -1,0 +1,158 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $optimizeNode = $access_list['ADMIN']['DATABASE']['OPTIMIZE'];
+    $repairNode = $access_list['ADMIN']['DATABASE']['REPAIR'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-floppy-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <button id="export" class="btn-info btn-xs" type="button"><i class="fa fa-floppy-o"></i> {$Think.lang.SYSTEM_ACTION_BACKUP}</button>
+                        <notempty name="optimizeNode">
+                            <button id="optimize" class="btn-info btn-xs"  href="{:U('optimize')}" type="button"><i class="fa fa-arrow-circle-up"></i> {$Think.lang.SYSTEM_ACTION_OPTIMIZE}</button>
+                        </notempty>
+                        <notempty name="repairNode">
+                            <button id="repair" class="btn-info btn-xs" href="{:U('repair')}" type="button"><i class="fa fa-refresh"></i> {$Think.lang.SYSTEM_ACTION_REPAIR}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 应用列表 -->
+            <div class="box-body table-responsive">
+                <form id="export-form" method="post" action="{:U('export')}">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input class="check-all" checked="chedked" type="checkbox" value=""></th>
+                                <th>{$Think.lang.TEMP_DATABASE_TABLE_NAME}</th>
+                                <th>{$Think.lang.TEMP_DATABASE_RECORD_COUNT}</th>
+                                <th>{$Think.lang.TEMP_DATABASE_DATA_SIZE}</th>
+                                <th>{$Think.lang.TEMP_DATABASE_CREATE_TIME}</th>
+                                <th>{$Think.lang.TEMP_EMP_EMP_STATUS}</th>
+                                <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist name="list" id="table">
+                                <tr>
+                                    <td class="num">
+                                        <input class="ids" checked="chedked" type="checkbox" name="tables[]" value="{$table.name}">
+                                    </td>
+                                    <td>{$table.name}</td>
+                                    <td>{$table.rows}</td>
+                                    <td>{$table.data_length|format_bytes}</td>
+                                    <td>{$table.create_time}</td>
+                                    <td class="info">No backup</td>
+                                    <td class="action">
+                                        <notempty name="optimizeNode">
+                                            <a class="ajax-get no-refresh" title="{$Think.lang.SYSTEM_ACTION_OPTIMIZE}" href="{:U('optimize?tables='.$table['name'])}"><i class="fa fa-arrow-circle-up"></i></a>&nbsp;
+                                        </notempty>
+                                        <notempty name="repairNode">
+                                            <a class="ajax-get no-refresh" title="{$Think.lang.SYSTEM_ACTION_REPAIR}" href="{:U('repair?tables='.$table['name'])}"><i class="fa fa-refresh"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <!-- /应用列表 -->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function($){
+        var $form = $("#export-form"), $export = $("#export"), tables
+            $optimize = $("#optimize"), $repair = $("#repair");
+
+        $optimize.add($repair).click(function(){
+            var href = $(this).attr('href');
+            $.post(href, $form.serialize(), function(data){
+                if(data.status){
+                    updateAlert(data.info,'alert-success');
+                } else {
+                    updateAlert(data.info,'alert-error');
+                }
+                setTimeout(function(){
+                    $('#top-alert').find('button').click();
+                    $('#top-alert').removeClass('disabled').prop('disabled',false);
+                },1500);
+            }, "json");
+            return false;
+        });
+
+        $export.click(function(){
+            $export.parent().children().addClass("disabled");
+            $export.html("正在发送备份请求...");
+            $.post(
+                $form.attr("action"),
+                $form.serialize(),
+                function(data){
+                    if(data.status){
+                        tables = data.tables;
+                        $export.html(data.info + "开始备份，请不要关闭本页面！");
+                        backup(data.tab);
+                        window.onbeforeunload = function(){ return "正在备份数据库，请不要关闭！" }
+                    } else {
+                        updateAlert(data.info,'alert-error');
+                        $export.parent().children().removeClass("disabled");
+                        $export.html("立即备份");
+                        setTimeout(function(){
+                            $('#top-alert').find('button').click();
+                            $(that).removeClass('disabled').prop('disabled',false);
+                        },1500);
+                    }
+                },
+                "json"
+            );
+            return false;
+        });
+
+        function backup(tab, status){
+            status && showmsg(tab.id, "开始备份...(0%)");
+            $.get($form.attr("action"), tab, function(data){
+                if(data.status){
+                    showmsg(tab.id, data.info);
+
+                    if(!$.isPlainObject(data.tab)){
+                        $export.parent().children().removeClass("disabled");
+                        $export.html("备份完成，点击重新备份");
+                        window.onbeforeunload = function(){ return null }
+                        return;
+                    }
+                    backup(data.tab, tab.id != data.tab.id);
+                } else {
+                    updateAlert(data.info,'alert-error');
+                    $export.parent().children().removeClass("disabled");
+                    $export.html("立即备份");
+                    setTimeout(function(){
+                        $('#top-alert').find('button').click();
+                        $(that).removeClass('disabled').prop('disabled',false);
+                    },1500);
+                }
+            }, "json");
+
+        }
+
+        function showmsg(id, msg){
+            $form.find("input[value=" + tables[id] + "]").closest("tr").find(".info").html(msg);
+        }
+
+        $('.check-all').bind('click',function () {
+            var check_inputs = $('.ids');
+            if($(this).prop('checked')){
+                check_inputs.prop('checked',true);
+            }else{
+                check_inputs.prop('checked',false);
+            }
+        });
+    })(jQuery);
+</script>

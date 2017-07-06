@@ -1,0 +1,67 @@
+<div id="sidebar" class="sidebar">
+    <div class="sidebar-menu nav-collapse">
+        <div class="divide-20"></div>
+        <!-- SEARCH BAR -->
+        <div id="search-bar">
+            <input class="search" id="menu_search" type="text" placeholder="{$Think.lang.SYSTEM_ACTION_SEARCH}"><i class="fa fa-search search-icon"></i>
+        </div>
+        <!-- SIDEBAR MENU -->
+        <ul id="menu_ul">
+            <foreach name="__MENU__" item="action">
+                <li class="has-sub">
+                    <a href="javascript:;" class="">
+                        <i class="fa {$action.icon} fa-fw"></i>
+                        <span class="menu-text">{$action.title}</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <foreach name="action.child" item="method">
+                            <li>
+                                <a href="#" url="{:U($action['name'].'/'.$method['name'])}" class="menu_url">
+                                    <span class="sub-menu-text menu_node">{$method.title}</span>
+                                </a>
+                            </li>
+                        </foreach>
+                    </ul>
+                </li>
+            </foreach>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('.menu_url').bind('click',function(){
+            url = $(this).attr('url');
+            $.ajax({
+                url: url,
+                cache: false,
+                success: function (html) {
+                    $('#content').html(html);
+                    $.unblockUI();
+                }
+            });
+        });
+
+        $("#menu_search").keyup(function(){
+            var search_keyword = $(this).val().toLowerCase();
+            if(search_keyword == ""){
+                $('#menu_ul').children().removeClass('active');
+                $('.sub').slideUp(200);
+                $('.menu_node').each(function(){
+                    $(this).closest('li').show();
+                });
+            }else{
+                $('.menu_node').each(function(){
+                    var node_keyword = $(this).text().toLowerCase();
+                    if(node_keyword.indexOf(search_keyword) >= 0){
+                        $(this).closest('li').show();
+                    }else{
+                        $(this).closest('li').hide();
+                    }
+                });
+                $('#menu_ul').children().addClass('active');
+                $('.sub').slideDown(200);
+            }
+        });
+    });
+</script>

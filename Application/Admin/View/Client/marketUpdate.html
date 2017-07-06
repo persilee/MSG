@@ -1,0 +1,62 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-line-chart"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="{:U(marketUpdate)}" method="post"  class="form-horizontal marketUpdateForm">
+                            <input name="seq" type="hidden" value="{$result.seq}" />
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_EN_TITLE}</label>
+                              <div class="col-sm-10">
+                                  <input name="title_en" type="text" class="form-control" maxlength="120" value="{$result.title_en}"/>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_CN_TITLE}</label>
+                              <div class="col-sm-10">
+                                  <input name="title_zh_s" type="text" class="form-control" maxlength="120" value="{$result.title_zh_s}"/>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_HK_TITLE}</label>
+                              <div class="col-sm-10">
+                                  <input name="title_zh_t" type="text" class="form-control" maxlength="120" value="{$result.title_zh_t}"/>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_EN_CONTENT}</label>
+                              <div class="col-sm-10">
+                                  <textarea name="en_content" cols="" rows="3" class="form-control" maxlength="255">{$result.en_content}</textarea>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_CN_CONTENT}</label>
+                              <div class="col-sm-10">
+                                  <textarea name="zh_s_content" cols="" rows="3" class="form-control" maxlength="255">{$result.zh_s_content}</textarea>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">{$Think.lang.TEMP_CLIENT_MARKET_HK_CONTENT}</label>
+                              <div class="col-sm-10">
+                                  <textarea name="zh_t_content" cols="" rows="3" class="form-control" maxlength="255">{$result.zh_t_content}</textarea>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                                <span class="col-sm-2 control-label">&nbsp;</span>
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary ajax-post" target-form="marketUpdateForm"><i class="fa fa-save"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                                    <button type="submit" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

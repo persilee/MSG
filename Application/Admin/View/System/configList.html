@@ -1,0 +1,92 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['SYSTEM']['CONFIGADD'];
+    $updateNode = $access_list['ADMIN']['SYSTEM']['CONFIGUPDATE'];
+    $deleteNode = $access_list['ADMIN']['SYSTEM']['CONFIGDELETE'];
+    $sortNode = $access_list['ADMIN']['SYSTEM']['CONFIGSORT'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-gears"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='addNode'>
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('configAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                        <notempty name="sortNode">
+                            <button url="{:U('configSort')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal" ><i class="fa fa-sort"></i> {$Think.lang.SYSTEM_ACTION_SORT}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <!-- <form action="{:U('configSort')}" id="myform" method="post" class="form-horizontal"> -->
+            <form class="form-horizontal">
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{$Think.lang.TEMP_SYSTEM_CONF_SERIAL}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CONF_NAME}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CONF_TITLE}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CONF_TYPE}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CONF_GROUP}</th>
+                                <notempty name="sortNode">
+                                    <th>{$Think.lang.SYSTEM_ACTION_SORT}</th>
+                                </notempty>
+                                <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <notempty name="list">
+                                <volist name="list" id="vo">
+                                    <tr>
+                                        <td>
+                                            {$i}
+                                            <input type="hidden" name="ids[]" value="{$vo.id}"/>
+                                        </td>
+                                        <td>
+                                            {$vo.name}
+                                        </td>
+                                        <td>{$vo.title}</td>
+                                        <td>
+                                            {$vo.type_text}
+                                        </td>
+                                        <td>
+                                            {$vo.grouping_text}
+                                        </td>
+                                        <notempty name="sortNode">
+                                            <td>
+                                                <input class="form-control input-sm" style="width: 50px; height:20px;font-size:10px" type="text" name="sort[]" value="{$vo.sort}" maxlength="3" />
+                                            </td>
+                                        </notempty>
+                                        <td>
+                                            <notempty name="updateNode">
+                                                <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal" href="#" url={:U('configUpdate',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                            </notempty>
+                                            <notempty name="deleteNode">
+                                                <a class="tablelink ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('configDelete',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                            </notempty>
+                                        </td>
+                                    </tr>
+                                </volist>
+                            <else/> 
+                                <notempty name="sortNode">
+                                    <td colspan="7" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                                <else/>
+                                    <td colspan="6" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                                </notempty>
+                            </notempty>
+                        </tbody>
+                    </table>
+                    <div class="clearfix">
+                        {$_page}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

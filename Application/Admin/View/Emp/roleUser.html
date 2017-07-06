@@ -1,0 +1,63 @@
+<div class="formbody">
+        <form action="{:U(Emp/roleUser)}" method="post" class="form-horizontal">
+            <input type="hidden" name="uid" value="{$uid}"/>
+            <ul class="seachform1">
+                <li>
+                    <label>员工名称</label>
+                    <input name="name" type="text" class="dfinputrn" disabled="disabled" value="{$empName}"/>
+                </li>
+            </ul>
+            <ul class="seachform1 step_input">
+                <foreach name="roleUserArr" item="item" key="rolekey">
+                    <li>
+                        <label>职位</label>
+                        <div class="vocation select_style">
+                            <select name="roleid[]">
+                                <option value=""></option>
+                                <foreach name="roleResult" item="vo">
+                                    <option value="{$vo.id}" <if condition="$item eq $vo['id']">selected</if>>
+                                        <if condition="$vo['treeLevel'] GT 1">
+                                            <for start="1" end="$vo['treeLevel']">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </for>
+                                            |--
+                                        </if>
+                                        &nbsp;&nbsp;{$vo.name}
+                                    </option>
+                                </foreach>
+                            </select>
+                        </div>  
+                        <div class="vocation step_add" <eq name="rolekey" value="0">style="display: block;"<else/>style="display: none;"</eq>> 
+                            <label><a class="ibtnadd"><img src="__ROOT__/Public/images/t01.png" /></a></label>
+                        </div>
+                        <div class="vocation step_del" <neq name="rolekey" value="0">style="display: block;"<else/>style="display: none;"</neq>> 
+                            <label ><a class="ibtnadd"><img src="__ROOT__/Public/images/t03.png" /></a></label>
+                        </div>
+                    </li>
+                </foreach>
+            </ul>
+            <ul class="forminfo">
+                <li><label>&nbsp;</label>
+                    <input type="submit" class="btn submit-btn ajax-post" value="提交分配" target-form="form-horizontal"/>
+                    <input class="btn btn-return" type="submit" value="返回" onclick="javascript:history.back(-1);return false;"/>
+                </li>
+            </ul>
+        </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+
+        $(".step_add").bind("click",function(){
+            var $addentry = $(".step_input").children(":first").clone(true);
+            $addentry.find("select").val("");
+            $addentry.find("input").val("");
+            $addentry.children(".step_add").css("display","none");
+            $addentry.children(".step_del").css("display","block");
+            $addentry.appendTo(".step_input");
+        })
+        $(".step_del").bind("click",function(){
+            $(this).parent().remove();
+        })
+
+    });
+</script>

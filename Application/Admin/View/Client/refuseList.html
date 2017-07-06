@@ -1,0 +1,54 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['CLIENT']['REFUSEADD'];
+    $deleteNode = $access_list['ADMIN']['CLIENT']['REFUSEDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-unlink"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name="addNode">
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('refuseAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                        <php>$i=0;</php>
+                        <foreach name="list" item='item'>
+                            <php>
+                                if($i%2 == 0){
+                                    echo '<tr>';
+                                }
+                            </php>
+                            <td width="50%">
+                                <notempty name='deleteNode'>
+                                    <a title="{$Think.lang.SYSTEM_ACTION_DELETE}" class="ajax-get confirm" href="{:U('refuseDelete',array('mail'=>$item['mail']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                </notempty>
+                                {$item.mail}【{$item.empname}/{$item['time']|time_format}】
+                            </td>
+                            <php>
+                                if($i%2 == 1){
+                                    echo '</tr>';
+                                }
+                                $i++;
+                            </php>
+                        </foreach>
+                        <php>
+                            if($i%2 != 0){
+                                echo '<td width="50%"></td></tr>';
+                            }
+                        </php>
+                    <tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

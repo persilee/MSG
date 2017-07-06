@@ -1,0 +1,124 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(empAdd)}" method="post"  class="form-horizontal empAdd">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_EMAIL}</label>
+                <div class="col-sm-9">
+                    <input name="email" type="text" class="form-control" maxlength="30" placeholder="{$Think.lang.TEMP_EMP_EMP_WITHOUT_SUFFIX}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NAME}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="name" type="text" class="form-control" maxlength="30"/>
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_SEX}<font color="red"><b>＊</b></font></label>-->
+                <!--<div class="col-sm-9">-->
+                    <!--<foreach name="Think.lang.TEMP_EMP_EMP_SEX_TEXT" item="vo" key="k">-->
+                        <!--<label class="radio-inline">-->
+                            <!--<input type="radio" class="uniform" name="sex" value="{$k}"> {$vo} -->
+                        <!--</label>-->
+                    <!--</foreach>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_PHONE}</label>
+                <div class="col-sm-9">
+                    <input name="mobile" type="text" class="form-control"/>
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_BIRTHDAY}</label>-->
+                <!--<div class="col-sm-9">-->
+                    <!--<input name="birthday" type="text" class="form-control" placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}"  onClick="WdatePicker()"/>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_DEPT}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select name="dept_id" class="form-control">
+                        <option value=""></option>
+                        <foreach name="deptTree" item="vo">
+                            <option value="{$vo.id}">
+                                <if condition="$vo['treeLevel'] GT 1">
+                                    <for start="1" end="$vo['treeLevel']">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </for>
+                                    |--
+                                </if>{$vo.name}
+                            </option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_DIRECTOR}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <foreach name="Think.lang.COMMON_FLAG_TEXT" item="vo">
+                        <label class="radio-inline">
+                            <input type="radio" class="uniform" name="is_director" value="{$key}" <if condition="$key eq 0">checked</if>> {$vo}
+                        </label>
+                    </foreach>
+                </div>
+            </div>
+            <div class="step_input">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_USERGROUP}<font color="red"><b>＊</b></font></label>
+                    <div class="col-sm-9">
+                        <div class="input-group"> 
+                            <select name="groupid[]" class="form-control">
+                                <option value=""></option>
+                                <foreach name="groupResult" item="vo">
+                                    <option value="{$vo.id}">
+                                        <if condition="$vo['treeLevel'] GT 1">
+                                            <for start="1" end="$vo['treeLevel']">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </for>
+                                            |--
+                                        </if>{$vo.name}
+                                    </option>
+                                </foreach>
+                            </select>
+                            <div class="input-group-btn">
+                                <button class="btn btn-success btn-flat step_add" style="display: block;" type="button"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                                <button class="btn btn-danger btn-flat step_del" style="display: none;" type="button"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_DELETE}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_REMARK}</label>
+                <div class="col-sm-9">
+                    <textarea name="remark" cols="" rows="5" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="empAdd"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".step_add").bind("click",function(){
+            var $addentry = $(".step_input").children(":first").clone(true);
+            $addentry.find("select").val("");
+            $addentry.find("input").val("");
+            $addentry.find(".step_add").css("display","none");
+            $addentry.find(".step_del").css("display","block");
+            $addentry.appendTo(".step_input");
+        });
+        $(".step_del").bind("click",function(){
+            // $(this).parent().remove();
+            $(this).closest(".form-group").remove();
+        });
+    });
+</script>

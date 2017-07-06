@@ -1,0 +1,80 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $appoveNode = $access_list['ADMIN']['CLIENT']['CLIENTAPPOVE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-smile-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('clientAppoveList')}" id="clientAppoveListForm" method="post" class="form-horizontal">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_NO}</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <input name="ci_no" type="text" value="{$ci_no}" class="form-control" placeholder="{$Think.lang.SYSTEM_TERM_FUZZY_SERCH}"/>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>{$Think.lang.TEMP_CLIENT_NAME}</th>
+                        <th>{$Think.lang.SYSTEM_ACTION_REQUEST}</th>
+                        <th>{$Think.lang.SYSTEM_TERM_MAKER}</th>
+                        <th>{$Think.lang.SYSTEM_TERM_TIME}</th>
+                        <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <notempty name="list">
+                        <volist name="list" id="vo">
+                            <tr>
+                                <td>{$vo.company_name}</td>
+                                <td>{$vo.func_text}</td>
+                                <td>{$vo.makername}</td>
+                                <td>{$vo.time|time_format}</td>
+                                <td>
+                                    <notempty name="appoveNode">
+                                        <a class="ajax-forward" title="{$Think.lang.SYSTEM_ACTION_APPOVE}"  href="{:U('clientAppove',array('date'=>$vo['date'],'seq'=>$vo['seq']))}">&nbsp;<i class="fa fa-check"></i></a>
+                                    </notempty>
+                                </td>
+                            </tr>
+                        </volist>
+                        <else/>
+                        <td colspan="6" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                    </notempty>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#clientAppoveListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

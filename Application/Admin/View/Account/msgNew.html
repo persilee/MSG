@@ -1,0 +1,53 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> 新消息</h4>
+    </div>
+    <form action="{:U(msgNew)}" method="post" class="form-horizontal-add">
+        <input type="hidden" name="pid" value="{$pid}"/>
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">收信人　</span>
+                    <select name="recv_emp" id="recv_emp" class="form-control">
+                        <option>-12121212121212</option>
+                        <option>232323232323</option>
+                        <option>343434343434</option>
+                        <option>45454545454545</option>
+                        <option>565656565656</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">消息内容</span>
+                    <textarea name="content" cols="" rows="5" class="form-control" maxlength="255" placeHolder="请输入消息..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="form-horizontal-add"><i class="fa fa-envelope-o"></i> 发送</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#msgSendForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                if (data.status==0) {
+                    updateAlert(data.info,'alert-error');
+                    setTimeout(function(){
+                        $('#top-alert').find('button').click();
+                    },1500);
+                }else{
+                    $('#msgContent').html(data);
+                }
+            }
+        });
+    });
+</script>

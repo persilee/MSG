@@ -1,0 +1,73 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(nodeUpdate)}" method="post" class="form-horizontal nodeUpdateForm">
+        <input type="hidden" name="id" value="{$result.id}"/>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$nodename}{$Think.lang.TEMP_SYSTEM_NODE_NAME}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-8">
+                    <input name="name" type="text" class="form-control" maxlength="20" value="{$result.name}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$nodename}{$Think.lang.TEMP_SYSTEM_NODE_TITLE_EN}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-8">
+                    <input name="title_en" type="text" class="form-control" maxlength="50" value="{$result.title_en}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$nodename}{$Think.lang.TEMP_SYSTEM_NODE_TITLE_ZH}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-8">
+                    <input name="title_zh" type="text" class="form-control" maxlength="50" value="{$result.title_zh}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.TEMP_SYSTEM_IS_CATALOG}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-8">
+                    <label class="radio-inline">
+                        <input type="radio" class="uniform" name="catalog_item" value="0" <if condition="$result['catalog_item'] eq 0">checked="checked"</if>> <eq name="Think.const.LANG_SET" value="en_us">No<else/>否</eq>
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" class="uniform" name="catalog_item" value="1" <if condition="$result['catalog_item'] eq 1">checked="checked"</if>> <eq name="Think.const.LANG_SET" value="en_us">Yes<else/>是</eq>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.SYSTEM_ACTION_SORT}</label>
+                <div class="col-sm-8">
+                    <input name="sort" type="text" class="form-control" maxlength="3" value="{$result.sort}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.TEMP_SYSTEM_NODE_ICON}</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input name="icon" type="text" id="node_icon_val" class="form-control" maxlength="30" value="{$result.icon}"/>
+                        <span class="input-group-addon" id="node_icon_img"><a class="fa {$result.icon}"></a></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">{$Think.lang.SYSTEM_TERM_REMARK}</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" cols="" rows="5" class="form-control" maxlength="255">{$result.remark}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="nodeUpdateForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </ul>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('#node_icon_val').keyup(function(){
+            var icon_str = $(this).val();
+            $('#node_icon_img').html("<a class='fa "+ icon_str +"'></a>");
+        });
+    });
+</script>

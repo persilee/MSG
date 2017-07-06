@@ -1,0 +1,31 @@
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <i class="fa fa-envelope"></i>
+    <span class="label label-success">{$msgCount}</span>
+</a>
+<ul class="dropdown-menu">
+    <li class="header">您有{$msgCount}条未读消息</li>
+    <li>
+        <!-- inner menu: contains the actual data -->
+        <gt name="msgCount" value="0">
+            <ul class="menu">
+                <foreach name="msgResult" item="vo">
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-comment-o info"></i>
+                            <strong>{$vo.send_empname}:</strong>
+                            <php>
+                                $contentLen = strlen($vo['content']);
+                                if($contentLen > 21){
+                                    echo substr($vo['content'],0,21).'...';
+                                }else{
+                                    echo $vo['content'];
+                                }
+                            </php>
+                        </a>
+                    </li>
+                </foreach>
+            </ul>
+        </gt>
+    </li>
+    <li class="footer"><a href="{:U('account/accountmessage')}" class="ajax-forward">查看所有</a></li>
+</ul>

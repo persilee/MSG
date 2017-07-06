@@ -1,0 +1,60 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(currencyUpdate)}" method="post"  class="form-horizontal currencyUpdateForm">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_ID}</label>
+                <div class="col-sm-9">
+                    <input name="id" type="text" class="form-control" readonly value="{$result.id}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_NAME_EN}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="name_en" type="text" class="form-control" maxlength="120" value="{$result.name_en}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_NAME_ZH}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="name_zh" type="text" class="form-control" maxlength="120" value="{$result.name_zh}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_SIGN}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="sign" type="text" class="form-control" maxlength="3"  value="{$result.sign}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.SYSTEM_ACTION_SORT}</label>
+                <div class="col-sm-9">
+                    <input name="sort" type="text"  value="{$result.sort}" class="form-control" value="3" maxlength="10"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_STATUS}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <foreach name="Think.lang.TEMP_SYS_CCY_STATUS_TEXT" item="vo" key="k">
+                        <label class="radio-inline">
+                            <input type="radio" class="uniform" name="status" value="{$k}" <if condition="$result['status'] eq $k">checked="checked"</if>> {$vo} 
+                        </label>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_SYSTEM_CCY_REMARK}</label>
+                <div class="col-sm-9">
+                    <textarea name="remark" cols="" rows="5" class="form-control">{$result.id}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="currencyUpdateForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>

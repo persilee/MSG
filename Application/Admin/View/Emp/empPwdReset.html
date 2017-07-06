@@ -1,0 +1,55 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(empPwdReset)}" method="post" class="form-horizontal PwdResetForm">
+        <input type="hidden" name="id" value="{$emp.id}"/>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_EMAIL}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" value="{$emp.email}{:C('MAIL_SUFFIX')}" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NAME}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" value="{$emp.name}" readonly="readonly" />
+                </div>
+            </div>
+            <!--<div class="form-group">-->
+                <!--<label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_SEX}</label>-->
+                <!--<div class="col-sm-9">-->
+                    <!--<foreach name="Think.lang.TEMP_EMP_EMP_SEX_TEXT" item="vo" key="k">-->
+                        <!--<label class="radio-inline">-->
+                            <!--<input type="radio" class="uniform" name="sex" value="{$k}" disabled="disabled" <if condition="$emp['sex'] eq $k">checked="checked"</if>> {$vo} -->
+                        <!--</label>-->
+                    <!--</foreach>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_PHONE}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control"  value="{$emp.mobile}" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NEW_PWD}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="password1" type="text" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_CONFIRM_NEW_PWD}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="password2" type="text" class="form-control"/>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="PwdResetForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>

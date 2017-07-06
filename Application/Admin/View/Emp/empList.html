@@ -1,0 +1,164 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['EMP']['EMPADD'];
+    $inqueryNode = $access_list['ADMIN']['EMP']['EMPINQUERY'];
+    $updateNode = $access_list['ADMIN']['EMP']['EMPUPDATE'];
+    $deleteNode = $access_list['ADMIN']['EMP']['EMPDELETE'];
+    $holdNode = $access_list['ADMIN']['EMP']['EMPHOLD'];
+    $releaseNode = $access_list['ADMIN']['EMP']['EMPRELEASE'];
+    $passwordNode = $access_list['ADMIN']['EMP']['EMPPWDRESET'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-user"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='addNode'>
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('empAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body pad table-responsive">
+                <form action="{:U('empList')}" id="empListForm" method="post" class="form-horizontal">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_EMP_EMAIL}</label>
+                            <div class="col-sm-8">
+                                <input name="email" type="text" value="{$email}" class="form-control" placeholder="{$Think.lang.TEMP_EMP_EMP_WITHOUT_SUFFIX}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_EMP_NAME}</label>
+                            <div class="col-sm-8">
+                                <input name="name" type="text" value="{$name}" class="form-control" placeholder="{$Think.lang.SYSTEM_TERM_FUZZY_SERCH}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">{$Think.lang.TEMP_EMP_USERGROUP}</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <select name="group_id" class="form-control">
+                                        <option value=""></option>
+                                        <foreach name="groupTree" item="vo">
+                                            <option value="{$vo.id}" <if condition="$vo['id'] eq $group_id">selected</if>>
+                                                <if condition="$vo['treeLevel'] GT 1">
+                                                    <for start="1" end="$vo['treeLevel']">
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </for>
+                                                    |--
+                                                </if>{$vo.name}
+                                            </option>
+                                        </foreach>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_EMP_EMP_NAME}</th>
+                            <!--<th>{$Think.lang.TEMP_EMP_EMP_SEX}</th>-->
+                            <th>{$Think.lang.TEMP_EMP_EMP_PHONE}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_EMAIL}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_DIRECTOR}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_LAST_LOGIN_TIME}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_LOGIN_TIMES}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_LOGIN_LOCK}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="list">
+                            <volist name="list" id="vo">
+                                <tr>
+                                    <td>{$vo.name}</td>
+                                    <!--<td>{$vo.sex_text}</td>-->
+                                    <td>{$vo.mobile}</td>
+                                    <td>
+                                        <neq name="vo.email" value="">
+                                            {$vo.email}{$Think.config.MAIL_SUFFIX}
+                                        </neq>
+                                    </td>
+                                    <td>
+                                        <eq name="vo.is_director" value="0">
+                                            <span class="label label-danger">{$vo.is_director_text}</span>
+                                            <else/>
+                                            <span class="label label-success">{$vo.is_director_text}</span>
+                                        </eq>
+                                    </td>
+                                    <td>{$vo.last_login_time|time_format}</td>
+                                    <td>{$vo.login_count}</td>
+                                    <td>
+                                        <eq name="vo.login_switch" value="0">
+                                            <span class="label label-danger">{$vo.login_switch_text}</span>
+                                        <else/>
+                                            <span class="label label-success">{$vo.login_switch_text}</span>
+                                        </eq>
+                                    </td>
+                                    <td>
+                                        <eq name="vo.login_switch" value="0">
+                                            <notempty name="releaseNode">
+                                                <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_LOGIN_ALLOW}" href="{:U('empRelease',array('id'=>$vo['id']))}"><i class="fa fa-key"></i></a>
+                                            </notempty>
+                                        <else/>
+                                            <notempty name="holdNode">
+                                                <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_LOGIN_LOCK}" href="{:U('empHold',array('id'=>$vo['id']))}"><i class="fa fa-lock"></i></a>
+                                            </notempty>
+                                        </eq>
+                                        <notempty name="inqueryNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_INQUERY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('empInquery',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-search"></i></a>
+                                        </notempty>
+                                        <notempty name="updateNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('empUpdate',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                        </notempty>
+                                        <notempty name="passwordNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_PWD_RESET}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('empPwdReset',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-keyboard-o"></i></a>
+                                        </notempty>
+                                        <notempty name="deleteNode">
+                                            <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('empDelete',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else/>
+                            <td colspan="9" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                        </notempty>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(function(){
+        $("#empListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

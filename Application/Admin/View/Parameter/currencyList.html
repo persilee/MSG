@@ -1,0 +1,79 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['PARAMETER']['CURRENCYADD'];
+    $inqueryNode = $access_list['ADMIN']['PARAMETER']['CURRENCYINQUERY'];
+    $updateNode = $access_list['ADMIN']['PARAMETER']['CURRENCYUPDATE'];
+    $deleteNode = $access_list['ADMIN']['PARAMETER']['CURRENCYDELETE'];
+    $sortNode = $access_list['ADMIN']['PARAMETER']['CURRENCYSORT'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-dollar"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='addNode'>
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('currencyAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                        <notempty name="sortNode">
+                            <button url="{:U('currencySort')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal-sort" ><i class="fa fa-sort"></i> {$Think.lang.SYSTEM_ACTION_SORT}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <form method="post" class="form-horizontal-sort">
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{$Think.lang.TEMP_SYSTEM_CCY_ID}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CCY_NAME_EN}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CCY_NAME_ZH}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CCY_STATUS}</th>
+                                <th>{$Think.lang.TEMP_SYSTEM_CCY_SIGN}</th>
+                                <th>{$Think.lang.SYSTEM_ACTION_SORT}</th>
+                                <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <notempty name="list">
+                                <volist name="list" id="vo">
+                                    <tr>
+                                        <td>
+                                            {$vo.id}
+                                            <input type="hidden" name="ids[]" value="{$vo.id}"/>
+                                        </td>
+                                        <td>{$vo.name_en}</td>
+                                        <td>{$vo.name_zh}</td>
+                                        <td>{$vo.status_text}</td>
+                                        <td>{$vo.sign}</td>
+                                        <td><input class="form-control input-sm" style="width: 50px; height:20px;font-size:10px" type="text" name="sort[]" value="{$vo.sort}" maxlength="3" /></td>
+                                        <td>
+                                            <notempty name="inqueryNode">
+                                                <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_INQUERY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('currencyInquery',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-search"></i></a>
+                                            </notempty>
+                                            <notempty name="updateNode">
+                                                <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('currencyUpdate',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                            </notempty>
+                                            <notempty name="deleteNode">
+                                                <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('currencyDelete',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                            </notempty>
+                                        </td>
+                                    </tr>
+                                </volist>
+                                <else/>
+                                <td colspan="6" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                            </notempty>
+                        </tbody>
+                    </table>
+                    <div class="clearfix">
+                        {$_page}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

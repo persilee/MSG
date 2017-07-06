@@ -1,0 +1,134 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $sortNode = $access_list['ADMIN']['SYSTEM']['NODESORT'];
+    $catalogItemNode = $access_list['ADMIN']['SYSTEM']['CATALOGITEM'];
+    $addNode = $access_list['ADMIN']['SYSTEM']['NODEADD'];
+    $updateNode = $access_list['ADMIN']['SYSTEM']['NODEUPDATE'];
+    $deleteNode = $access_list['ADMIN']['SYSTEM']['NODEDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-ellipsis-h"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name="addNode">
+                            <button data-toggle="modal" data-target="#compose-modal" url="{:U('nodeAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_APP}</button>
+                        </notempty>
+                        <button url="{:U('nodeList')}" class="btn-info btn-xs ajax-forward"><i class="fa fa-retweet"></i> {$Think.lang.SYSTEM_ACTION_CHANGE}{$Think.lang.SYSTEM_TERM_STYLE}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('nodeList')}" id="nodeListForm" method="get" class="form-horizontal">
+                    <div class="form-group">   
+                        <label class="col-sm-2 control-label">{$Think.lang.TEMP_SYSTEM_NODE_TYPE}</label>
+                        <div class="col-sm-10"> 
+                            <div class="input-group"> 
+                                <select name="level" class="form-control">
+                                    <option value="0"></option>
+                                    <option value="1" <if condition="$level eq 1">selected</if>>{$Think.lang.TEMP_SYSTEM_NODE_APP}</option>
+                                    <option value="2" <if condition="$level eq 2">selected</if>>{$Think.lang.TEMP_SYSTEM_NODE_CONT}</option>
+                                </select>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <foreach name='list' item='app'>
+                    <div class="box box-solid box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">{$app.title_en}/{$app.title_zh}
+                                <notempty name='addNode'>
+                                    <a title="{$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_CONT}" class="func-dialog" data-toggle="modal" data-target="#compose-modal" href="#" url="{:U('nodeAdd',array('pid'=>$app['id']))}"><i class="fa fa-plus"></i></button>
+                                </notempty>
+                                <notempty name='updateNode'>
+                                    <a title="{$Think.lang.SYSTEM_ACTION_MODIFY}" class="func-dialog" data-toggle="modal" data-target="#compose-modal" href="#" url="{:U('nodeUpdate',array('id'=>$app['id']))}" type="button">&nbsp;<i class="fa fa-edit"></i></a>
+                                </notempty>
+                                <notempty name='deleteNode'>
+                                    <a type="button" title="{$Think.lang.SYSTEM_ACTION_DELETE}" class="ajax-get confirm" href="{:U('nodeDelete',array('id'=>$app['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                </notempty>
+                            </h3>
+                        </div>
+                        <foreach name="app.child" item="action">
+                            <div class="panel box box-info action">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <notempty name='addNode'>
+                                                    <a title="{$Think.lang.SYSTEM_ACTION_ADD}{$Think.lang.TEMP_SYSTEM_NODE_ACTION}" class="func-dialog" data-toggle="modal" data-target="#compose-modal" href="#" url="{:U('nodeAdd',array('pid'=>$action['id']))}"><i class="fa fa-plus"></i></a>
+                                                </notempty>
+                                                <notempty name='updateNode'>
+                                                    <a title="{$Think.lang.SYSTEM_ACTION_MODIFY}" class="func-dialog" data-toggle="modal" data-target="#compose-modal" href="#" url="{:U('nodeUpdate',array('id'=>$action['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                                </notempty>
+                                                <notempty name='deleteNode'>
+                                                    <a title="{$Think.lang.SYSTEM_ACTION_DELETE}" class="ajax-get confirm" href="{:U('nodeDelete',array('id'=>$action['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                                </notempty>
+                                                {$action.title_en}/{$action.title_zh}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <php>$i=0;</php>
+                                        <foreach name="action.child" item='method'>
+                                            <php>
+                                                if($i%4 == 0){
+                                                    echo '<tr>';
+                                                }
+                                            </php>
+                                            <td width="25%">
+                                                <notempty name='updateNode'>
+                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal" href="#" url="{:U('nodeUpdate',array('id'=>$method['id']))}"><i class="fa fa-edit"></i></a>
+                                                </notempty>
+                                                <notempty name='deleteNode'>
+                                                    <a title="{$Think.lang.SYSTEM_ACTION_DELETE}" class="ajax-get confirm" href="{:U('nodeDelete',array('id'=>$method['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                                </notempty>
+                                                {$method.title_en}/{$method.title_zh}
+                                            </td>
+                                            <php>
+                                                if($i%4 == 3){
+                                                    echo '</tr>';
+                                                }
+                                                $i++;
+                                            </php>
+                                        </foreach>
+                                        <php>
+                                            if($i%6 != 0){
+                                                while($i%4 != 0){
+                                                    echo '<td width="25%">';
+                                                    $i++;
+                                                }
+                                                echo '</tr>';
+                                            }
+                                        </php>
+                                    <tbody>
+                                </table>
+                            </div>
+                        </foreach>
+                    </div><!-- /.box -->
+                </foreach>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(function(){
+        $("#nodeListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

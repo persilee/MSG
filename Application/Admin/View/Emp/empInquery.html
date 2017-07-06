@@ -1,0 +1,81 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <div class="modal-body form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_EMAIL}</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="{$emp.email}" disabled="disabled"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NAME}</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="{$emp.name}" disabled="disabled"/>
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_SEX}</label>-->
+            <!--<div class="col-sm-9">-->
+                <!--<foreach name="Think.lang.TEMP_EMP_EMP_SEX_TEXT" item="vo" key="k">-->
+                    <!--<label class="radio-inline">-->
+                        <!--<input type="radio" class="uniform" name="sex" value="{$k}" disabled="disabled" <if condition="$emp['sex'] eq $k">checked="checked"</if>> {$vo} -->
+                    <!--</label>-->
+                <!--</foreach>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_PHONE}</label>
+            <div class="col-sm-9">
+                <input ype="text" class="form-control"  value="{$emp.mobile}" disabled="disabled"/>
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_BIRTHDAY}</label>-->
+            <!--<div class="col-sm-9">-->
+                <!--<input type="text" class="form-control" value="{$emp.birthday|day_format}"  disabled="disabled"/>-->
+            <!--</div>-->
+        <!--</div>-->
+        <notempty name="emp.dept_id">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_DEPT}</label>
+                <div class="col-sm-9">
+                    <foreach name="deptTree" item="vo">
+                        <if condition="$emp['dept_id'] eq $vo['id']">
+                            <input type="text" name="dept_id" value="{$vo.name}" class="form-control" disabled="disabled"/>
+                        </if>
+                    </foreach>
+                </div>
+            </div>
+        </notempty>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_DIRECTOR}</label>
+            <div class="col-sm-9">
+                <foreach name="Think.lang.COMMON_FLAG_TEXT" item="vo">
+                    <label class="radio-inline">
+                        <input type="radio" class="uniform" name="is_director" disabled value="{$key}" <if condition="$key eq $emp['is_director']">checked</if>> {$vo}
+                    </label>
+                </foreach>
+            </div>
+        </div>
+        <foreach name="groupNameArr" item="item">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_USERGROUP}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" value="{$item}" disabled="disabled"/>
+                </div>
+            </div>
+        </foreach>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_REMARK}</label>
+            <div class="col-sm-9">
+                <textarea name="remark" cols="" rows="" class="form-control" disabled="disabled">{$emp.remark}</textarea>
+            </div>
+        </div>
+        <div class="modal-footer clearfix">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+        </div>
+    </div>
+</div>

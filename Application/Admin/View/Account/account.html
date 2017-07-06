@@ -1,0 +1,124 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-user"></i><span class="hidden-inline-mobile">Hello, {$result.name} !</span></h4>
+            </div>
+            <form action="{:U(update)}" method="post"  class="form-horizontal accountUpdateForm">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="list-group">
+                                <li class="list-group-item zero-padding">
+                                    <img id="empImg" alt="" class="img-responsive" src="{$Think.session.img_url}" />
+                                </li>
+                                <div class="list-group-item profile-details">
+                                    <h3>{$Think.session.user_auth.name}</h3>
+                                    <p><i class="fa fa-circle text-green"></i> {$Think.lang.TEMP_ACCOUNT_ONLINE}</p>
+                                    <p></p>
+                                </div>
+                                <a class="list-group-item" title="更换头像" href="#" id="imgUpload">&nbsp;<i class="fa fa-user fa-fw"></i> {$Think.lang.TEMP_ACCOUNT_REPLACE_PIC}</a>
+                                <a class="list-group-item func-dialog" title="修改密码" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('changePwd')}">&nbsp;<i class="fa fa-keyboard-o fa-fw"></i> {$Think.lang.TEMP_ACCOUNT_CHANGE_PWD}</a>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NAME}</span>
+                                <div class="col-sm-9">
+                                    <input  type="text" class="form-control" disabled="disabled" value="{$result.name}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_EMAIL}</span>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" disabled="disabled" value="<neq name='result.email' value=''>{$result.email}{:C('MAIL_SUFFIX')}</neq>"/>
+                                </div>
+                            </div>
+                            <!--<div class="form-group">-->
+                                <!--<span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_SEX}</span>-->
+                                <!--<div class="col-sm-9">-->
+                                    <!--<foreach name="Think.lang.TEMP_EMP_EMP_SEX_TEXT" item="vo">-->
+                                        <!--<label class="radio-inline">-->
+                                            <!--<input type="radio" class="uniform" name="sex" value="{$key}" <if condition="$result['sex'] eq $key">checked="checked"</if>/> {$vo}-->
+                                        <!--</label>-->
+                                    <!--</foreach>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_DEPT}</span>
+                                <div class="col-sm-9">
+                                    <input type="text" value="{$deptName}" class="form-control" disabled="disabled"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_USERGROUP}</span>
+                                <div class="col-sm-9">
+                                    <input type="text" value="{$groupNameStr}" class="form-control" disabled="disabled"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_NICKNAME}</span>
+                                <div class="col-sm-9">
+                                    <input name="nickname" type="text" class="form-control" maxlength="30"  value="{$result.nickname}"/>
+                                </div>
+                            </div>
+                            <!--<div class="form-group">-->
+                                <!--<span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_BIRTHDAY}</span>-->
+                                <!--<div class="col-sm-9">-->
+                                    <!--<input name="birthday" type="text" class="form-control birthday" placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}" onClick="WdatePicker()" value="{$result.birthday|day_format}"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_EMP_PHONE}</span>
+                                <div class="col-sm-9">
+                                    <input name="mobile" type="text" class="form-control" value="{$result.mobile}" maxlength="11"/>
+                                </div>
+                                <!-- <span class="col-sm-2 control-label">{$Think.lang.TEMP_EMP_EMP_2ND_EMAIL}</span>
+                                <div class="col-sm-4">
+                                    <input name="real_email" type="text" class="form-control" value="{$result.real_email}"/>
+                                </div> -->
+                            </div>
+                            <div class="form-group">
+                                <span class="col-sm-3 control-label"></span>
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-primary ajax-post" target-form="accountUpdateForm"><i class="fa fa-save"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div style="display:none;">
+    <input id="fileupload_input" type="file" name="temp_file" multiple />
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#imgUpload").bind('click',function(){
+            $("#fileupload_input").click();
+        });
+
+        $("#fileupload_input").fileupload({
+            url:"{:U('imgUpload')}",//文件上传地址，当然也可以直接写在input的data-url属性内
+            // formData:{param1:"p1",param2:"p2"},//如果需要额外添加参数可以在这里添加
+            done:function(e,result){
+                //done方法就是上传完毕的回调函数，其他回调函数可以自行查看api
+                //注意result要和jquery的ajax的data参数区分，这个对象包含了整个请求信息
+                //返回的数据在result.result中
+                // $('#content').html(result.result);
+                var returnInfo = result.result;
+                if(returnInfo.status == 0){
+                    updateAlert(returnInfo.info,'alert-error');
+                    setTimeout(function(){
+                        $('#top-alert').find('button').click();
+                    },1500);
+                }else{
+                    imgUrl = "__ROOT__/Uploads/empImg/" + returnInfo.data;
+                    $('#empImg').attr('src',imgUrl);
+                }
+            }
+        });
+    });
+</script>

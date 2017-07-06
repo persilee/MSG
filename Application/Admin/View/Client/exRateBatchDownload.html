@@ -1,0 +1,59 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-bar-chart-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body pad table-responsive">
+                <div class="row">
+                    <form action="{:U('exRateBatchDownload')}" method="post" class="form-horizontal" target="ajaxDownload" id="downloadform">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_START_DATE}<font color="red">*</font></label>
+                                <div class="col-sm-9">
+                                    <input name="start_date" type="text" class="form-control" id="start_date" placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}"  onClick="WdatePicker()"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_END_DATE}<font color="red">*</font></label>
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                        <input name="end_date" type="text" class="form-control" id="end_date"  placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}"  onClick="WdatePicker()"/>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info btn-flat" type="submit" id="downloadButton" ><i class="fa fa-download"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none">
+    <iframe name="ajaxDownload"></iframe>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        // 下载
+        $("#downloadButton").bind("click",function(){
+            var start_date = $('#start_date').val();
+            var end_date = $('#end_date').val();
+            if("" == start_date || "" == end_date){
+                alert('Start date and end date must input ');
+                return false;
+            }else if(end_date < start_date){
+                alert('End date less then start date ');
+                return false;
+            }
+            $("#downloadform").submit();
+        });
+    });
+</script>

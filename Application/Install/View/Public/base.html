@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>系统安装</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="__ROOT__/Public/css/cloud-admin.css" >
+    <link href="__ROOT__/Public/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="__ROOT__/Public/js/bootstrap-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" >
+    <link rel="stylesheet" type="text/css" href="__ROOT__/Public/js/bootstrap-wizard/wizard.css">
+    <script src="__ROOT__/Public/js/jquery/jquery-2.0.3.min.js"></script>
+</head>
+
+<body class="login">
+<!-- PAGE -->
+    <section id="page">
+        <!-- NAV-BAR -->
+        <div class="row">
+            <div class="container">
+                <div class="col-md-4 col-md-offset-4">
+                    <div id="logo">
+                        <a href="#"><img src="__ROOT__/Public/img/logo/logo.png" height="40" alt="logo name" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="box border red" id="formWizard">
+                    <div class="box-body form">
+                        <form id="wizForm" action="#" class="form-horizontal" >
+                            <div class="wizard-form">
+                                <div class="wizard-content">
+                                    <block name="header"></block>
+                                    <block name="progress"></block>
+                                    <block name="body"></block>
+                                </div>
+                                <div class="wizard-buttons">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-offset-4 col-md-4">
+                                                <block name="footer"></block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

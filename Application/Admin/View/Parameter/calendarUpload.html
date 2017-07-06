@@ -1,0 +1,59 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-upload"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <button class="btn-danger btn-xs ajax-forward" url="{$Think.cookie.__forward__}" type="button" id="return"><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body table-responsive">
+                <notempty name="return">
+                    <eq name="return.status" value="0">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_MESSAGE_UPLOAD_ERROR}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p><b>{$return.info}</b></p>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    <else/>
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_MESSAGE_UPLOAD_SUCCESS}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p><b>{$return.info}</b></p>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    </eq>
+                    <notempty name="return.data">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="20%">{$Think.lang.TEMP_PARAMETER_CALENDAR_DATE}</th>
+                                    <th width="20%">{$Think.lang.TEMP_PARAMETER_CALENDAR_UPLOAD_TYPE}</th>
+                                    <th width="60%">{$Think.lang.TEMP_PARAMETER_CALENDAR_UPLOAD_REMARK}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist name="return.data" id="vo">
+                                    <tr>
+                                        <volist name="vo" id="item">
+                                            <td>{$item}</td>
+                                        </volist>
+                                    </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                    </notempty>
+                </notempty>
+            </div>
+        </div>
+    </div>
+</div>
+

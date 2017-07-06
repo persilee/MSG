@@ -1,0 +1,82 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $sortNode = $access_list['ADMIN']['EMP']['GROUPSORT'];
+    $addNode = $access_list['ADMIN']['EMP']['GROUPADD'];
+    $updateNode = $access_list['ADMIN']['EMP']['GROUPUPDATE'];
+    $deleteNode = $access_list['ADMIN']['EMP']['GROUPDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-users"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <!--<notempty name='addNode'>-->
+                            <!--<button data-toggle="modal" data-target="#compose-modal" url="{:U('groupAdd')}" data-toggle="modal" class="btn-info btn-xs func-dialog"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>-->
+                        <!--</notempty>-->
+                        <notempty name="sortNode">
+                            <button url="{:U('groupSort')}" class="btn-info btn-xs ajax-post" target-form="form-horizontal-groupsort" ><i class="fa fa-sort"></i> {$Think.lang.SYSTEM_ACTION_SORT}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <form class="form-horizontal-groupsort">
+                <div class="box-body table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_EMP_USERGROUP_NAME}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_SORT}</th>
+                            <th>{$Think.lang.TEMP_EMP_USERGROUP_REMARK}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <notempty name="list">
+                            <volist name="list" id="vo">
+                                <tr>
+                                    <td>
+                                        <if condition="$vo['treeLevel'] GT 1">
+                                            <for start="1" end="$vo['treeLevel']">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </for>
+                                            |--
+                                        </if>
+                                        {$vo.name}
+                                    </td>
+                                    <td>
+                                        <notempty name="sortNode">
+                                            <input type="hidden" name="ids[]" value="{$vo.id}"/>
+                                            <input class="form-control input-sm" style="width: 50px; height:20px;font-size:10px" type="text" name="sort[]" value="{$vo.sort}" maxlength="3" />
+                                        <else/>
+                                            {$vo.sort}
+                                        </notempty>
+                                    </td>
+                                    <td>{$vo.remark}</td>
+                                    <td>
+                                        <notempty name="addNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('groupAdd',array('pid'=>$vo['id']))}">&nbsp;<i class="fa fa-plus"></i></a>
+                                        </notempty>
+                                        <notempty name="updateNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('groupUpdate',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                        </notempty>
+                                        <notempty name="deleteNode">
+                                            <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('groupDelete',array('id'=>$vo['id']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else/>
+                                <td colspan="5" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                        </notempty>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

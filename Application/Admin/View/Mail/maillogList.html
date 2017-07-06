@@ -1,0 +1,116 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $inqueryNode = $access_list['ADMIN']['MAIL']['MAILLOGINQUERY'];
+    $fileNode = $access_list['ADMIN']['MAIL']['MAILLOGFILEINQ'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-reply-all"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                </div>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('maillogList')}" id="maillogListForm" method="post" class="form-horizontal">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{$Think.lang.TEMP_MAIL_SEND_DATE}<font color="red"><b>＊</b></font></label>
+                            <div class="col-md-3">
+                                <input name="date" type="text" value="{$date}" class="form-control" onClick="WdatePicker()"/>
+                            </div>
+                            <label class="col-md-3 control-label">{$Think.lang.TEMP_MAIL_IN_OUT_FLAG}<font color="red"><b>＊</b></font></label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <select name="outside_flag" class="form-control">
+                                        <foreach name="Think.lang.MAIL_OUTSIDE_FLAG" item="vo">
+                                            <option value="{$key}" <if condition="$outside_flag eq $key">selected</if>>{$vo}</option>
+                                        </foreach>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_MAIL_SEND_DATE}</th>
+                            <th>{$Think.lang.TEMP_MAIL_SEND_SEQ}</th>
+                            <th>{$Think.lang.TEMP_MAIL_IN_OUT_FLAG}</th>
+                            <th>{$Think.lang.TEMP_MAIL_TEMPLATE_NAME}</th>
+                            <th>{$Think.lang.TEMP_MAIL_CLIENT_NAME}</th>
+                            <th>{$Think.lang.TEMP_MAIL_SEND_USER}</th>
+                            <th>{$Think.lang.TEMP_MAIL_SEND_STATUS}</th>
+                            <th>{$Think.lang.TEMP_MAIL_SEND_TIME}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="list">
+                            <volist name="list" id="vo">
+                                <tr>
+                                    <td>{$vo.date|day_format}</td>
+                                    <td>{$vo.seq}</td>
+                                    <td>{$vo.outside_flag_text}</td>
+                                    <td>{$vo.mailtpl_name}</td>
+                                    <td>{$vo.ci_name}</td>
+                                    <td>
+                                        <neq name="vo.emp_id" value="0">
+                                            {$vo.emp_name}
+                                        <else/>
+                                            <span class="label label-success">
+                                                {$Think.lang.TEMP_MAIL_AUTO_SEND}
+                                            </span>
+                                        </neq>
+                                    </td>
+                                    <td>
+                                        <eq name="vo.status" value="0">
+                                            <span class="label label-danger">{$vo.status_text}</span>
+                                            <else/>
+                                            <span class="label label-success">{$vo.status_text}</span>
+                                        </eq>
+                                    </td>
+                                    <td>{$vo.send_time|time_format}</td>
+                                    <td>
+                                        <notempty name="inqueryNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_INQUERY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('maillogInquery',array('date'=>$vo['date'],'seq'=>$vo['seq']))}">&nbsp;<i class="fa fa-search"></i></a>
+                                        </notempty>
+                                        <notempty name="fileNode">
+                                            <a title="{$Think.lang.SYSTEM_ACTION_INQUERY}" href="{:U('maillogFileInq',array('date'=>$vo['date'],'seq'=>$vo['seq']))}" target="_Blank">&nbsp;<i class="fa fa-file-text-o"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else/>
+                            <td colspan="10" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                        </notempty>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(function(){
+        $("#maillogListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

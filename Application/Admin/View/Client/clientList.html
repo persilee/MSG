@@ -1,0 +1,113 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['CLIENT']['CLIENTADD'];
+    $inqueryNode = $access_list['ADMIN']['CLIENT']['CLIENTINQUERY'];
+    $updateNode = $access_list['ADMIN']['CLIENT']['CLIENTUPDATE'];
+    $deleteNode = $access_list['ADMIN']['CLIENT']['CLIENTDELETE'];
+    $accountNode = $access_list['ADMIN']['CLIENT']['ACCOUNTLIST'];
+    $actomkNode = $access_list['ADMIN']['CLIENT']['ACTOMARKET'];
+    $positionNode = $access_list['ADMIN']['CLIENT']['POSITIONINQUERY'];
+    $mailSendNode = $access_list['ADMIN']['CLIENT']['MAILSEND'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-smile-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name='addNode'>
+                            <button url="{:U('clientAdd')}" class="btn-info btn-xs ajax-forward"><i class="fa fa-plus"></i> {$Think.lang.SYSTEM_ACTION_ADD}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body pad table-responsive">
+                <form action="{:U('clientList')}" id="clientListForm" method="post" class="form-horizontal">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_NO}</label>
+                            <div class="col-sm-9">
+                                <input name="ci_no" type="text" value="{$ci_no}" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_NAME}</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <input name="name" type="text" value="{$name}" class="form-control" placeholder="{$Think.lang.SYSTEM_TERM_FUZZY_SERCH}"/>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_CLIENT_NO}</th>
+                            <!--<th>{$Think.lang.TEMP_CLIENT_TYPE}</th>-->
+                            <!--<th>{$Think.lang.TEMP_CLIENT_ID_TYPE}</th>-->
+                            <th>{$Think.lang.TEMP_CLIENT_ID_CODE}</th>
+                            <th>{$Think.lang.TEMP_CLIENT_NAME}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="list">
+                            <volist name="list" id="vo">
+                                <tr>
+                                    <td>{$vo.ci_no}</td>
+                                    <!--<td>{$vo.type_text}</td>-->
+                                    <!--<td>{$vo.id_type_text}</td>-->
+                                    <td>{$vo.id_code}</td>
+                                    <td>{$vo.name}</td>
+                                    <td>
+                                        <notempty name="inqueryNode">
+                                            <a class="ajax-forward" title="{$Think.lang.SYSTEM_ACTION_INQUERY}"  href="{:U('clientInquery',array('ci_no'=>$vo['ci_no']))}">&nbsp;<i class="fa fa-search"></i></a>
+                                        </notempty>
+                                        <notempty name="updateNode">
+                                            <a class="ajax-forward" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" href="{:U('clientUpdate',array('ci_no'=>$vo['ci_no']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                        </notempty>
+                                        <notempty name="deleteNode">
+                                            <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('clientDelete',array('ci_no'=>$vo['ci_no']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                        </notempty>
+                                        <notempty name="mailSendNode">
+                                            <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_SEND}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('mailSend',array('ci_no'=>$vo['ci_no']))}">&nbsp;<i class="fa fa-envelope-o"></i></a>
+                                        </notempty>
+                                    </td>
+                                </tr>
+                            </volist>
+                            <else/>
+                            <td colspan="6" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                        </notempty>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     $(function(){
+        $("#clientListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

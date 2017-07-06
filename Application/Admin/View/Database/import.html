@@ -1,0 +1,80 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $deleteNode = $access_list['ADMIN']['DATABASE']['DELETE'];
+</php>
+
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-paste"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{$Think.lang.TEMP_DATABASE_BACKUP_NAME}</th>
+                            <th>{$Think.lang.TEMP_DATABASE_VOLUME_COUNT}</th>
+                            <th>{$Think.lang.TEMP_DATABASE_COMPRESS_NAME}</th>
+                            <th>{$Think.lang.TEMP_DATABASE_DATA_SIZE}</th>
+                            <th>{$Think.lang.TEMP_DATABASE_BACKUP_TIME}</th>
+                            <th>{$Think.lang.TEMP_EMP_EMP_STATUS}</th>
+                            <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="data">
+                            <tr>
+                                <td>{$data.time|date='Ymd-His',###}</td>
+                                <td>{$data.part}</td>
+                                <td>{$data.compress}</td>
+                                <td>{$data.size|format_bytes}</td>
+                                <td>{$key}</td>
+                                <td>-</td>
+                                <td class="action">
+                                    <a class="db-import" title="{$Think.lang.SYSTEM_ACTION_IMPORT}" href="{:U('import?time='.$data['time'])}"><i class="fa fa-paste"></i></a>&nbsp;
+                                    <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('delete?time='.$data['time'])}"><i class="fa fa-trash-o"></i></a>
+                                </td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".db-import").click(function(){
+        var self = this, status = ".";
+        $.get(self.href, success, "json");
+        window.onbeforeunload = function(){ return "正在还原数据库，请不要关闭！" }
+        return false;
+
+        function success(data){
+            if(data.status){
+                if(data.gz){
+                    data.info += status;
+                    if(status.length === 5){
+                        status = ".";
+                    } else {
+                        status += ".";
+                    }
+                }
+                $(self).parent().prev().text(data.info);
+                if(data.part){
+                    $.get(self.href,
+                        {"part" : data.part, "start" : data.start},
+                        success,
+                        "json"
+                    );
+                }  else {
+                    window.onbeforeunload = function(){ return null; }
+                }
+            } else {
+                updateAlert(data.info,'alert-error');
+            }
+        }
+    });
+</script>

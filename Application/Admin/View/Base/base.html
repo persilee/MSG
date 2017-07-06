@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{:C('COMPANY_NAME')} | 信息管理系统</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <!-- bootstrap 3.0.2 -->
+        <link href="__ROOT__/Public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- bootstrap slider -->
+        <!-- <link href="__ROOT__/Public/css/bootstrap-slider/slider.css" rel="stylesheet" type="text/css" /> -->
+        <!-- font Awesome -->
+        <!-- <link href="__ROOT__/Public/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- Ionicons -->
+        <!-- <link href="__ROOT__/Public/css/ionicons.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- bootstrap wysihtml5 - text editor -->
+        <!-- <link href="__ROOT__/Public/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- iCheck for checkboxes and radio inputs -->
+        <!-- <link href="__ROOT__/Public/css/iCheck/minimal/blue.css" rel="stylesheet" type="text/css" /> -->
+        <!-- Theme style -->
+        <link href="__ROOT__/Public/css/AdminLTE.css" rel="stylesheet" type="text/css" />
+
+        <link href="__ROOT__/Public/css/common.css" rel="stylesheet" type="text/css" />
+
+        <!-- fullCalendar -->
+        <link href="__ROOT__/Public/css/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+        <!-- <link href="__ROOT__/Public/css/fullcalendar/fullcalendar.print.css" rel="stylesheet" type="text/css" media='print' /> -->
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+        
+        <!-- jQuery 2.0.2 -->
+        <script src="__ROOT__/Public/js/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="__ROOT__/Public/js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- AdminLTE App -->
+        <script src="__ROOT__/Public/js/AdminLTE/app.js" type="text/javascript"></script>
+        <!-- Bootstrap WYSIHTML5 
+        <script src="__ROOT__/Public/js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>-->
+        <!-- iCheck 
+        <script src="__ROOT__/Public/js/plugins/iCheck/icheck.min.js" type="text/javascript"></script>-->
+
+        <script type="text/javascript" src="__ROOT__/Public/js/DatePicker/WdatePicker.js"></script>
+
+        <script type="text/javascript" src="__ROOT__/Public/js/common.js"></script>
+
+        <script type="text/javascript" src="__ROOT__/Public/js/jquery.cookies.2.2.0.min.js"></script>
+        <!-- InputMask 
+        <script src="__ROOT__/Public/js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+        <script src="__ROOT__/Public/js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+        <script src="__ROOT__/Public/js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>-->
+        
+        <!-- fullCalendar -->
+        <script src="__ROOT__/Public/js/jquery-ui-1.10.3.min.js" type="text/javascript"></script>
+        <script src="__ROOT__/Public/js/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+        <!-- Page script -->
+    </head>
+    <body class="skin-blue">
+        <div class=header>
+            <include file="Base:top" />
+        </div> 
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- <div class=sidebar> -->
+                <include file="Base:left" />
+            <!-- </div> -->
+
+            <!-- <div class=content> -->
+                <aside class="right-side">
+                    
+                    <!-- 提示信息框 -->
+                    <div id="top-alert" class="fixed alert alert-error" style="display: none;">
+                        <button class="close fixed" style="margin-top: 4px;">&times;</button>
+                        <div class="alert-content">这是内容</div>
+                    </div>
+                    <!-- Content Header (Page header) -->
+                    <section class="content-header">
+                        <h1>
+                            <!-- Widgets
+                            <small>Preview page</small> -->
+                            <php>$tempI = 0;</php>
+                            <foreach name="__PLACE__" item="place">
+                                <if condition="$tempI gt 0">
+                                    <small>
+                                </if>
+                                {$place}
+                                <if condition="$tempI gt 0">
+                                    </small>
+                                </if>
+                                <php>
+                                    $tempI++;
+                                </php>
+                            </foreach>
+                        </h1>
+                        <!-- <ol class="breadcrumb">
+                            <foreach name="__PLACE__" item="place">
+                                <li><a href="#">{$place}</a></li>
+                            </foreach>
+                        </ol> -->
+                    </section>
+                    <section class="content">
+                        {__CONTENT__}
+
+                        <!-- 弹出功能窗口 -->
+                        <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div id="dialog-div">
+                                </div>
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                    </section>
+                </aside>
+            <!-- </div> -->
+        </div>
+
+
+        <script type="text/javascript">
+            $(function() {
+
+                // "use strict";
+
+                //iCheck for checkbox and radio inputs
+                // $('input[type="checkbox"]').iCheck({
+                //     checkboxClass: 'icheckbox_minimal-blue',
+                //     radioClass: 'iradio_minimal-blue'
+                // });
+
+                //When unchecking the checkbox
+                // $("#check-all").on('ifUnchecked', function(event) {
+                    //Uncheck all checkboxes
+                    // $("input[type='checkbox']", ".table-mailbox").iCheck("uncheck");
+                // });
+                //When checking the checkbox
+                // $("#check-all").on('ifChecked', function(event) {
+                    //Check all checkboxes
+                    // $("input[type='checkbox']", ".table-mailbox").iCheck("check");
+                // });
+                //Handle starring for glyphicon and font awesome
+                // $(".fa-star, .fa-star-o, .glyphicon-star, .glyphicon-star-empty").click(function(e) {
+                //     e.preventDefault();
+                //     //detect type
+                //     var glyph = $(this).hasClass("glyphicon");
+                //     var fa = $(this).hasClass("fa");
+
+                //     //Switch states
+                //     if (glyph) {
+                //         $(this).toggleClass("glyphicon-star");
+                //         $(this).toggleClass("glyphicon-star-empty");
+                //     }
+
+                //     if (fa) {
+                //         $(this).toggleClass("fa-star");
+                //         $(this).toggleClass("fa-star-o");
+                //     }
+                // });
+
+                //Money Euro
+                // $("[data-mask]").inputmask();
+
+                // 弹出功能窗口
+                $(".func-dialog").bind("click",function(){
+                    var divshow = $("#dialog-div");
+                    divshow.text("");
+                    $.ajax({
+                        url : $(this).attr('url'),
+                        type : "get",
+                        success: function (data) {
+                            if(data.status==0){
+                                updateAlert(data.info);
+                                setTimeout(function(){
+                                    if (data.url) {
+                                        location.href=data.url;
+                                    }else{
+                                        $('#top-alert').find('button').click();
+                                    }
+                                },1500);
+                            }else{
+                                divshow.append(data);
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

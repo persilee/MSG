@@ -1,0 +1,39 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['SMS']['SMSTPLADD'];
+    $updateNode = $access_list['ADMIN']['SMS']['SMSTPLUPDATE'];
+    $deleteNode = $access_list['ADMIN']['SMS']['SMSTPLDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-bar-chart"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        // $(".pause").click(function(){
+        //   var self = $(this).find('i').attr('class');
+        //   if(self == 'fa fa-pause'){
+        //     $(this).find('i').attr('class','fa fa-play');
+        //     $(this).attr('title','{$Think.lang.SYSTEM_ACTION_RESTORE}');
+        //   }else if(self == 'fa fa-play'){
+        //     $(this).find('i').attr('class','fa fa-pause');
+        //     $(this).attr('title','{$Think.lang.SYSTEM_ACTION_PAUSE}');
+        //   }
+        // });
+        $("#reportListForm").submit(function(){
+            var self = $(this);
+            $.get(self.attr("action"), self.serialize(), success);
+            return false;
+            function success(data){
+                $("#content").html(data);
+            }
+        });
+    });
+</script>

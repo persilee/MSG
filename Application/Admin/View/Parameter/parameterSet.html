@@ -1,0 +1,43 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-gears"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+                <form action="{:U('parameterSet')}" method="post" class="parameterSetForm" role="form">
+                    <volist name="list" id="config">
+                        <div class="form-group">
+                            <span class="control-label">{$config.title}<if condition="!empty($config['remark'])"><i>（{$config.remark}）</i></if></span>
+                            <switch name="config.type">
+                                <case value="0">
+                                    <input type="text" class="form-control" name="config[{$config.name}]" value="{$config.value}">
+                                </case>
+                                <case value="1">
+                                    <input type="text" class="form-control " name="config[{$config.name}]" value="{$config.value}">
+                                </case>
+                                <case value="2">
+                                    <input type="text" class="form-control" name="config[{$config.name}]" value="{$config.value}">
+                                </case>
+                                <case value="3">
+                                    <textarea name="config[{$config.name}]" rows="3" class="form-control" maxlength="1000">{$config.value|default=''}</textarea>
+                                </case>
+                                <case value="4">
+                                    <select name="config[{$config.name}]" class="form-control">
+                                        <volist name=":parse_config_attr($config['extra'])" id="vo">
+                                            <option value="{$key}" <eq name="config.value" value="$key">selected</eq>>&nbsp;&nbsp;{$vo}</option>
+                                        </volist>
+                                    </select>
+                                </case>
+                            </switch>
+                        </div>
+                    </volist>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary ajax-post" target-form="parameterSetForm"><i class="fa fa-save"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

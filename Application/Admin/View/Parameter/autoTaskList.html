@@ -1,0 +1,51 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $configNode = $access_list['ADMIN']['PARAMETER']['AUTOTASKCONFIG'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-tasks"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>{$Think.lang.TEMP_AUTOTASK_CODE}</th>
+                        <th>{$Think.lang.TEMP_AUTOTASK_REMARK}</th>
+                        <th>{$Think.lang.TEMP_AUTOTASK_SWITCH}</th>
+                        <th>{$Think.lang.SYSTEM_ACTION_ACTION}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <notempty name="list">
+                        <volist name="list" id="vo">
+                            <tr>
+                                <td>{$vo.code}</td>
+                                <td>{$vo.remark}</td>
+                                <td>
+                                    <eq name="vo.switch" value="0">
+                                        <span class="label label-danger">{$vo.switch_text}</span>
+                                        <else/>
+                                        <span class="label label-success">{$vo.switch_text}</span>
+                                    </eq>
+                                </td>
+                                <td>
+                                    <notempty name="configNode">
+                                        <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_CONFIG}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('autoTaskConfig',array('code'=>$vo['code']))}">&nbsp;<i class="fa fa-edit"></i></a>
+                                    </notempty>
+                                </td>
+                            </tr>
+                        </volist>
+                        <else/>
+                        <td colspan="4" class="text-center"> {$Think.lang.SYSTEM_MESSAGE_NO_RECORD} </td>
+                    </notempty>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

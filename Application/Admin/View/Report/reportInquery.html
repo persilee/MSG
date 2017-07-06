@@ -1,0 +1,73 @@
+ <!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $addNode = $access_list['ADMIN']['SMS']['SMSTPLADD'];
+    $updateNode = $access_list['ADMIN']['SMS']['SMSTPLUPDATE'];
+    $deleteNode = $access_list['ADMIN']['SMS']['SMSTPLDELETE'];
+</php>
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-bar-chart"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body row" style="margin:0px">
+              <div class="col-md-5">
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label">{$Think.lang.TEMP_REPORT_NAME} :</label>
+                      <div class="col-sm-5">
+                          <p class="form-control-static">{$name}</p>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="box-body">
+              <notempty name="list">
+                  <volist name="list" id="vo">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="col-sm-8 control-label">{$vo.name}</label>
+                            <div class="col-sm-3">
+                                <p class="form-control-static">
+                                  <notempty name="updateNode">
+                                      <a class="ajax-get confirm" title="{$Think.lang.TEMP_REPORT_DELETE}" href="{:U('reportDelete',array('seq'=>$vo['seq'],'name'=>$vo['name']))}">&nbsp;<i class="fa fa-trash-o"></i></a>
+                                  </notempty>
+                                  <notempty name="deleteNode">
+                                      <a class="reportDownload" title="{$Think.lang.EMP_REPORT_DOWNLOAD}" href="#">&nbsp;<i class="fa fa-download"></i></a>
+                                      <div style="display:none">
+                                          <form action="{:U('reportDownload')}" method="post" target="ajaxDownload" id="{$vo['name']}">
+                                              <input name="name" type="hidden" value="{$vo['name']}"/>
+                                          </form>
+                                      </div>
+                                  </notempty>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                  </volist>
+                  <else/>
+                  <div class="col-md-12 text-center">
+                    {$Think.lang.SYSTEM_MESSAGE_NO_RECORD}
+                  </div>
+              </notempty>
+              <div class="col-sm-10 padding" style="padding-left:28px;">
+                  <button type="submit" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+              </div>
+                <div class="clearfix">
+                    {$_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none">
+    <iframe name="ajaxDownload"></iframe>
+</div>
+<script type="text/javascript">
+    $(function(){
+      $('.reportDownload').click(function(){
+        $(this).closest('p').next().find('form').submit();
+      });
+    });
+</script>

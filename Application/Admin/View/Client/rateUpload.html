@@ -1,0 +1,110 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-upload"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+                <div class="tools pull-right">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <notempty name="return">
+                            <button class="btn-danger btn-xs ajax-forward" url="{$Think.cookie.__forward__}" type="button" id="return"><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                        </notempty>
+                    </div>
+                </div>
+            </div>
+            <empty name="return">
+                <div class="box-body pad table-responsive">
+                    <div class="row form-horizontal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_RATE_DATE}</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="{$date}" placeHolder="{$Think.lang.SYSTEM_TERM_DATE_FORMAT}"  onClick="WdatePicker()" id="upload_date"/>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info btn-flat" type="button" id="uploadButton"><i class="fa fa-file"></i> {$Think.lang.SYSTEM_ACTION_SELECT_FILE}</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <else/>
+                <div class="box-body table-responsive">
+                    <eq name="return.status" value="0">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_MESSAGE_UPLOAD_ERROR}</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p><b>{$return.info}</b></p>
+                            </div><!-- /.box-body -->
+                        </div><!-- /.box -->
+                    <else/>
+                        <empty name="return.data">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_MESSAGE_UPLOAD_SUCCESS}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <p><b>{$return.info}</b></p>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        <else/>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">Tenor</th>
+                                        <th width="20%">Currency</th>
+                                        <th width="60%">Error message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="return.data" id="vo">
+                                        <tr>
+                                            <volist name="vo" id="item">
+                                                <td>{$item}</td>
+                                            </volist>
+                                        </tr>
+                                    </volist>
+                                </tbody>
+                            </table>
+                        </empty>
+                    </eq>
+                </div>
+            </empty>
+        </div>
+    </div>
+</div>
+
+<div style="display:none;">
+    <input id="fileupload_input" type="file" name="temp_file" multiple />
+</div>
+<script type="text/javascript">
+    $(function(){
+        var input_date = $('#upload_date').val();
+        //上传
+        $("#uploadButton").bind('click',function(){
+            input_date = $('#upload_date').val();
+            if("" == input_date){
+                alert('Date must input ! ');
+                return false;
+            }
+            $("#fileupload_input").click();
+        });
+
+        $("#fileupload_input").fileupload({
+            url:"{:U('rateUpload')}",
+            done:function(e,result){
+                $('#content').html(result.result);
+            }
+        });
+
+        //文件上传前触发事件
+        $('#fileupload_input').bind('fileuploadsubmit', function (e, data) {
+            data.formData = { date: $('#upload_date').val()};  //如果需要额外添加参数可以在这里添加
+        });
+    });
+</script>
+

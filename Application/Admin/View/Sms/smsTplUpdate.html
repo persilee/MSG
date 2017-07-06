@@ -1,0 +1,110 @@
+<include file="Base:content_title" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="box border primary">
+            <div class="box-title">
+                <h4><i class="fa fa-commenting-o"></i><span class="hidden-inline-mobile">{$__PLACE__.1}</span></h4>
+            </div>
+            <div class="box-body">
+              <form action="{:U(smsTplUpdate)}" method="post"  class="form-horizontal smsTplUpdateForm">
+                <input type="hidden" name="id" value="{$result.id}"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_TEMPLATE_NAME}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-10">
+                                <input name="name" type="text" class="form-control" maxlength="120" value="{$result.name}"/>
+                            </div>
+                        </div>
+                        <div class="form-group check-box">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_TEMPLATE_FILE}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-10">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="temp_file[en]" id="en_check" value="1" <neq name="$result.en_content" value="">checked</neq>> {$Think.lang.TEMP_SMS_TEMPLATE_EN}
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="temp_file[zh_s]" id="zh_s_check" value="1" <neq name="$result.zh_s_content" value="">checked</neq>> {$Think.lang.TEMP_SMS_TEMPLATE_ZH_S}
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="temp_file[zh_t]" id="zh_t_check" value="1" <neq name="$result.zh_s_content" value="">checked</neq>> {$Think.lang.TEMP_SMS_TEMPLATE_ZH_T}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_REMARK}</label>
+                            <div class="col-sm-10">
+                                <textarea name="remark" cols="" rows="5" class="form-control" maxlength="255">{$result.remark}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group content-box en_content">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_TEMPLATE_CONTENT_EN}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-10">
+                                <textarea name="en_content" cols="" rows="5" class="form-control" maxlength="255">{$result.en_content}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group content-box zh_s_content">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_TEMPLATE_CONTENT_ZH_S}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-10">
+                                <textarea name="zh_s_content" cols="" rows="5" class="form-control" maxlength="255">{$result.zh_s_content}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group content-box zh_t_content">
+                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_SMS_TEMPLATE_CONTENT_ZH_T}<font color="red"><b>＊</b></font></label>
+                            <div class="col-sm-10">
+                                <textarea name="zh_t_content" cols="" rows="5" class="form-control" maxlength="255">{$result.zh_t_content}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-sm-2 control-label">&nbsp;</span>
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary ajax-post" id="submit_btn" target-form="smsTplUpdateForm"><i class="fa fa-save"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+                                <button type="submit" href="{$Think.cookie.__forward__}" class="btn btn-danger ajax-forward" ><i class="fa fa-reply"></i> {$Think.lang.SYSTEM_ACTION_RETURN}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+      var en_content = "{$result.title_en}";
+      var zh_s_content = "{$result.title_zh_s}";
+      var zh_t_content = "{$result.title_zh_t}";
+      if(en_content != ''){
+        $('.en_content').show();
+      }
+      if(zh_s_content != ''){
+        $('.zh_s_content').show();
+      }
+      if(zh_t_content != ''){
+        $('.zh_t_content').show();
+      }
+      $('.content-box').hide();
+      $('#en_check').attr('checked',true);
+      $('.en_content').show();
+      $('.check-box input[type="checkbox"]').click(function(){
+        if($(this).attr('id') == 'en_check'){
+          if($(this).prop('checked')){
+            $('.en_content').show();
+          }else{
+            $('.en_content').hide();
+          }
+        }else if($(this).attr('id') == 'zh_s_check'){
+          if($(this).prop('checked')){
+            $('.zh_s_content').show();
+          }else{
+            $('.zh_s_content').hide();
+          }
+        }else if($(this).attr('id') == 'zh_t_check'){
+          if($(this).prop('checked')){
+            $('.zh_t_content').show();
+          }else{
+            $('.zh_t_content').hide();
+          }
+        }
+      })
+    });
+</script>

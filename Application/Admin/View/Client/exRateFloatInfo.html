@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box-body table-responsive">
+            <div class="ex-scroller" data-width="AUTO" data-always-visible="1" data-rail-visible="0">
+                <table class="table table-striped" style="min-width:960px">
+                    <volist name="exRateArr" id="vo" offset="1" length='1'>
+                        <thead>
+                        <tr>
+                            <th>
+                                {$Think.lang.SYSTEM_ACTION_CHECK_ALL}
+                                <input type="checkbox" class="check_all" />
+                            </th>
+                            <foreach name="vo" item="item" key="itemkey">
+                                <th>{$itemkey}</th>
+                            </foreach>
+                        </tr>
+                        </thead>
+                    </volist>
+                    <notempty name="exRateArr">
+                        <tbody>
+                        <foreach name="exRateArr" item="vo" key="exchangeCcyValue">
+                            <tr>
+                                <td>
+                                    {$exchangeCcyValue}
+                                </td>
+                                <foreach name="vo" item="item" key="targetCcyValue">
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <input type="checkbox" class="float_check" <neq name="item" value="">checked</neq>/> <i class="fa fa-check-circle"></i>
+                                                <input type="checkbox" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][is_exRate]" class="is_exRate" value="1" <eq name="item['is_exRate']" value="1">checked</eq>/> <i class="fa fa-bar-chart-o"></i>
+                                            </span>
+                                            <input type="text" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][value]" value="{$item['value']|delZero}" class="form-control input-sm float_value" style="width:50px;"/>
+                                        </div>
+                                    </td>
+                                </foreach>
+                            </tr>
+                        </foreach>
+                        </tbody>
+                    </notempty>
+                </table>
+                <!--<div class="clearfix">-->
+                <!--{$_page}-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('.float_check').each(function(){
+            initCheck(this);
+        });
+
+        $('.ex-scroller').each(function () {
+            $(this).slimScrollHorizontal({
+                size: '10px',
+                color: '#a1b2bd',
+                width: $(this).attr("data-width"),
+                alwaysVisible: ($(this).attr("data-always-visible") == "1" ? true : false),
+                railVisible: ($(this).attr("data-rail-visible") == "1" ? true : false),
+                railOpacity: 0.1,
+                disableFadeOut: true
+            });
+            return false;
+        });
+
+        $('.check_all').bind('click',function () {
+            var check_inputs = $('.float_check');
+            var value_inputs = $('.float_value');
+            if($(this).prop('checked')){
+                check_inputs.prop('checked',true);
+                value_inputs.attr('disabled',false);
+            }else{
+                check_inputs.prop('checked',false);
+                value_inputs.val('');
+                value_inputs.attr('disabled',true);
+            }
+        });
+
+        $('.float_check').bind('click',function () {
+            initCheck(this);
+        });
+
+        function initCheck(that) {
+            var value_input = $(that).parents('.input-group').find('.float_value');
+            var is_exRate = $(that).parents('.input-group').find('.is_exRate');
+            if($(that).prop('checked')){
+                value_input.attr('disabled',false);
+                is_exRate.attr('disabled',false);
+            }else{
+                value_input.val('');
+                value_input.attr('disabled',true);
+                is_exRate.attr('disabled',true);
+                is_exRate.prop('checked',false);
+            }
+        }
+    });
+</script>

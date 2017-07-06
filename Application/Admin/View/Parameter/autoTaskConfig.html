@@ -1,0 +1,151 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(autoTaskConfig)}" method="post"  class="form-horizontal autoTaskConfigForm">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_CODE}</label>
+                <div class="col-sm-9">
+                    <input name="code" type="text" class="form-control" readonly value="{$result.code}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_REMARK}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <textarea name="remark" cols="" rows="3" class="form-control" maxlength="255">{$result.remark}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_SWITCH}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <foreach name="Think.lang.COMMON_STATUS_TEXT" item="vo">
+                        <label class="radio-inline">
+                            <input type="radio" class="uniform" name="switch" value="{$key}" <if condition="$key eq $result['switch']">checked</if>/> {$vo}
+                        </label>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_HOLIDAY_RULE}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select class="form-control" name="holiday_rule">
+                        <option></option>
+                        <foreach name="Think.lang.TEMP_AUTOTASK_HOLIDAY_RULE_TEXT" item="vo">
+                            <option value="{$key}" <if condition="$key eq $result['holiday_rule']">selected</if>>{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_CYCLE}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select class="form-control" name="cycle" id="cycle">
+                        <option></option>
+                        <foreach name="Think.lang.TEMP_AUTOTASK_CYCLE_TEXT" item="vo">
+                            <option value="{$key}" <if condition="$key eq $result['cycle']">selected</if>>{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="quarter_div">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_QUARTER}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="quarter" type="text" class="form-control" readonly value="1、4、7、10"/>
+                </div>
+            </div>
+            <div class="form-group" id="month_div">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_MONTH}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select name="month" class="form-control">
+                        <option></option>
+                        <foreach name="Think.lang.COMMON_YEAR_TEXT" item="vo">
+                            <option value="{$key}" <if condition="$key eq $result['month']">selected</if>>{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"  id="day_of_month_div">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_DAY_OF_MONTH}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select name="day_of_month" class="form-control">
+                        <option></option>
+                        <for start="1" end="32">
+                            <option value="{$i}" <if condition="$i eq $result['day_of_month']">selected</if>>{$i}</option>
+                        </for>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="day_of_week_div">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_DAY_OF_WEEK}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <select name="day_of_week" class="form-control">
+                        <option></option>
+                        <foreach name="Think.lang.COMMON_WEEK_TEXT" item="vo">
+                            <option value="{$key}" <if condition="$key eq $result['day_of_week']">selected</if>>{$vo}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_AUTOTASK_TIME}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input name="time" class="form-control" value="{$result['time']}" onClick="WdatePicker({dateFmt:'HH:mm'})"/>
+                        <span class="input-group-addon">HH:mm</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="autoTaskConfigForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        //初始化栏位显示与隐藏
+        fieldChange();
+        //周期改变时,相应栏位的显示与隐藏
+        $("#cycle").bind('change',function () {
+            fieldChange();
+        });
+        function fieldChange() {
+            cycle = $('#cycle').val();
+            switch (cycle){
+                case 'Y':
+                    $('#quarter_div').hide();
+                    $("#month_div").show();
+                    $("#day_of_month_div").show();
+                    $("#day_of_week_div").hide();
+                    break;
+                case 'Q':
+                    $('#quarter_div').show();
+                    $("#month_div").hide();
+                    $("#day_of_month_div").show();
+                    $("#day_of_week_div").hide();
+                    break;
+                case 'M':
+                    $('#quarter_div').hide();
+                    $("#month_div").hide();
+                    $("#day_of_month_div").show();
+                    $("#day_of_week_div").hide();
+                    break;
+                case 'W':
+                    $('#quarter_div').hide();
+                    $("#month_div").hide();
+                    $("#day_of_month_div").hide();
+                    $("#day_of_week_div").show();
+                    break;
+                default:
+                    $('#quarter_div').hide();
+                    $("#month_div").hide();
+                    $("#day_of_month_div").hide();
+                    $("#day_of_week_div").hide();
+                    break;
+            }
+        }
+    });
+</script>

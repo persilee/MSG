@@ -1,0 +1,75 @@
+<!-- 取得权限配置功能点 -->
+<php>
+    $access_list = session('_ACCESS_LIST');
+    $rejectNode = $access_list['ADMIN']['EMP']['GROUPREJECT'];
+</php>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form class="form-horizontal groupAppoveForm" method="post">
+        <input name="date" type="hidden" value="{$date}"/>
+        <input name="seq" type="hidden" value="{$seq}"/>
+        <input name="flag" type="hidden" value="A"/>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.SYSTEM_ACTION_ACTION}</label>
+                <div class="col-sm-9">
+                    <foreach name="Think.lang.COMMON_ACTION_TEXT" item="vo">
+                        <if condition="$key heq $func">
+                            <input class="form-control" value="{$vo}" disabled/>
+                        </if>
+                    </foreach>
+                </div>
+            </div>
+            <div class="form-group">
+                <if condition="$groupResult['name'] nheq $appoveResult['name']"><div class="has-error"></if>
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_USERGROUP_NAME}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control tip" value="{$appoveResult.name}" disabled
+                    <if condition="$groupResult['name'] nheq $appoveResult['name']">title="{$groupResult.name}"</if>
+                    />
+                </div>
+                <if condition="$groupResult['name'] nheq $appoveResult['name']"></div></if>
+            </div>
+            <div class="form-group">
+                <if condition="$groupRoleStr neq $appoveRoleStr"><div class="has-error"></if>
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_ROLE_NAME}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control tip" value="{$appoveRoleStr}" disabled
+                    <if condition="$groupRoleStr nheq $appoveRoleStr">title="{$groupRoleStr}"</if>
+                    />
+                </div>
+                <if condition="$groupRoleStr neq $appoveRoleStr"></div></if>
+            </div>
+            <div class="form-group">
+                <if condition="$groupResult['sort'] neq $appoveResult['sort']"><div class="has-error"></if>
+                <label class="col-sm-3 control-label">{$Think.lang.SYSTEM_ACTION_SORT}</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control tip" value="{$appoveResult.sort}" disabled
+                    <if condition="$groupResult['sort'] neq $appoveResult['sort']">title="{$groupResult.sort}"</if>
+                    />
+                </div>
+                <if condition="$groupResult['sort'] neq $appoveResult['sort']"></div></if>
+            </div>
+            <div class="form-group">
+                <if condition="$groupResult['remark'] nheq $appoveResult['remark']"><div class="has-error"></if>
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_EMP_USERGROUP_REMARK}</label>
+                <div class="col-sm-9">
+                    <textarea disabled class="form-control tip"
+                    <if condition="$groupResult['remark'] nheq $appoveResult['remark']">title="{$groupResult.remark}"</if>
+                    >{$appoveResult.remark}</textarea>
+                </div>
+                <if condition="$groupResult['remark'] nheq $appoveResult['remark']"></div></if>
+            </div>
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary ajax-post confirm pull-left" url="{:U(groupAppove)}" target-form="groupAppoveForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_APPOVE}</button>
+                <notempty name="rejectNode">
+                    <button type="submit" class="btn btn-warning ajax-post confirm pull-left" url="{:U(groupReject)}" target-form="groupAppoveForm"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_REJECT}</button>
+                </notempty>
+            </div>
+        </div>
+    </form>
+</div>
