@@ -17,7 +17,23 @@
       $.post(
         'http://192.168.230.79:8989/interface.php',
         {
-          aaa: '123'
+          access_key: 'cd4a532548d39a1c1a45071a52cd3a6d',
+          send_type: 'mail',
+          send_channel:'esb',
+          sender:'per',
+          receiver:'persilee@foxmail.com',
+          Tpl_id:'6',
+          send_date:'2017-07-06',
+          send_time:'12:00',
+          param:{
+            name_title:'',
+            related_staffs:'',
+            name:'per',
+            rate_date:'2017-07-06',
+            rate_time:'14:23',
+            rate:'0.23',
+            receiver:''
+          }
         },
         function(data){
           console.log(data);

@@ -7,7 +7,7 @@ use Common\Common\MailTools;
 use Common\Common\MailTplTools;
 
 class IndexController extends Controller {
-
+    protected $_validation = false;
     public function __construct()
     {
       //载入配置项
@@ -46,27 +46,128 @@ class IndexController extends Controller {
   *
   */
     public function index(){
-      $receiver = 'persilee@foxmail.com';
-      $mailRoute = 'EBS';
-      if(empty($receiver) || empty($mailRoute) ){
-        $this->error(L('SYSTEM_ERROR_MUST_INPUT'));
+      //获取数据
+      $access_key = I('access_key');
+      $send_type = I('send_type');
+      $send_channel = I('send_channel');
+      $sender = I('sender');
+      $receiver = I('receiver');
+      $cc_receiver = I('cc_receiver');
+      $bcc_receiver = I('bcc_receiver');
+      $Tpl_id = I('Tpl_id');
+      $send_date = I('send_date');
+      $send_time = I('send_time');
+      $param = I('param');
+      $sms_content = I('sms_content');
+
+      //验证access_key是否正确（规则：$send_type + $receiver + 当前时间（yyyy-mm-dd）的md5码）
+      if (!empty($access_key) && $access_key == md5($send_type . $receiver . date('Y-m-d'))) {
+        $this->_validation = true;
+      }else{
+        $this->returnData('40002',L('API_CODE_40002'),'');
+        return;
       }
+      //验证send_type
+      if ($send_type == 'mail' || $send_type == 'sms' ) {
+        $this->_validation = true;
+      }else{
+        $this->returnData('40003',L('API_CODE_40003'),'');
+        return;
+      }
+      //验证send_channel
+      if ($send_channel == 'esb' || $send_channel == 'terminal') {
+        $this->_validation = true;
+      }else{
+        $this->returnData('40004',L('API_CODE_40004'),'');
+        return;
+      }
+      //验证receiver
+      if (empty($access_key)) {
+        $this->returnData('40005',L('API_CODE_40005'),'');
+        return;
+      }elseif (false === filter_var($receiver,FILTER_VALIDATE_EMAIL)) {
+        $this->returnData('40006',L('API_CODE_40006'),'');
+        return;
+      }else{
+        $this->_validation = true;
+      }
+      //验证cc_receiver
+      if (false === filter_var($cc_receiver,FILTER_VALIDATE_EMAIL)) {
+        $this->returnData('40007',L('API_CODE_40007'),'');
+        return;
+      }else{
+        $this->_validation = true;
+      }
+      //验证bcc_receiver
+      if (false === filter_var($bcc_receiver,FILTER_VALIDATE_EMAIL)) {
+        $this->returnData('40008',L('API_CODE_40008'),'');
+        return;
+      }else{
+        $this->_validation = true;
+      }
+      //验证Tpl_id
+      if (empty($Tpl_id)) {
+        $this->returnData('40009',L('API_CODE_40009'),'');
+        return;
+      }elseif ($send_type == 'mail') {
+        $Mailtpl = M('Mailtpl');
+        if ($Mailtpl->where(array('id'=>$Tpl_id))->getField('id')) {
+          $this->returnData('40009',L('API_CODE_40010'),'');
+          return;
+        }
+      }elseif ($send_type == 'mail'){
+        $Smstpl = M('Smstpl');
+        if ($Smstpl->where(array('id'=>$Tpl_id))->getField('id')) {
+          $this->returnData('40010',L('API_CODE_40010'),'');
+          return;
+        }
+      }else{
+        $this->_validation = true;
+      }
+      //验证send_date
+      $is_date = strtotime($send_date)?strtotime($send_date):false;
+      if ($is_date) {
+        $this->_validation = true;
+      }else{
+        $this->returnData('40011',L('API_CODE_40011'),'');
+        return;
+      }
+      //验证send_time
+      $is_time = strtotime($send_time)?strtotime($send_time):false;
+      if (empty($send_time)) {
+        $this->returnData('40012',L('API_CODE_40012'),'');
+        return;
+      }elseif ($is_time) {
+        $this->_validation = true;
+      }else{
+        $this->returnData('40013',L('API_CODE_40013'),'');
+        return;
+      }
+      //验证param
+
       //取得测试邮件模板
-      $Mailtpl = M('Mailtpl');
-      $mailtplId = $Mailtpl->where(array('type'=>'TEST'))->getField('id');
       $mailTools = new MailTools();
-      if('ESB' == $mailRoute){
-        $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_ESB;
-      }else{
-        $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_TERMINAL;
-      }
-      if(false === $mailTools->prepareMail($mailtplId,'test')){
-        $this->error($mailTools->getError());
-      }elseif(false === $mailTools->sendMail($receiver,$messgeSendRoute)){
-              $this->error($mailTools->getError());
-      }else{
-        $this->success(L('SYSTEM_MESSAGE_SUCCESS'),Cookie('__forward__'));
-      }
+      // if('ESB' == $mailRoute){
+      //   $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_ESB;
+      // }else{
+      //   $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_TERMINAL;
+      // }
+      // if(false === $mailTools->prepareMail($mailtplId,'test')){
+      //   $this->error($mailTools->getError());
+      // }elseif(false === $mailTools->sendMail($receiver,$messgeSendRoute)){
+      //         $this->error($mailTools->getError());
+      // }else{
+      //   $this->success(L('SYSTEM_MESSAGE_SUCCESS'),Cookie('__forward__'));
+      // }
       exit;
+    }
+
+    public function returnData($code,$message,$data){
+      $returnData = array(
+        'code'    =>    $code,
+        'message' =>    $message,
+        'data'    =>    $data
+      );
+      $this->ajaxReturn($returnData);
     }
 }
