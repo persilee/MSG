@@ -63,7 +63,7 @@
                                             <foreach name="vo" item="i" key="targetCcyArrValue">
                                                 <td>
                                                   <div class="input-group">
-                                                    <if condition = "$targetCcyArrValue eq $exchangeCcyValue">
+                                                    <if condition = "$i eq 'false'">
                                                       <span class="input-group-addon">
                                                         <notempty name="addNode">
                                                           <a class="func-dialog ban" title="{$Think.lang.SYSTEM_ACTION_BAN}" data-toggle="modal" data-target="#"  href="#" url=""> <i class="fa fa-ban"></i></a>
@@ -71,10 +71,10 @@
                                                       </span>
                                                     <else />
                                                       <notempty name="i">
-                                                            <input type="text" value="{$i|delZero}" class="form-control input-sm" style="width:50px;" disabled/>
+                                                            <input type="text" value="{$i}" class="form-control input-sm" style="min-width:65px;" disabled/>
                                                             <span class="input-group-addon">
                                                                 <notempty name="updateNode">
-                                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('exRateUpdate').'?date='.$date.'&exchangeCcy='.$exchangeCcyValue.'&targetCcy='.$targetCcyArrValue}"> <i class="fa fa-edit"></i></a>
+                                                                    <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_MODIFY}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('exRateUpdate').'?date='.$date.'&exchangeCcy='.$exchangeCcyValue.'&targetCcy='.$targetCcyArrValue.'&point='.$pointArr[$exchangeCcyValue][$targetCcyArrValue]['value']}"> <i class="fa fa-edit"></i></a>
                                                                 </notempty>
                                                                 <notempty name="deleteNode">
                                                                     <a class="ajax-get confirm" title="{$Think.lang.SYSTEM_ACTION_DELETE}" href="{:U('exRateDelete').'?date='.$date.'&exchangeCcy='.$exchangeCcyValue.'&targetCcy='.$targetCcyArrValue}"> <i class="fa fa-trash-o"></i></a>
@@ -84,7 +84,7 @@
                                                         <else/>
                                                           <span class="input-group-addon">
                                                               <notempty name="addNode">
-                                                                  <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('exRateAdd').'?date='.$date.'&targetCcy='.$targetCcyArrValue.'&exchangeCcy='.$exchangeCcyValue}"> <i class="fa fa-plus"></i></a>
+                                                                  <a class="func-dialog" title="{$Think.lang.SYSTEM_ACTION_ADD}" data-toggle="modal" data-target="#compose-modal"  href="#" url="{:U('exRateAdd').'?date='.$date.'&targetCcy='.$targetCcyArrValue.'&exchangeCcy='.$exchangeCcyValue.'&point='.$pointArr[$exchangeCcyValue][$targetCcyArrValue]['value']}"> <i class="fa fa-plus"></i></a>
                                                               </notempty>
                                                           </span>
                                                       </notempty>

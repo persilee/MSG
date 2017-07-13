@@ -137,8 +137,11 @@ class ExchangeMailTools
                     $this->_mailTools->prepareMail($exRateLessZeroMailtplID,$content);
                     if(false === $this->_mailTools->sendMail($tempLessZeroReceiver,MailTools::MAIL_SEND_ROUTE_TERMINAL)){
                         //$this->_errorMsg = $this->_mailTools->getError();
-                        $mailSendFailReportTools = new MailSendFailReportTools();
-                        $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+
+                        if (C('IS_SEND_FAIL_MAIL') == 'TRUE') {
+                          $mailSendFailReportTools = new MailSendFailReportTools();
+                          $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+                        }
                         $ex_mail_returnFlag = false;
                         //return false;
                     }
@@ -167,8 +170,10 @@ class ExchangeMailTools
                 if(false === $this->_mailTools->sendMail($receiver,MailTools::MAIL_SEND_ROUTE_TERMINAL)){
                     $ex_mail_returnFlag = false;
                     //通过ESB发送预警邮件
-                    $mailSendFailReportTools = new MailSendFailReportTools();
-                    $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+                    if (C('IS_SEND_FAIL_MAIL') == 'TRUE') {
+                      $mailSendFailReportTools = new MailSendFailReportTools();
+                      $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+                    }
                 }
                 //记录邮件LOG
                 MaillogTools::mailLog(MaillogTools::EMAIL_INSIDE,$sysErrMailtpl['id'],0,$receiver,$ex_mail_returnFlag,time(),$this->_mailTools->getMailFile(),$this->_mailTools->getError());
@@ -291,6 +296,9 @@ class ExchangeMailTools
             } else {
                 //取得客户收邮件地址数组、邮件暗送地址
                 $reciverArr = explode(';', $clientResult['email']);
+                //获取IT人员收件邮箱地址
+                $reciverItArr = explode(';',C('RECEIVER_EMAIL_ADDR_FOR_IT'));
+
                 $returnFlag = true;
                 $clientEmailCheck = new ClientEmailCheck();
                 if(false === $clientEmailCheck->emailCheck($clientResult['ci_no'],$reciverArr)){
@@ -298,12 +306,26 @@ class ExchangeMailTools
                     $returnFlag = false;
                 }else{
                     foreach ($reciverArr as $value) {
+                        dump($value);
                         if (false === $this->_mailTools->sendMail($value, MailTools::MAIL_SEND_ROUTE_ESB)) {
                             $this->_errorMsg = $this->_mailTools->getError();
                             $returnFlag = false;
                             //发送报警邮件
-                            $mailSendFailReportTools = new MailSendFailReportTools();
-                            $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_TERMINAL);
+                            if (C('IS_SEND_FAIL_MAIL') == 'TRUE') {
+                              $mailSendFailReportTools = new MailSendFailReportTools();
+                              $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_TERMINAL);
+                            }
+                        }
+                    }
+                    foreach ($reciverItArr as $value) {
+                        if (false === $this->_mailTools->sendMail($value, MailTools::MAIL_SEND_ROUTE_ESB)) {
+                            $this->_errorMsg = $this->_mailTools->getError();
+                            $returnFlag = false;
+                            //发送报警邮件  暂停
+                            if (C('IS_SEND_FAIL_MAIL') == 'TRUE') {
+                              $mailSendFailReportTools = new MailSendFailReportTools();
+                              $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_TERMINAL);
+                            }
                         }
                     }
                 }
@@ -329,8 +351,10 @@ class ExchangeMailTools
                         if (false === $this->_mailTools->sendMail($this->_mailTools->getCcReciver(), MailTools::MAIL_SEND_ROUTE_TERMINAL)) {
                             $ex_mail_returnFlag = false;
                             //发送报警邮件
-                            $mailSendFailReportTools = new MailSendFailReportTools();
-                            $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+                            if (C('IS_SEND_FAIL_MAIL') == 'TRUE') {
+                              $mailSendFailReportTools = new MailSendFailReportTools();
+                              $mailSendFailReportTools->send(MailSendFailReportTools::MAIL_SEND_ROUTE_ESB);
+                            }
                         }
                     }
                     //记录邮件LOG

@@ -109,9 +109,10 @@ class MailTools{
      * @param string/array $receiver    收件人Email地址、多人则为Array，单人则为string
      * @param string/array $bcc_receiver    暗送人Email地址、多人则为Array，单人则为string
      * @param string/array $cc_receiver    抄送人Email地址、多人则为Array，单人则为string
+     * @param string $sender 发件人
      * @return string
      */
-    public function sendMail($receiver,$messageSendRoute,$bcc_receiver="",$cc_receiver=""){
+    public function sendMail($receiver,$messageSendRoute,$bcc_receiver="",$cc_receiver="",$sender=""){
         //取得拒收邮件列表
         $mailrefuseModel = M('mailrefuse');
         $refuseArr = $mailrefuseModel->getField('mail',true);
@@ -159,7 +160,7 @@ class MailTools{
                 //$this->_PHPMailer->SMTPDebug = 2;                              // 开启Debug
                 $this->_PHPMailer->isSMTP();                                       // 使用SMTP
                 $this->_PHPMailer->Host = $mailConfArr[4];                         // 服务器地址
-                $this->_PHPMailer->Username = $mailConfArr[1];                     // SMTP 用户名（你要使用的邮件发送账号）
+                $this->_PHPMailer->Username = $mailConfArr[1];                   // SMTP 用户名（你要使用的邮件发送账号）
                 if(empty($mailConfArr[2])){
                     $this->_PHPMailer->SMTPAuth = false;
                 }else{
@@ -169,7 +170,11 @@ class MailTools{
                 //$this->_PHPMailer->SMTPSecure = 'tls';                         // 开启TLS 可选
                 $this->_PHPMailer->SMTPSecure = $mailConfArr[5];                   // 开启TLS 可选
                 $this->_PHPMailer->Port = $mailConfArr[3];                         // 端口
-                $this->_PHPMailer->setFrom($mailConfArr[1], $mailConfArr[0]);      // 来自
+                if (empty($sender)) {
+                    $this->_PHPMailer->setFrom($mailConfArr[1], $mailConfArr[0]);      // 来自
+                }else{
+                    $this->_PHPMailer->setFrom($mailConfArr[1],$sender);      // 来自
+                }
                 // 设置收件人
                 if (is_array($receiver)) {
                     foreach ($receiver as $value) {

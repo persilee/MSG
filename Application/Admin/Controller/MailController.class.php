@@ -131,7 +131,7 @@ class MailController extends AdminController{
             //取得测试邮件模板
             $Mailtpl = M('Mailtpl');
             $mailtplId = $Mailtpl->where(array('type'=>'TEST'))->getField('id');
-	    	$mailTools = new MailTools();
+	    	    $mailTools = new MailTools();
             if('ESB' == $mailRoute){
                 $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_ESB;
             }else{

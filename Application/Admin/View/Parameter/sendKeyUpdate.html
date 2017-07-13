@@ -1,0 +1,51 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"> {$__PLACE__.1}</h4>
+    </div>
+    <form action="{:U(sendKeyUpdate)}" method="post"  class="form-horizontal sendKeyUpdateForm">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_PARAMETER_KEY_ID}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="id" type="text" class="form-control" value="{$id}" readonly=""/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_PARAMETER_KEY_KEY}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="k_key" type="text" id="k_key" class="form-control" value="{$k_key}" readonly=""/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_PARAMETER_KEY_VALUE}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                  <select name="k_value" class="form-control" id="k_value">
+                      <option></option>
+                      <foreach name="k_value" item="vo">
+                          <option value="{$key}" <if condition="$k_value_id eq $key">selected</if>>{$key} - {$vo}</option>
+                      </foreach>
+                  </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{$Think.lang.TEMP_PARAMETER_KEY}<font color="red"><b>＊</b></font></label>
+                <div class="col-sm-9">
+                    <input name="key" type="text" id="key" class="form-control" value="{$keyCon}" readonly=""/>
+                </div>
+            </div>
+
+            <div class="modal-footer clearfix">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> {$Think.lang.SYSTEM_ACTION_CANCEL}</button>
+                <button type="submit" class="btn btn-primary pull-left ajax-post" target-form="sendKeyUpdateForm"><i class="fa fa-check"></i> {$Think.lang.SYSTEM_ACTION_SUBMIT}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+      $('#k_value').change(function(){
+        $('#key').val($('#k_key').val() + ':' + $('#k_value option:selected').val())
+      })
+    });
+</script>

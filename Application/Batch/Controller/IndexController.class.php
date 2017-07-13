@@ -44,6 +44,13 @@ class IndexController extends Controller {
 		exit;
 	}
 
+	//汇率文件自动上传
+	public function autoExRateUpload(){
+		$autoExRateUpload = new AutoExRateUpload();
+		$autoExRateUpload->exec();
+		exit;
+	}
+
 	public function autoDaySessReport(){
 		$autoDaySessReport = new AutoDaySessReport();
 		$autoDaySessReport->exec();

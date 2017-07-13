@@ -241,7 +241,7 @@ class ExRateTools
                 $colIndex++;
                 $colName = $this->getCellsIndex($colIndex);
                 //$objSheel->setCellValueExplicit($colName . $rowIndex, $colValue, \PHPExcel_Cell_DataType::TYPE_NUMERIC);
-                $objSheel->setCellValueExplicit($colName . $rowIndex, $colValue."%");
+                $objSheel->setCellValueExplicit($colName . $rowIndex, $colValue);
                 $objSheel->getStyle($colName . $rowIndex)->getBorders()->getOutline()->setBorderStyle(\PHPExcel_Style_Border::BORDER_THIN);
             }
         }
@@ -275,13 +275,29 @@ class ExRateTools
       $exrate = D('exrate');
       $exRateArr = $exrate->where($map)->order('exchange_ccy,target_ccy')->select();
       $list = $this->getList();
+      $exRateParameterArr = $this->getExParameterArr();
       //向框架中填充数据
       foreach($exRateArr as $exRate_value){
           $list[$exRate_value['exchange_ccy']][$exRate_value['target_ccy']] = $exRate_value['ex_rate'];
       }
+      foreach ($list as $key => $value) {
+        foreach ($value as $vk => $vv) {
+          if (!isset($exRateParameterArr[$key][$vk])) {
+              $list[$key][$vk] = "false";
+          }
+        }
+      }
       return $list;
     }
-
+    public function getExParameterArr(){
+      $Config = M('Config');
+      $map = array(
+        'name'   => 'EXRATE_PARAMETER',
+      );
+      $configArr = $Config->where($map)->find();
+      $exRateParameterArr = json_decode($configArr['value'] ,true);
+      return $exRateParameterArr;
+    }
     //取得空的兑换货币与目标货币的框架集合
     public function  getList(){
         //按ccy参数组合队列
@@ -291,7 +307,11 @@ class ExRateTools
         $list = array();
         foreach (C('EX_ARRAY') as $exchangeCcy_key => $exchangeCcy_value){
             foreach ($targetCcyArr as $targetCcyArr_key => $targetCcyArr_value){
+              if ($exchangeCcy_key == $targetCcyArr_key) {
+                $list[$exchangeCcy_key][$targetCcyArr_key] = "false";
+              }else{
                 $list[$exchangeCcy_key][$targetCcyArr_key] = "";
+              }
             }
         }
         return $list;

@@ -29,6 +29,11 @@ return array(
     'TEMP_PARAMETER_CALENDAR_UPLOAD_TYPE'   => "类型",
     'TEMP_PARAMETER_CALENDAR_UPLOAD_REMARK' => "备注",
 
+    'TEMP_PARAMETER_KEY_ID'                 => "秘钥标识",
+    'TEMP_PARAMETER_KEY'                    => "秘钥",
+    'TEMP_PARAMETER_KEY_KEY'                => "秘钥键值",
+    'TEMP_PARAMETER_KEY_VALUE'              => "秘钥值",
+
     'CONT_SYS_ERROR_SPECIFY_DATE'           => "请指定日期",
 
     'CONT_SYS_ERROR_CCY_ID_EXIST'           => "货币记录已经存在",

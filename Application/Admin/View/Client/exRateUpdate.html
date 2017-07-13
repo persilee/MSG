@@ -41,8 +41,8 @@
                 <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_EXRATE}</label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input name="exRate" type="text" class="form-control" value="{$result.rate|delZero}"/>
-                        <span class="input-group-addon">000.00000000</span>
+                        <input name="exRate" type="text" class="form-control" value="{$result.ex_rate}"/>
+                        <span class="input-group-addon" point="{$point}"></span>
                     </div>
                 </div>
             </div>
@@ -53,3 +53,14 @@
         </div>
     </form>
 </div>
+<script type="text/javascript">
+  $(function(){
+    var num = $('span[point]').attr('point');
+    var str = '000.';
+    var i = 0;
+    while (i++ < num) {
+      str += '0';
+    }
+    $('span[point]').html(str);
+  })
+</script>

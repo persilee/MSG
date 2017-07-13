@@ -374,6 +374,17 @@
                                                                     {$exchangeValue}
                                                                 </td>
                                                                 <foreach name="vo" item="item" key="targetValue">
+                                                                  <if condition="$item eq 'false'">
+                                                                    <td>
+                                                                      <div class="input-group">
+                                                                        <span class="input-group-addon">
+                                                                          <a class="func-dialog ban" title="{$Think.lang.SYSTEM_ACTION_BAN}" data-toggle="modal" data-target="#" href="#" url="">
+                                                                            <i class="fa fa-ban"></i>
+                                                                          </a>
+                                                                        </span>
+                                                                      </div>
+                                                                    </td>
+                                                                  <else />
                                                                     <td>
                                                                         <php>
                                                                             $value1 = $appoveExRateArr[$exchangeValue][$targetValue]['value'];
@@ -393,6 +404,7 @@
                                                                         </div>
                                                                         <if condition="$value1 nheq $value2"></div></if>
                                                                     </td>
+                                                                  </if>
                                                                 </foreach>
                                                             </tr>
                                                         </foreach>

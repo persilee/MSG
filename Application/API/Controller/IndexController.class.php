@@ -59,7 +59,7 @@ class IndexController extends Controller {
       $send_time = I('send_time');
       $param = I('param');
       $sms_content = I('sms_content');
-
+      /***************************验证**************************************/
       //验证access_key是否正确（规则：$send_type + $receiver + 当前时间（yyyy-mm-dd）的md5码）
       if (!empty($access_key) && $access_key == md5($send_type . $receiver . date('Y-m-d'))) {
         $this->_validation = true;
@@ -68,14 +68,14 @@ class IndexController extends Controller {
         return;
       }
       //验证send_type
-      if ($send_type == 'mail' || $send_type == 'sms' ) {
+      if ($send_type == 'mail' || $send_type == 'sms') {
         $this->_validation = true;
       }else{
         $this->returnData('40003',L('API_CODE_40003'),'');
         return;
       }
       //验证send_channel
-      if ($send_channel == 'esb' || $send_channel == 'terminal') {
+      if ($send_channel == 'esb' || $send_channel == 'terminal' || empty($send_channel)) {
         $this->_validation = true;
       }else{
         $this->returnData('40004',L('API_CODE_40004'),'');
@@ -85,39 +85,44 @@ class IndexController extends Controller {
       if (empty($access_key)) {
         $this->returnData('40005',L('API_CODE_40005'),'');
         return;
-      }elseif (false === filter_var($receiver,FILTER_VALIDATE_EMAIL)) {
+      }elseif (false === $this->verEmail($receiver)) {
         $this->returnData('40006',L('API_CODE_40006'),'');
         return;
       }else{
+        $receiver = explode(';',$receiver);
         $this->_validation = true;
       }
       //验证cc_receiver
-      if (false === filter_var($cc_receiver,FILTER_VALIDATE_EMAIL)) {
+      if (!empty($cc_receiver) && false === $this->verEmail($cc_receiver)) {
         $this->returnData('40007',L('API_CODE_40007'),'');
         return;
       }else{
+        $cc_receiver = explode(';',$cc_receiver);
         $this->_validation = true;
       }
       //验证bcc_receiver
-      if (false === filter_var($bcc_receiver,FILTER_VALIDATE_EMAIL)) {
+      if (!empty($bcc_receiver) && false === $this->verEmail($bcc_receiver)) {
         $this->returnData('40008',L('API_CODE_40008'),'');
         return;
       }else{
+        $bcc_receiver = explode(';',$bcc_receiver);
         $this->_validation = true;
       }
       //验证Tpl_id
-      if (empty($Tpl_id)) {
-        $this->returnData('40009',L('API_CODE_40009'),'');
-        return;
-      }elseif ($send_type == 'mail') {
-        $Mailtpl = M('Mailtpl');
-        if ($Mailtpl->where(array('id'=>$Tpl_id))->getField('id')) {
-          $this->returnData('40009',L('API_CODE_40010'),'');
+      if ($send_type == 'mail') {
+        if (empty($Tpl_id)) {
+          $this->returnData('40009',L('API_CODE_40009'),'');
           return;
+        }else{
+          $Mailtpl = M('Mailtpl');
+          if (!$Mailtpl->where(array('id'=>$Tpl_id))->getField('id')) {
+            $this->returnData('40009',L('API_CODE_40010'),'');
+            return;
+          }
         }
-      }elseif ($send_type == 'mail'){
+      }elseif ($send_type == 'sms') {
         $Smstpl = M('Smstpl');
-        if ($Smstpl->where(array('id'=>$Tpl_id))->getField('id')) {
+        if (!$Smstpl->where(array('id'=>$Tpl_id))->getField('id')) {
           $this->returnData('40010',L('API_CODE_40010'),'');
           return;
         }
@@ -125,43 +130,170 @@ class IndexController extends Controller {
         $this->_validation = true;
       }
       //验证send_date
-      $is_date = strtotime($send_date)?strtotime($send_date):false;
-      if ($is_date) {
-        $this->_validation = true;
-      }else{
-        $this->returnData('40011',L('API_CODE_40011'),'');
-        return;
-      }
-      //验证send_time
-      $is_time = strtotime($send_time)?strtotime($send_time):false;
-      if (empty($send_time)) {
-        $this->returnData('40012',L('API_CODE_40012'),'');
-        return;
-      }elseif ($is_time) {
-        $this->_validation = true;
-      }else{
-        $this->returnData('40013',L('API_CODE_40013'),'');
-        return;
+      if (!empty($send_date)) {
+        $is_date = strtotime($send_date)?strtotime($send_date):false;
+        if ($is_date) {
+          $this->_validation = true;
+        }else{
+          $this->returnData('40011',L('API_CODE_40011'),'');
+          return;
+        }
+        //验证send_time
+        $is_time = strtotime($send_time)?strtotime($send_time):false;
+        if (empty($send_time)) {
+          $this->returnData('40012',L('API_CODE_40012'),'');
+          return;
+        }elseif ($is_time) {
+          $this->_validation = true;
+        }else{
+          $this->returnData('40013',L('API_CODE_40013'),'');
+          return;
+        }
       }
       //验证param
+      if ($send_type == 'mail') {
+        switch ($Tpl_id) {
+          case '6':
+            $tplParam = array(
+              'name_title'            => '',
+              'name'                  => '',
+              'related_staffs'        => '',
+              'rate_date'             => '',
+              'rate_time'             => '',
+              'rate'                  => '',
+              'receiver'              => '',
+            );
+            break;
+          case '14':
+            $tplParam = array(
+              'name_title'            => '',
+              'name'                  => '',
+              'related_staffs'        => '',
+              'ex_rate_date'          => '',
+              'ex_rate_time'          => '',
+              'ex_rate'               => '',
+              'receiver'              => '',
+            );
+            break;
 
-      //取得测试邮件模板
-      $mailTools = new MailTools();
-      // if('ESB' == $mailRoute){
-      //   $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_ESB;
-      // }else{
-      //   $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_TERMINAL;
-      // }
-      // if(false === $mailTools->prepareMail($mailtplId,'test')){
-      //   $this->error($mailTools->getError());
-      // }elseif(false === $mailTools->sendMail($receiver,$messgeSendRoute)){
-      //         $this->error($mailTools->getError());
-      // }else{
-      //   $this->success(L('SYSTEM_MESSAGE_SUCCESS'),Cookie('__forward__'));
-      // }
-      exit;
+          default:
+            $tplParam = array();
+            break;
+        }
+      }elseif ($send_type == 'sms') {
+        switch ($Tpl_id) {
+          case '1':
+            $tplParam = array();
+            break;
+
+          default:
+            $tplParam = array();
+            break;
+        }
+      }
+      if (count(array_diff_key($tplParam,$param)) > 0) {
+        $this->returnData('40015',L('API_CODE_40015'),'');
+        return;
+      }else{
+        $this->_validation = true;
+      }
+      //验证sms_content
+      if ($send_type == 'sms' && empty($Tpl_id) && empty($sms_content)) {
+        $this->returnData('40014',L('API_CODE_40014'),'');
+        return;
+      }else{
+        $this->_validation = true;
+      }
+      /************************验证end*****************************************/
+      //邮件信息发送
+      if ($send_type == 'mail') {
+        $mailTools = new MailTools();
+        if('esb' == $send_channel){
+          $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_ESB;
+        }else{
+          $messgeSendRoute = MailTools::MAIL_SEND_ROUTE_TERMINAL;
+        }
+        //把参数数组转换为表格
+        foreach ($param as $key => $value) {
+          if (is_array($value)) {
+            $param[$key] = $this->getTableStr($value);
+          }
+        }
+        //判断是即时发送还是延迟发送
+        if (!empty($send_date)) {
+          $sDate = strtotime($send_date . ' ' . $send_time);
+          $nDate = strtotime(date('Y-m-d H:i:s'));
+          if ($sDate < $nDate) {
+            if(false === $mailTools->prepareMail($Tpl_id,$param)){
+              $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
+            }elseif(false === $mailTools->sendMail($sender,$receiver,$messgeSendRoute)){
+              $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
+            }else{
+              $this->returnData('0',L('API_CODE_0'),'');
+            }
+          }else{
+            $flag = 'TRUE';
+            while($flag == 'TRUE') {
+              $nDate = strtotime(date('Y-m-d H:i:s'));
+              if ($sDate < $nDate) {
+                if(false === $mailTools->prepareMail($Tpl_id,$param)){
+                  $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
+                }elseif(false === $mailTools->sendMail($sender,$receiver,$messgeSendRoute)){
+                  $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
+                }else{
+                  $this->returnData('0',L('API_CODE_0'),'');
+                }
+                $flag = 'FALSE';
+              }else{
+                sleep(15);
+              }
+            }
+          }
+        }
+
+      }
     }
-
+    public function getTableStr($data){
+      foreach ($data as $key => $value) {
+        foreach ($value as $vk => $vv) {
+          $trArr[$vk] = $vk;
+        }
+      }
+      $trArr = array_unique($trArr);
+      if (is_array($data)) {
+        $tableStr = "<table style='border-collapse:collapse;border:none;' width='100%'><thead><tr style='border: solid #ccc 1px;'><td style='border: solid #ccc 1px;'></td>";
+        foreach ($trArr as $key => $value) {
+          $tableThStr .= "<th style='border: solid #ccc 1px;'>" . $value . "</th>";
+        }
+        $tableThStr .= "</tr></thead><tbody>";
+        foreach ($data as $key => $value) {
+          $tableTbStr .= "<tr><td style='border: solid #ccc 1px;'>" . $key . "</td>";
+          foreach ($trArr as $tr) {
+            if (isset($data[$key][$tr])) {
+              $tableTbStr .= "<td align='center' style='border: solid #ccc 1px;'>" . $data[$key][$tr] . "%</td>";
+            }else{
+              $tableTbStr .= "<td style='border: solid #ccc 1px;'></td>";
+            }
+          }
+          $tableTbStr .= "</tr>";
+        }
+        $tableStr .= $tableThStr . $tableTbStr . "</tbody></table>";
+        return $tableStr;
+      }
+      return $data;
+    }
+    public function verEmail($receiver){
+      $receiver = explode(';',$receiver);
+      $bool = true;
+      foreach ($receiver as $key => $value) {
+        if ($bool) {
+          $bool = filter_var($value,FILTER_VALIDATE_EMAIL);
+        }else{
+          return $bool;
+        }
+      }
+      return $bool;
+    }
     public function returnData($code,$message,$data){
       $returnData = array(
         'code'    =>    $code,

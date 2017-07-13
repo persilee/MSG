@@ -1,2 +1,2 @@
-curl http://msg:8888/batch.php/index/autoDaySessReport
-curl http://msg:8888/batch.php/index/autoDayErrorReport
+curl http://msg:9999/batch.php/index/autoDaySessReport
+curl http://msg:9999/batch.php/index/autoDayErrorReport

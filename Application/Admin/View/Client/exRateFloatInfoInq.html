@@ -22,6 +22,17 @@
                                     {$exchangeCcyValue}
                                 </td>
                                 <foreach name="vo" item="item" key="targetCcyValue">
+                                  <if condition="$item eq 'false'">
+                                    <td>
+                                      <div class="input-group">
+                                        <span class="input-group-addon">
+                                          <a class="func-dialog ban" title="{$Think.lang.SYSTEM_ACTION_BAN}" data-toggle="modal" data-target="#" href="#" url="">
+                                            <i class="fa fa-ban"></i>
+                                          </a>
+                                        </span>
+                                      </div>
+                                    </td>
+                                  <else />
                                     <td>
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -31,6 +42,7 @@
                                             <input type="text" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][value]" value="{$item['value']|delZero}" class="form-control input-sm float_value" disabled="disabled" style="width:50px;"/>
                                         </div>
                                     </td>
+                                  </if>
                                 </foreach>
                             </tr>
                         </foreach>

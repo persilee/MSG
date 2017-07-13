@@ -15,23 +15,31 @@
     $(function(){
       $('h1').css('color','red');
       $.post(
-        'http://192.168.230.79:8989/interface.php',
+        'http://192.168.230.111:9999/interface.php',
         {
-          access_key: 'cd4a532548d39a1c1a45071a52cd3a6d',
+          access_key: '8348f1e7c249c165c310616dee7518c8',
           send_type: 'mail',
           send_channel:'esb',
           sender:'per',
-          receiver:'persilee@foxmail.com',
+          receiver:'persilee@foxmail.com;li_shy@hisuntech.com',
           Tpl_id:'6',
-          send_date:'2017-07-06',
-          send_time:'12:00',
+          send_date:'2017-07-10',
+          send_time:'20:51',
           param:{
             name_title:'',
             related_staffs:'',
             name:'per',
-            rate_date:'2017-07-06',
-            rate_time:'14:23',
-            rate:'0.23',
+            rate_date:'2017-07-10',
+            rate_time:'14:29',
+            rate:{
+                "Saving":{
+                  "USD":"0",
+                  "HKD":"1"
+                },
+                "O/N":{
+                  "USD":"0.3"
+                }
+              },
             receiver:''
           }
         },

@@ -29,6 +29,11 @@ return array(
     'TEMP_PARAMETER_CALENDAR_UPLOAD_TYPE'   => "Type ",
     'TEMP_PARAMETER_CALENDAR_UPLOAD_REMARK' => "Remark ",
 
+    'TEMP_PARAMETER_KEY_ID'                 => "Key ID",
+    'TEMP_PARAMETER_KEY'                    => "Key",
+    'TEMP_PARAMETER_KEY_KEY'                => "Key key",
+    'TEMP_PARAMETER_KEY_VALUE'              => "Key value",
+
     'CONT_SYS_ERROR_SPECIFY_DATE'           => "Please specify the date ",
 
     'CONT_SYS_ERROR_CCY_ID_EXIST'           => "Currency record already exists ",

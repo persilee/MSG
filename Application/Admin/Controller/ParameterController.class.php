@@ -13,6 +13,7 @@
 namespace Admin\Controller;
 use Common\Common\CalendarTools;
 use Common\Common\CurrencyTool;
+use Common\Common\ExRateTools;
 use Common\Common\LogTools;
 
 Vendor('PHPExcel.PHPExcel');
@@ -504,6 +505,131 @@ class ParameterController extends AdminController{
         }else{
             $this->assign('result',$result);
             $this->display('autoTaskConfig');
+        }
+    }
+    /*================================================================================================*/
+    /*  汇率参数维护
+    /*      功能清单：
+    /*          1-exRateParameterSet    ： 汇率参数配置
+    /*================================================================================================*/
+    public function exRateParameterSet(){
+      if (IS_POST) {
+        $exRateArr = I('exRateArr');
+        $Config = M('Config');
+        $map = array(
+          'name'   => 'EXRATE_PARAMETER',
+        );
+        if (false === $Config->where($map)->setField('value',json_encode($exRateArr))) {
+          $this->error(L('SYSTEM_MESSAGE_ERROR'));
+        }else{
+          $this->success(L('SYSTEM_MESSAGE_SUCCESS'),Cookie('__forward__'));
+        }
+      }else{
+        $exRateTools = new ExRateTools();
+        $exRateArr = $exRateTools->getList();
+        // dump($exRateArr);
+        $Config = M('Config');
+        $map = array(
+          'name'   => 'EXRATE_PARAMETER',
+        );
+        $configArr = $Config->where($map)->find();
+        $exRateParameter = json_decode($configArr['value'] ,true);
+
+        foreach ($exRateParameter as $exchange_ccy_key => $exchange_ccy_item) {
+            foreach ($exchange_ccy_item as $target_ccy_key => $target_ccy_item) {
+                if (isset($exRateArr[$exchange_ccy_key][$target_ccy_key])) {
+                    $exRateArr[$exchange_ccy_key][$target_ccy_key] = $exRateParameter[$exchange_ccy_key][$target_ccy_key];
+                }
+            }
+        }
+        // 记录当前列表页的cookie
+        Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
+        $this->assign('exRateArr', $exRateArr);
+        $this->display('exRateParameterSet');
+      }
+    }
+    /*================================================================================================*/
+    /*  信息发送秘钥参数维护
+    /*      功能清单：
+    /*          1-sendKeyList    ： 信息发送秘钥参数列表
+    /*          2-sendKeyAdd     :  信息发送秘钥参数新增
+    /*          3-sendKeyDelete  :  信息发送秘钥参数删除
+    /*          4-sendKeyUpdate  :  信息发送秘钥参数修改
+    /*================================================================================================*/
+    public function sendKeyList(){
+      $list = $this->lists ( 'Key', '', '`id` ASC' );
+      Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
+      $this->assign('list',$list);
+      $this->display('sendKeyList');
+    }
+
+    //秘钥添加
+    public function sendKeyAdd(){
+        if(IS_POST){
+            $data = array(
+                'id' => I('id'),
+                'date' => date('Y-m-d'),
+                'key' => I('key'),
+            );
+            $Key = M('Key');
+            if(false === $Key->add($data)){
+                $this->error(L('SYSTEM_MESSAGE_ERROR'));
+            }else{
+                $this->success(L('SYSTEM_MESSAGE_SUCCESS'), Cookie('__forward__'));
+            }
+        }else{
+            $Key = M('Key');
+            $Emp = M('Emp');
+            $id = $Key->max('id') + 1;
+            $k_key = MD5(randCode(10));
+            $k_value = $Emp->getField('id,name',true);
+            $this->assign('id',$id);
+            $this->assign('k_key',$k_key);
+            $this->assign('k_value',$k_value);
+            $this->display('sendKeyAdd');
+        }
+    }
+    //秘钥修改
+    public function sendKeyUpdate(){
+        if(IS_POST){
+            $data = array(
+                'id' => I('id'),
+                'date' => date('Y-m-d'),
+                'key' => I('key'),
+            );
+            $Key = M('Key');
+            if(false === $Key->save($data)){
+                $this->error(L('SYSTEM_MESSAGE_ERROR'));
+            }else{
+                $this->success(L('SYSTEM_MESSAGE_SUCCESS'), Cookie('__forward__'));
+            }
+        }else{
+            $Key = M('Key');
+            $Emp = M('Emp');
+            $id = I('id');
+            $keyArr = $Key->where("id = $id")->find();
+            $keyCon = $keyArr['key'];
+            $keyValArr = explode(':',$keyArr['key']);
+            $k_key = $keyValArr[0];
+            $k_value = $Emp->getField('id,name',true);
+            $k_value_id = $keyValArr[1];
+            // $k_value = ;
+            $this->assign('id',$id);
+            $this->assign('k_key',$k_key);
+            $this->assign('k_value',$k_value);
+            $this->assign('k_value_id',$k_value_id);
+            $this->assign('keyCon',$keyCon);
+            $this->display('sendKeyUpdate');
+        }
+    }
+    //秘钥删除
+    public function sendKeyDelete(){
+        $id = I('id');
+        $Key = M('Key');
+        if(false === $Key->where("id = $id")->delete()){
+            $this->error(L('SYSTEM_MESSAGE_ERROR'));
+        }else{
+            $this->success(L('SYSTEM_MESSAGE_SUCCESS'), Cookie('__forward__'));
         }
     }
 }

@@ -24,15 +24,27 @@
                                     {$exchangeCcyValue}
                                 </td>
                                 <foreach name="vo" item="item" key="targetCcyValue">
-                                    <td>
+                                    <if condition="$item eq 'false'">
+                                      <td>
                                         <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <input type="checkbox" class="float_check" <neq name="item" value="">checked</neq>/> <i class="fa fa-check-circle"></i>
-                                                <input type="checkbox" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][is_exRate]" class="is_exRate" value="1" <eq name="item['is_exRate']" value="1">checked</eq>/> <i class="fa fa-bar-chart-o"></i>
-                                            </span>
-                                            <input type="text" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][value]" value="{$item['value']|delZero}" class="form-control input-sm float_value" style="width:50px;"/>
+                                          <span class="input-group-addon">
+                                            <a class="func-dialog ban" title="{$Think.lang.SYSTEM_ACTION_BAN}" data-toggle="modal" data-target="#" href="#" url="">
+                                              <i class="fa fa-ban"></i>
+                                            </a>
+                                          </span>
                                         </div>
-                                    </td>
+                                      </td>
+                                    <else />
+                                      <td>
+                                          <div class="input-group">
+                                              <span class="input-group-addon">
+                                                  <input type="checkbox" class="float_check" <neq name="item" value="">checked</neq>/> <i class="fa fa-check-circle"></i>
+                                                  <input type="checkbox" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][is_exRate]" class="is_exRate" value="1" <eq name="item['is_exRate']" value="1">checked</eq>/> <i class="fa fa-bar-chart-o"></i>
+                                              </span>
+                                              <input type="text" name="exRateArr[{$exchangeCcyValue}][{$targetCcyValue}][value]" value="{$item['value']|delZero}" class="form-control input-sm float_value" style="width:50px;"/>
+                                          </div>
+                                      </td>
+                                    </if>
                                 </foreach>
                             </tr>
                         </foreach>

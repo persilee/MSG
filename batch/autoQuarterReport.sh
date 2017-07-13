@@ -1,2 +1,2 @@
-curl http://msg:8888/batch.php/index/autoQuarterSessReport
-curl http://msg:8888/batch.php/index/autoQuarterErrorReport
+curl http://msg:9999/batch.php/index/autoQuarterSessReport
+curl http://msg:9999/batch.php/index/autoQuarterErrorReport

@@ -214,6 +214,12 @@ class ClientController extends AdminController
             $exRate_float_arr = json_decode($result['ex_rate_float'], true);
             $exRateTools = new ExRateTools();
             $exRateArr = $exRateTools->getList();
+            $Config = M('Config');
+            $map = array(
+              'name'   => 'EXRATE_PARAMETER',
+            );
+            $configArr = $Config->where($map)->find();
+            $exRateParameter = json_decode($configArr['value'] ,true);
             foreach ($exRate_float_arr as $exchange_ccy_key => $exchange_ccy_item) {
                 foreach ($exchange_ccy_item as $target_ccy_key => $target_ccy_item) {
                     if (isset($exRateArr[$exchange_ccy_key][$target_ccy_key])) {
@@ -221,6 +227,15 @@ class ClientController extends AdminController
                     }
                 }
             }
+            foreach ($exRateArr as $key => $value) {
+              foreach ($value as $vk => $vv) {
+                if (!isset($exRateParameter[$key][$vk])) {
+                    $exRateArr[$key][$vk] = "false";
+                }
+              }
+            }
+            // dump($exRateArr);
+            // dump($exRateParameter);
             //取得邮件模板
             $mailtplTools = new MailTplTools();
             $instRateMailtplArr = $mailtplTools->getMailtplArr('INTEREST');
@@ -269,6 +284,12 @@ class ClientController extends AdminController
         $rate_float_arr = json_decode($result['rate_float'], true);
         $rateTools = new RateTools();
         $rateArr = $rateTools->getList();
+        $Config = M('Config');
+        $map = array(
+          'name'   => 'EXRATE_PARAMETER',
+        );
+        $configArr = $Config->where($map)->find();
+        $exRateParameter = json_decode($configArr['value'] ,true);
         foreach ($rate_float_arr as $tenor_key => $tenor_item) {
             foreach ($tenor_item as $ccy_key => $ccy_item) {
                 if (isset($rateArr[$tenor_key][$ccy_key])) {
@@ -288,7 +309,13 @@ class ClientController extends AdminController
                 }
             }
         }
-
+        foreach ($exRateArr as $key => $value) {
+          foreach ($value as $vk => $vv) {
+            if (!isset($exRateParameter[$key][$vk])) {
+                $exRateArr[$key][$vk] = "false";
+            }
+          }
+        }
         //取得邮件模板
         $mailtplTools = new MailTplTools();
         $instRateMailtplArr = $mailtplTools->getMailtplArr('INTEREST');
@@ -581,6 +608,7 @@ class ClientController extends AdminController
                 $exRate_float_arr = json_decode($appoveResult['ex_rate_float'], true);
                 $exRateTools = new ExRateTools();
                 $exRateArr = $exRateTools->getList();
+                $exRateParameterArr = $exRateTools->getExParameterArr();
                 foreach ($exRate_float_arr as $exchange_key => $exchange_item) {
                     foreach ($exchange_item as $target_key => $target_item) {
                         if (isset($exRateArr[$exchange_key][$target_key])) {
@@ -588,6 +616,13 @@ class ClientController extends AdminController
                             $exRateArr[$exchange_key][$target_key]['is_exRate'] = $exRate_float_arr[$exchange_key][$target_key]['is_exRate'];
                         }
                     }
+                }
+                foreach ($exRateArr as $key => $value) {
+                  foreach ($value as $vk => $vv) {
+                    if (!isset($exRateParameterArr[$key][$vk])) {
+                        $exRateArr[$key][$vk] = "false";
+                    }
+                  }
                 }
                 $this->assign('appoveResult', $appoveResult);
                 $this->assign('appoveRateArr', $rateArr);
@@ -620,6 +655,7 @@ class ClientController extends AdminController
                     $exRateTools = new ExRateTools();
                 }
                 $exRateArr = $exRateTools->getList();
+                $exRateParameterArr = $exRateTools->getExParameterArr();
                 foreach ($exRate_float_arr as $exchange_key => $exchange_item) {
                     foreach ($exchange_item as $target_key => $target_item) {
                         if (isset($exRateArr[$exchange_key][$target_key])) {
@@ -627,6 +663,13 @@ class ClientController extends AdminController
                             $exRateArr[$exchange_key][$target_key]['is_exRate'] = $exRate_float_arr[$exchange_key][$target_key]['is_exRate'];
                         }
                     }
+                }
+                foreach ($exRateArr as $key => $value) {
+                  foreach ($value as $vk => $vv) {
+                    if (!isset($exRateParameterArr[$key][$vk])) {
+                        $exRateArr[$key][$vk] = "false";
+                    }
+                  }
                 }
                 $this->assign('clientResult', $clientResult);
                 $this->assign('rateArr', $rateArr);
@@ -689,10 +732,12 @@ class ClientController extends AdminController
         }
         $exRateTools = new ExRateTools();
         $list = $exRateTools->getExDateList($date);
+        $pointArr = $exRateTools->getExParameterArr();
         $this->assign('list', $list);
+        $this->assign('pointArr', $pointArr);
         $this->assign('date', $date);
-      // 记录当前列表页的cookie
-      Cookie('__forward__', $_SERVER ['REQUEST_URI']);
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER ['REQUEST_URI']);
         $this->display('exRateList');
     }
     //汇率添加
@@ -701,6 +746,7 @@ class ClientController extends AdminController
         $date = I('date');
         $exchangeCcy = I('exchangeCcy');
         $targetCcy = I('targetCcy');
+        $point = I('point');
         if (IS_POST) {
             $exRate = I('exRate');
             $exRateTools = new ExRateTools();
@@ -722,8 +768,9 @@ class ClientController extends AdminController
             }
             $map['date'] = $date;
             $this->assign('result', $map);
-        //取得贷币数组
-        $currencyTool = new CurrencyTool();
+            //取得贷币数组
+            $currencyTool = new CurrencyTool();
+            $this->assign('point', $point);
             $ccyArr = $currencyTool->getCcyArr(1);
             $this->assign('ccyArr', $ccyArr);
             $this->display('exRateAdd');
@@ -748,6 +795,7 @@ class ClientController extends AdminController
             $date = I('date');
             $exchangeCcy = I('exchangeCcy');
             $targetCcy = I('targetCcy');
+            $point = I('point');
             $map = array(
                 'date' => date_to_int('-', $date),
                 'exchange_ccy' => $exchangeCcy,
@@ -758,6 +806,7 @@ class ClientController extends AdminController
                 $this->error(L('SYSTEM_ERROR_RECORD_NOT_EXIST'));
             }
             $this->assign('date', $date);
+            $this->assign('point', $point);
             $this->assign('result', $result);
             //取得贷币数组
             $currencyTool = new CurrencyTool();
@@ -854,6 +903,12 @@ class ClientController extends AdminController
     {
         $date = I('date');
         if (IS_POST) {
+            $Config = M('Config');
+            $map = array(
+              'name'   => 'EXRATE_PARAMETER',
+            );
+            $configArr = $Config->where($map)->find();
+            $exRateParameter = json_decode($configArr['value'] ,true);
             $return  = array('status' => 1, 'info' => L('SYSTEM_ACTION_UPLOAD_SUCCESS'), 'data' => '');
             // 读取上传文件并写表
             $upload = new \Think\Upload();// 实例化上传类
@@ -877,7 +932,7 @@ class ClientController extends AdminController
                 $targetCcyArr = array();
                 $returnArr = array();
                 //==============取得参数设置的利差===============//
-                $warning_spread = C('INT_RATE_WARNING_SPREAD');
+                $warning_spread = C('EX_RATE_WARNING_SPREAD');
                 //=============================================//
                 foreach ($objPHPExcel->getWorksheetIterator() as $sheet) {
                     foreach ($sheet->getRowIterator() as $row) {
@@ -889,18 +944,22 @@ class ClientController extends AdminController
                             } else {
                                 //判断是否是同种货币，如果是同种货币提示，且强制设置为0
                                 if ($targetCcyArr[$key] == $exchangeCcyValue) {
-                                    if (($cell->getValue() * 100) != 0) {
+                                    if (($cell->getValue()) != 0) {
                                         $exRateValue = sprintf("%.8f", 0);
                                         $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
                                     }
                                 } else {
-                                    $exRateValue = $cell->getValue() * 100;
-                                    $exRateValue = sprintf("%.8f", $exRateValue);
-                                    $map = array(
-                                      'date'   => date_to_int('-', $date),
-                                      'exchange_ccy'  => $exchangeCcyValue,
-                                      'target_ccy'    => $targetCcyArr[$key],
-                                  );
+                                    if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
+                                      $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
+                                      $point = $tempArr['value'];
+                                      $exRateValue = $cell->getValue();
+                                      $exRateValue = sprintf("%.".$point."f", $exRateValue);
+                                      $map = array(
+                                        'date'   => date_to_int('-', $date),
+                                        'exchange_ccy'  => $exchangeCcyValue,
+                                        'target_ccy'    => $targetCcyArr[$key],
+                                    );
+                                  }
                                 }
                                 if (is_array($result = $ExRate->where($map)->find())) {
                                     $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
@@ -927,7 +986,7 @@ class ClientController extends AdminController
                                         $spreadWarningExRate = false;
                                     }
                                     if ((false !== $spreadWarningExRate) && (abs($lastDateExRate - $exRateValue) > $spreadWarningExRate)) {
-                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_SPREAD_TOO_MUCH'));
+                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EX_SPREAD_TOO_MUCH'));
                                     }
                                 }
                             }
