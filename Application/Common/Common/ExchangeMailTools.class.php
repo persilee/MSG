@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Hipr
- * Date: 16/8/4
+ * User: per
+ * Date: 17/6/22
  * Time: 16:48
  */
 
@@ -93,7 +93,7 @@ class ExchangeMailTools
                 //如果当前客户没有相应的邮件地址,则不对其发送邮件
                 if("" != $clientResult['email']) {
                     //对客邮件处理
-                    if(false !== $this->clientInterestMail($mailtpl_id, $clientResult)){
+                    if(false !== $this->clientExchangeMail($mailtpl_id, $clientResult)){
                         //邮件成功发送后,写客户信息中的最后发送时间
                         $Client->where(array('ci_no'=>$clientResult['ci_no']))->setField('inst_send_time',time());
                     }
@@ -190,12 +190,16 @@ class ExchangeMailTools
         $language = explode('-',$clientResult['tpl_priority_lang']);
         //客户信息中保存的汇率信息
         $ex_rate_float_arr = json_decode($clientResult['ex_rate_float'],true);
+        //获取汇率参数设置值
+        $exRateTools = new ExRateTools();
+        $exParameterArr = $exRateTools->getExParameterArr();
         //===定义对客汇率的X轴与Y轴数组===
         $exchangeCcyArr = array();
         $targetCcyArr = array();
         //=============================
         foreach($ex_rate_float_arr as $exchangeCcy_key => $exchangeCcy_item){
             foreach ($exchangeCcy_item as $targetCcy_key => $targetCcy_item){
+              if (isset($exParameterArr[$exchangeCcy_key][$targetCcy_key])) {
                 if(isset($this->_exRateArr[$exchangeCcy_key][$targetCcy_key])){
                     //计算对客汇率值
                     //如果当前指定的是汇率值,则直接取汇率值为对客汇率
@@ -252,6 +256,7 @@ class ExchangeMailTools
                     $exchangeCcyArr[] = $exchangeCcy_key;
                     $targetCcyArr[] = $targetCcy_key;
                 }
+              }
             }
         }
         //将利率数组转为TABLE格式
@@ -306,7 +311,6 @@ class ExchangeMailTools
                     $returnFlag = false;
                 }else{
                     foreach ($reciverArr as $value) {
-                        dump($value);
                         if (false === $this->_mailTools->sendMail($value, MailTools::MAIL_SEND_ROUTE_ESB)) {
                             $this->_errorMsg = $this->_mailTools->getError();
                             $returnFlag = false;

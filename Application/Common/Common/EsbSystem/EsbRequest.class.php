@@ -43,7 +43,7 @@ class EsbRequest
 
     public function __construct()
     {
-        $this->_esbConfig = explode(":",C('ESB_CONFIG'));
+        $this->_esbConfig = explode(":",C('ESB_CONFIG'))
     }
 
     /**

@@ -10,131 +10,146 @@ namespace Common\Common;
 Vendor('PHPExcel.PHPExcel');
 Vendor('PHPExcel.PHPExcel.IOFactory');
 
-class AutoInterestRateUpload extends AutoTaskTools
+class AutoExRateUpload extends AutoTaskTools
 {
-    const MAILTPL_TYPE_RATE_UPLOAD         = 'INTRATEUPL';   //利率上传通知邮件业务类型
+    const MAILTPL_TYPE_RATE_UPLOAD         = 'EXRATEUPL';   //汇率上传通知邮件业务类型
 
     public function exec(){
-        $runFlag = true;
-        while ($runFlag) {
+        $runFlag = 'true';
+        while ($runFlag == 'true') {
             $this->echoMsg('H');
             //==============取得上传文件的参数、文件目录、文件名称===============//
-            $filename = C('INT_RATE_UPLOAD_FILE');
-            $warning_spread = C('INT_RATE_WARNING_SPREAD');
-            $tonerArr = C('TENOR_ARRAY');
-            $mail_receiver = C('INT_RATE_UPLOAD_RECEIVER');
+            $filename = C('EX_RATE_UPLOAD_FILE');
+            $warning_spread = C('EX_RATE_WARNING_SPREAD');
+            $exrateArr = C('EX_ARRAY');
+            $mail_receiver = C('EX_RATE_UPLOAD_RECEIVER');
             //=============================================//
             if(file_exists($filename)){
-                continue;
+                // continue;
             }elseif(file_exists($filename.".xls")){
                 $filename .= ".xls";
             }else{
                 $filename .= ".xlsx";
             }
-            if (file_exists($filename) && $this->checkTask('AutoInterestRateUpload')) {
+            if (file_exists($filename) && $this->checkTask('AutoExRateUpload')) {
                 //写文件处理开始log
                 $this->echoMsg('C', "File upload start ");
                 $fileType = \PHPExcel_IOFactory::identify($filename);
                 $objReader = \PHPExcel_IOFactory::createReader($fileType);
                 $objReader->setLoadSheetsOnly(true);
                 $objPHPExcel = $objReader->load($filename);
-                $rateTools = new RateTools();
-                $Rate = M('Rate');
-                $ccyArr = array();
+                $exRateTools = new ExRateTools();
+                $ExRate = M('exrate');
+                $exRateParameter = $exRateTools->getExParameterArr();
+                $targetCcyArr = array();
                 $returnArr = array();
+                //==============取得参数设置的利差===============//
+                $warning_spread = C('EX_RATE_WARNING_SPREAD');
+                //=============================================//
                 foreach ($objPHPExcel->getWorksheetIterator() as $sheet) {
                     foreach ($sheet->getRowIterator() as $row) {
                         foreach ($row->getCellIterator() as $key => $cell) {
-                            if($row->getRowIndex() == 1){
-                                $ccyArr[] = $cell->getValue();
-                            }elseif($key == 0) {
-                                $tenorValue = $cell->getValue();
-                            }else{
-                                $rateValue = $cell->getValue() * 100;
-                                $rateValue = sprintf("%.8f",$rateValue);
-                                $map = array(
-                                    'date'   => date_to_int('-',date('Y-m-d'))+0,
-                                    'tenor'  => $tenorValue,
-                                    'ccy'    => $ccyArr[$key],
-                                );
-                                if(is_array($result = $Rate->where($map)->find())){
-                                    $returnCode = $rateTools->updateRate($result['date'], $result['seq'], $rateValue);
-                                }else{
-                                    $returnCode = $rateTools->addRate(date('Y-m-d'),$tenorValue,$ccyArr[$key],$rateValue);
+                            if ($row->getRowIndex() == 1) {
+                                $targetCcyArr[] = $cell->getValue();
+                            } elseif ($key == 0) {
+                                $exchangeCcyValue = $cell->getValue();
+                            } else {
+                                //判断是否是同种货币，如果是同种货币提示，且强制设置为null
+                                if ($targetCcyArr[$key] == $exchangeCcyValue) {
+                                    if (($cell->getValue()) != 0 && ($cell->getValue()) != '' && ($cell->getValue()) != 'false') {
+                                        $exRateValue = '';
+                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
+                                    }
+                                } else {
+                                    if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
+                                      $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
+                                      $point = $tempArr['value'];
+                                      $exRateValue = $cell->getValue();
+                                      if (!empty($exRateValue)) {
+                                        $exRateValue = sprintf("%.".$point."f", $exRateValue);
+                                      }
+                                      $map = array(
+                                        'date'   => date_to_int('-', date('Y-m-d')),
+                                        'exchange_ccy'  => $exchangeCcyValue,
+                                        'target_ccy'    => $targetCcyArr[$key],
+                                    );
+                                  }
                                 }
-                                if(false === $returnCode){
-                                    $returnArr[] = array($tenorValue,$ccyArr[$key],$rateTools->getError());
-                                }else{
-                                    //如果利率没有指定,则给出提示信息
-                                    if(empty($rateValue)){
-                                        $returnArr[] = array($tenorValue,$ccyArr[$key],L('CLIENT_ERROR_INTEREST_NOT_INPUT'));
+                                if (!empty($exRateValue)) {
+                                  if (is_array($result = $ExRate->where($map)->find())) {
+                                      $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
+                                  } else {
+                                      $returnCode = $exRateTools->addExRate(date('Y-m-d'), $exchangeCcyValue, $targetCcyArr[$key], $exRateValue);
+                                  }
+                                }
+                                if (false === $returnCode) {
+                                    $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],$exRateTools->getError());
+                                } else {
+                                    //如果汇率没有指定,则给出提示信息
+                                    if (empty($exRateValue)) {
+                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_INPUT'));
                                     }
                                     //如果利差大于参数设置,则出提示信息
-                                    $lastDateRate = $Rate->where(array('date'=>array('LT',date_to_int('-',date('Y-m-d'))),'tenor'=>$tenorValue,'ccy'=>$ccyArr[$key]))->order('date DESC')->getField('rate');
-                                    if($lastDateRate === null){
-                                        $lastDateRate = 0;
+                                    $lastDateExRate = $ExRate->where(array('date'=>array('LT',date_to_int('-', $date)),'exchange_ccy'=>$exchangeCcyValue,'target_ccy'=>$targetCcyArr[$key]))->order('date DESC')->getField('ex_rate');
+                                    if ($lastDateExRate === null) {
+                                        $lastDateExRate = 0;
                                     }
-                                    if(array_key_exists($ccyArr[$key],$warning_spread)){
-                                        $spreadWarningRate = $warning_spread[$ccyArr[$key]];
-                                    }elseif(array_key_exists('ALL',$warning_spread)){
-                                        $spreadWarningRate = $warning_spread['ALL'];
-                                    }else{
-                                        $spreadWarningRate = false;
+                                    if (array_key_exists($targetCcyArr[$key], $warning_spread)) {
+                                        $spreadWarningExRate = $warning_spread[$targetCcyArr[$key]];
+                                    } elseif (array_key_exists('ALL', $warning_spread)) {
+                                        $spreadWarningExRate = $warning_spread['ALL'];
+                                    } else {
+                                        $spreadWarningExRate = false;
                                     }
-                                    if((false !== $spreadWarningRate) && (abs($lastDateRate - $rateValue) > $spreadWarningRate)){
-                                        $returnArr[] = array($tenorValue,$ccyArr[$key],L('CLIENT_ERROR_SPREAD_TOO_MUCH'));
+                                    if ((false !== $spreadWarningExRate) && (abs($lastDateExRate - $exRateValue) > $spreadWarningExRate)) {
+                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EX_SPREAD_TOO_MUCH'));
                                     }
                                 }
                             }
                         }
                     }
                 }
-                //删除上传文件
                 unlink($filename);
                 //==================发出通知邮件======================//
-                //取得利率上传邮件模板
+                //取得汇率上传邮件模板
                 $Mailtpl = M('mailtpl');
                 $mailtpl_id = $Mailtpl->where(array('type'=>self::MAILTPL_TYPE_RATE_UPLOAD))->getField('id');
                 if($mailtpl_id) {
                     //组织当天上传后的结果信息
                     $Currency = M('currency');
-                    $ccyArr = $Currency->where(array('status' => 1))->order('sort')->getField('id', true);
-                    $rateArr = $Rate->where(array('date' => date_to_int('-', date('Y-m-d'))))->select();
-                    $clientRateArr = array();
-                    foreach ($rateArr as $rateResult) {
-                        $clientRateArr[$rateResult['tenor']][$rateResult['ccy']] = $rateResult['rate'];
+                    $targetCcyArr = $Currency->where(array('status' => 1))->order('sort')->getField('id', true);
+                    $exRateArr = $ExRate->where(array('date' => date_to_int('-', date('Y-m-d'))))->select();
+                    $clientExRateArr = array();
+                    foreach ($exRateArr as $exRateResult) {
+                        $clientExRateArr[$exRateResult['exchange_ccy']][$exRateResult['target_ccy']] = $exRateResult['ex_rate'];
                     }
-                    //将利率数组转为TABLE格式
-                    if (count($tonerArr) > 0 && count($ccyArr) > 0) {
-                        $rateTableStr = "<table width='100%' border='1'><thead><tr><td></td>";
+                    //将汇率数组转为TABLE格式
+                    if (count($exchangeCcyArr) > 0 && count($targetCcyArr) > 0) {
+                        $exRateTableStr = "<table width='100%' border='1'><thead><tr><td></td>";
                         //写表格头
-                        foreach ($ccyArr as $ccyValue) {
-                            $rateTableStr .= "<th>" . $ccyValue . "</th>";
+                        foreach ($targetCcyArr as $ccyValue) {
+                            $exRateTableStr .= "<th>" . $ccyValue . "</th>";
                         }
-                        $rateTableStr .= "</tr></thead><tbody>";
+                        $exRateTableStr .= "</tr></thead><tbody>";
                         //写表格体
-                        foreach ($tonerArr as $tonerKey => $tonerVal) {
-                            $rateTableStr .= "<tr><td>" . $tonerKey . "</td>";
-                            foreach ($ccyArr as $ccyValue) {
-                                if (isset($clientRateArr[$tonerKey][$ccyValue])) {
-                                    $rateArr = explode('.', $clientRateArr[$tonerKey][$ccyValue]);
-                                    $rateValue = $rateArr[0].".".substr($rateArr[1],0,2);
-                                    //$decimalDigits = 2 - strlen($rateArr[1]);
-                                    //for ($i = 0; $i < $decimalDigits; $i++) {
-                                    //    $rateValue .= '0';
-                                    //}
+                        foreach ($exchangeCcyArr as $exchangeCcyKey => $exchangeCcyVal) {
+                            $exRateTableStr .= "<tr><td>" . $exchangeCcyKey . "</td>";
+                            foreach ($targetCcyArr as $ccyValue) {
+                                if (isset($clientExRateArr[$exchangeCcyKey][$ccyValue])) {
+                                    $exRateArr = explode('.', $clientExRateArr[$exchangeCcyKey][$ccyValue]);
+                                    $exRateValue = $exRateArr[0].".".substr($exRateArr[1],0,2);
                                     //如果有设置,则添加数值
-                                    $rateTableStr .= "<td align='center'>" . $rateValue . "%</td>";
+                                    $exRateTableStr .= "<td align='center'>" . $exRateValue . "%</td>";
                                 } else {
                                     //如果没有设置,则添加空格
-                                    $rateTableStr .= "<td></td>";
+                                    $exRateTableStr .= "<td></td>";
                                 }
                             }
-                            $rateTableStr .= "</tr>";
+                            $exRateTableStr .= "</tr>";
                         }
-                        $rateTableStr .= "</tbody></table>";
+                        $exRateTableStr .= "</tbody></table>";
                     } else {
-                        $rateTableStr = "";
+                        $exRateTableStr = "";
                     }
                     //组织上传提示信息邮件内容
                     if (!empty($returnArr)) {
@@ -153,7 +168,7 @@ class AutoInterestRateUpload extends AutoTaskTools
                     //组装邮件内容
                     $content = array(
                         'date' => date('Y-m-d'),
-                        'rate' => $rateTableStr,
+                        'ex_rate' => $exRateTableStr,
                         'message' => $returnTableStr,
                     );
                     $this->_mailTools = new MailTools();
@@ -181,11 +196,12 @@ class AutoInterestRateUpload extends AutoTaskTools
             //写单次执行完成log
             $this->echoMsg('E');
             if(date('H:i') > '23:20'){
-                $runFlag = false;
+                $runFlag = 'false';
             }else{
                 sleep(1200);
             }
         }
+
         return true;
     }
 }

@@ -732,6 +732,7 @@ class ClientController extends AdminController
         }
         $exRateTools = new ExRateTools();
         $list = $exRateTools->getExDateList($date);
+        // dump($list);
         $pointArr = $exRateTools->getExParameterArr();
         $this->assign('list', $list);
         $this->assign('pointArr', $pointArr);
@@ -942,10 +943,10 @@ class ClientController extends AdminController
                             } elseif ($key == 0) {
                                 $exchangeCcyValue = $cell->getValue();
                             } else {
-                                //判断是否是同种货币，如果是同种货币提示，且强制设置为0
+                                //判断是否是同种货币，如果是同种货币提示，且强制设置为null
                                 if ($targetCcyArr[$key] == $exchangeCcyValue) {
-                                    if (($cell->getValue()) != 0) {
-                                        $exRateValue = sprintf("%.8f", 0);
+                                    if (($cell->getValue()) != 0 && ($cell->getValue()) != '' && ($cell->getValue()) != 'false') {
+                                        $exRateValue = '';
                                         $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
                                     }
                                 } else {
@@ -953,7 +954,9 @@ class ClientController extends AdminController
                                       $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
                                       $point = $tempArr['value'];
                                       $exRateValue = $cell->getValue();
-                                      $exRateValue = sprintf("%.".$point."f", $exRateValue);
+                                      if (!empty($exRateValue)) {
+                                        $exRateValue = sprintf("%.".$point."f", $exRateValue);
+                                      }
                                       $map = array(
                                         'date'   => date_to_int('-', $date),
                                         'exchange_ccy'  => $exchangeCcyValue,
@@ -961,10 +964,12 @@ class ClientController extends AdminController
                                     );
                                   }
                                 }
-                                if (is_array($result = $ExRate->where($map)->find())) {
-                                    $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
-                                } else {
-                                    $returnCode = $exRateTools->addExRate($date, $exchangeCcyValue, $targetCcyArr[$key], $exRateValue);
+                                if (!empty($exRateValue)) {
+                                  if (is_array($result = $ExRate->where($map)->find())) {
+                                      $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
+                                  } else {
+                                      $returnCode = $exRateTools->addExRate($date, $exchangeCcyValue, $targetCcyArr[$key], $exRateValue);
+                                  }
                                 }
                                 if (false === $returnCode) {
                                     $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],$exRateTools->getError());

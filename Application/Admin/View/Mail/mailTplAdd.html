@@ -100,6 +100,14 @@
                                                 <p>[{content}]:Client interest rate less zero content(table format)</p>
                                             </div>
                                         </div>
+                                        <div class="form-group" id="ex_rate_less_zero">
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
+                                            <div class="col-sm-10">
+                                                <p>[{ex_rate_date}]:Exchange rate update date</p>
+                                                <p>[{ex_rate_time}]:Exchange rate update time</p>
+                                                <p>[{content}]:Client Exchange rate less zero content(table format)</p>
+                                            </div>
+                                        </div>
                                         <div class="form-group" id="inst_rate">
                                             <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
                                             <div class="col-sm-10">
@@ -112,11 +120,44 @@
                                                 <p>[{receiver}]     :Email receiver</p>
                                             </div>
                                         </div>
+                                        <div class="form-group" id="ex_rate">
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
+                                            <div class="col-sm-10">
+                                                <p>[{name_title}]     :Client name(in title)</p>
+                                                <p>[{name}]     :Client name</p>
+                                                <p>[{related_staffs}]:Related staffs name</p>
+                                                <p>[{ex_rate_date}]:Exchange rate update date</p>
+                                                <p>[{ex_rate_time}]:Exchange rate update time</p>
+                                                <p>[{ex_rate}]     :Exchange rate content(table format)</p>
+                                                <p>[{receiver}]     :Email receiver</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="market">
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
+                                            <div class="col-sm-10">
+                                                <p>[{name_title}]     :Client name(in title)</p>
+                                                <p>[{name}]     :Client name</p>
+                                                <p>[{related_staffs}]:Related staffs name</p>
+                                                <p>[{market_date}]:Exchange rate update date</p>
+                                                <p>[{market_time}]:Exchange rate update time</p>
+                                                <p>[{market_title}]     :Market intelligence title</p>
+                                                <p>[{market_content}]     :Market intelligence content</p>
+                                                <p>[{receiver}]     :Email receiver</p>
+                                            </div>
+                                        </div>
                                         <div class="form-group" id="inst_rate_upl">
                                             <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
                                             <div class="col-sm-10">
                                                 <p>[{date}]     :Upload date</p>
                                                 <p>[{rate}]     :Rate content</p>
+                                                <p>[{message}]  :Upload message</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="ex_rate_upl">
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
+                                            <div class="col-sm-10">
+                                                <p>[{date}]     :Upload date</p>
+                                                <p>[{ex_rate}]  :exRate content</p>
                                                 <p>[{message}]  :Upload message</p>
                                             </div>
                                         </div>
@@ -256,14 +297,21 @@
             $('#inst_rate_warning').hide();
             $('#system_error').hide();
             $('#inst_rate_less_zero').hide();
+            $('#ex_rate_less_zero').hide();
             $('#inst_rate').hide();
             $('#inst_rate_upl').hide();
+            $('#ex_rate_upl').hide();
+            $('#ex_rate').hide();
+            $('#market').hide();
             switch (temp_type){
                 case 'RATEWARN':
                     $('#inst_rate_warning').show();
                     break;
                 case 'INSTZERO':
                     $('#inst_rate_less_zero').show();
+                    break;
+                case 'EXZERO':
+                    $('#ex_rate_less_zero').show();
                     break;
                 case 'SYSERROR':
                     $('#system_error').show();
@@ -273,6 +321,15 @@
                     break;
                 case 'INTRATEUPL':
                     $('#inst_rate_upl').show();
+                    break;
+                case 'EXRATEUPL':
+                    $('#ex_rate_upl').show();
+                    break;
+                case 'EXCHANGE':
+                    $('#ex_rate').show();
+                    break;
+                case 'MARKET':
+                    $('#market').show();
                     break;
                 default:
                     break;

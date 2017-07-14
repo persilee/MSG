@@ -61,7 +61,11 @@ class IndexController extends Controller {
       $sms_content = I('sms_content');
       /***************************验证**************************************/
       //验证access_key是否正确（规则：$send_type + $receiver + 当前时间（yyyy-mm-dd）的md5码）
-      if (!empty($access_key) && $access_key == md5($send_type . $receiver . date('Y-m-d'))) {
+      $Key = M('Key');
+      $keyMap = array(
+        'key'  =>  $access_key,
+      );
+      if (!empty($access_key) && is_array($Key->where($keyMap)->find())) {
         $this->_validation = true;
       }else{
         $this->returnData('40002',L('API_CODE_40002'),'');
@@ -226,7 +230,7 @@ class IndexController extends Controller {
           if ($sDate < $nDate) {
             if(false === $mailTools->prepareMail($Tpl_id,$param)){
               $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
-            }elseif(false === $mailTools->sendMail($sender,$receiver,$messgeSendRoute)){
+            }elseif(false === $mailTools->sendMail($receiver,$messgeSendRoute,$bcc_receiver,$cc_receiver,$sender)){
               $this->returnData('40099',L('API_CODE_40099'),$mailTools->getError());
             }else{
               $this->returnData('0',L('API_CODE_0'),'');

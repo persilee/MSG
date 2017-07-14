@@ -2,9 +2,11 @@
 namespace Batch\Controller;
 use Think\Controller;
 use Common\Common\AutoInterestRateUpload;
+use Common\Common\AutoExRateUpload;
 use Common\Common\ConfigTools;
 use Common\Common\AutoDataBackup;
 use Common\Common\AutoInterestRateMail;
+use Common\Common\AutoExRateMail;
 use Common\Common\AutoInstRateSpreadCheckMail;
 use Common\Common\AutoDaySessReport;
 use Common\Common\AutoDayErrorReport;
@@ -27,6 +29,13 @@ class IndexController extends Controller {
 	public function autoInstRateMail(){
 		$autoInterestRateMail = new AutoInterestRateMail();
 		$autoInterestRateMail->exec();
+		exit;
+	}
+
+	//自动对客汇率邮件发送处理
+	public function autoExRateMail(){
+		$autoExRateMail = new AutoExRateMail();
+		$autoExRateMail->exec();
 		exit;
 	}
 

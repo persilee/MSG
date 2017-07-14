@@ -21,4 +21,6 @@ return array(
     'CLIENT_ERROR_END_LESS_START'       => "截止日期小于开始日",
     'CLIENT_ERROR_INST_RATE_NOT_UP'     => "利率未上传",
     'CLIENT_EMAIL_NOT_BELONG_CLIENT'    => "Email地址不归属于当前客户",
+    'CLIENT_ERROR_EXRATE_NOT_INPUT'     => "汇率信息没有输入",
+    'CLIENT_ERROR_EX_SPREAD_TOO_MUCH'   => "与前次汇率值相差过大",
 );

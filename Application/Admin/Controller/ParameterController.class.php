@@ -367,7 +367,11 @@ class ParameterController extends AdminController{
             $Config = M('Config');
             //grouping为9是运行参数
             $list = $Config->where(array('grouping'=>'9'))->order('sort')->select();
+            // dump($list);
             foreach ($list as $key => $value) {
+                // if ($list[$key]['name'] == 'EXRATE_PARAMETER') {
+                //   $list[$key]['value'] = json_decode($list[$key]['value'],true);
+                // }
                 if('en-us' == LANG_SET){
                     $list[$key]['title'] = $value['title_en'];
                     $list[$key]['remark'] = $value['remark_en'];
@@ -527,13 +531,14 @@ class ParameterController extends AdminController{
       }else{
         $exRateTools = new ExRateTools();
         $exRateArr = $exRateTools->getList();
-        // dump($exRateArr);
         $Config = M('Config');
         $map = array(
           'name'   => 'EXRATE_PARAMETER',
         );
         $configArr = $Config->where($map)->find();
         $exRateParameter = json_decode($configArr['value'] ,true);
+
+
 
         foreach ($exRateParameter as $exchange_ccy_key => $exchange_ccy_item) {
             foreach ($exchange_ccy_item as $target_ccy_key => $target_ccy_item) {
@@ -542,6 +547,15 @@ class ParameterController extends AdminController{
                 }
             }
         }
+
+        // foreach ($exRateArr as $key => $value) {
+        //   foreach ($value as $vk => $vv) {
+        //     if (empty($exRateArr[$key][$vk])) {
+        //       $exRateArr[$key][$vk]['is_exRate'] = '1';
+        //       $exRateArr[$key][$vk]['value'] = '2';
+        //     }
+        //   }
+        // }
         // 记录当前列表页的cookie
         Cookie ( '__forward__', $_SERVER ['REQUEST_URI'] );
         $this->assign('exRateArr', $exRateArr);

@@ -21,4 +21,6 @@ return array(
     'CLIENT_ERROR_END_LESS_START'       => "The end date less then start date ",
     'CLIENT_ERROR_INST_RATE_NOT_UP'     => "Interest rate didn't upload ",
     'CLIENT_EMAIL_NOT_BELONG_CLIENT'    => "Email does not belong to the client ",
+    'CLIENT_ERROR_EXRATE_NOT_INPUT'     => "Exchange rate not input ",
+    'CLIENT_ERROR_EX_SPREAD_TOO_MUCH'   => "Too much difference ",
 );

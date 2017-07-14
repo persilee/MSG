@@ -282,7 +282,7 @@ class ExRateTools
       }
       foreach ($list as $key => $value) {
         foreach ($value as $vk => $vv) {
-          if (!isset($exRateParameterArr[$key][$vk])) {
+          if (!isset($exRateParameterArr[$key][$vk]) && !empty($exRateParameterArr)) {
               $list[$key][$vk] = "false";
           }
         }
