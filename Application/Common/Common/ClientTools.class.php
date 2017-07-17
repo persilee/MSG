@@ -417,7 +417,7 @@ class ClientTools {
 		}else {
 			if($returnCode = $this->_clientModel->where(array('ci_no'=>$ci_no))->setField('ex_rate_float',$exRateFloatStr)){
 				//检查利差是否大于参数设置
-				$this->rateSpreadCheckMail($clientResult);
+				$this->exRateSpreadCheckMail($clientResult);
 				return true;
 			}elseif(false ===  $returnCode){
 				$this->returnMsg = $this->_clientModel->getError();
@@ -457,6 +457,7 @@ class ClientTools {
 					return false;
 				}
 				$oldFloatRate = $this->_clientModel->where(array('ci_no'=>$appResult['reference']))->getField('rate_float');
+				$oldFloatExRate = $this->_clientModel->where(array('ci_no'=>$appResult['reference']))->getField('ex_rate_float');
 				if(false === $this->_clientModel->save($data)){
 					$this->_clientModel->rollback();
 					$this->returnMsg = $this->_clientModel->getError();
@@ -483,6 +484,9 @@ class ClientTools {
 		$this->_clientModel->commit();
 		if('M' == $appResult['func'] && $oldFloatRate != $data['rate_float']){
 			$this->rateSpreadCheckMail($data);
+		}
+		if('M' == $appResult['func'] && $oldFloatExRate != $data['ex_rate_float']){
+			$this->exRateSpreadCheckMail($data);
 		}
 		LogTools::activeLog($appResult);
 		return true;

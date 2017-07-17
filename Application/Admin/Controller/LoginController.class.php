@@ -21,6 +21,7 @@ use Common\Common\AutoYearErrorReport;
 use Common\Common\ExRateTools;
 use Common\Common\EsbSystem\EsbRequest;
 use Common\Common\EsbSystem\EsbEmail;
+use Common\Common\ExRateSpreadCheckMail;
 
 
 class LoginController extends Controller {
@@ -32,7 +33,11 @@ class LoginController extends Controller {
 
       echo 'hello,thinkphp!';
     }
-
+    public function exRateSpreadCheckMail(){
+      $exRateSpreadCheckMail = new ExRateSpreadCheckMail();
+  		$exRateSpreadCheckMail->check('11');
+      $this->display();
+    }
     public function APItest(){
 
       $this->display();
