@@ -20,7 +20,6 @@ define('APP_DEBUG',true);
 // 定义应用目录
 //define('APP_PATH','./Application/');
 define( 'APP_PATH', dirname(__FILE__).'/Application/' );
-
 //生成后台模块
 // define('BIND_MODULE','Admin');
 

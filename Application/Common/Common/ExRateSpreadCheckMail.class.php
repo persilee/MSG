@@ -11,13 +11,13 @@ namespace Common\Common;
 
 class ExRateSpreadCheckMail
 {
-    const WARN_MAILTPL_TYPE = 'RATEWARN';
+    const WARN_MAILTPL_TYPE = 'EXRATEWARN';
     private $_warningSpreadConf = null;
     private $_errorMessage = "";
 
     public function check($ci_no){
         //读取备份配置
-        $this->_warningSpreadConf = C('INT_EXRATE_WARNING_SPREAD');
+        $this->_warningSpreadConf = C('EX_RATE_WARNING_SPREAD');
         //创建备份文件
         $warningArr = array();   //key:Client no.   ,  value:array['name']-客户名称   array['desc']-数组(描述)
         $Client  = M('Client');
@@ -95,7 +95,7 @@ class ExRateSpreadCheckMail
         return true;
     }
 
-    //利率值检查
+    //汇率值检查
     private function spreadCheck($targetCcy,$exRateValue){
         //以$targetCcy取得配置值
         if(array_key_exists($targetCcy,$this->_warningSpreadConf)){

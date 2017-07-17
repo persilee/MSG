@@ -86,6 +86,12 @@
                                                 <p>[{content}]:Client interest rate float warning content</p>
                                             </div>
                                         </div>
+                                        <div class="form-group" id="ex_rate_warning">
+                                            <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
+                                            <div class="col-sm-10">
+                                                <p>[{content}]:Client exchange rate float warning content</p>
+                                            </div>
+                                        </div>
                                         <div class="form-group" id="system_error">
                                             <label class="col-sm-2 control-label">{$Think.lang.TEMP_MAIL_PARAMETER}</label>
                                             <div class="col-sm-10">
@@ -295,6 +301,7 @@
 
         function init_param(temp_type) {
             $('#inst_rate_warning').hide();
+            $('#ex_rate_warning').hide();
             $('#system_error').hide();
             $('#inst_rate_less_zero').hide();
             $('#ex_rate_less_zero').hide();
@@ -306,6 +313,9 @@
             switch (temp_type){
                 case 'RATEWARN':
                     $('#inst_rate_warning').show();
+                    break;
+                case 'EXRATEWARN':
+                    $('#ex_rate_warning').show();
                     break;
                 case 'INSTZERO':
                     $('#inst_rate_less_zero').show();
