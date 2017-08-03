@@ -22,6 +22,7 @@ use Common\Common\ExRateTools;
 use Common\Common\EsbSystem\EsbRequest;
 use Common\Common\EsbSystem\EsbEmail;
 use Common\Common\ExRateSpreadCheckMail;
+use Common\Common\ExchangeMailTools;
 
 
 class LoginController extends Controller {
@@ -54,6 +55,11 @@ class LoginController extends Controller {
     public function autoInstRateMail(){
       $autoInterestRateMail = new AutoInterestRateMail();
       $autoInterestRateMail->exec();
+      $this->display();
+    }
+    public function autoExRateMail(){
+      $exchangeMailTools = new ExchangeMailTools();
+      $exchangeMailTools->sendExchangeMail('B');
       $this->display();
     }
     public function autoDaySessReport(){
