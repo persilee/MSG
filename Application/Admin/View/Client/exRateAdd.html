@@ -3,7 +3,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title"> {$__PLACE__.1}</h4>
     </div>
-    <form action="{:U(exRateAdd)}" method="post" class="form-horizontal exRateAddForm">
+    <form action="{:U('exRateAdd') . '?point=' . $point}" method="post" class="form-horizontal exRateAddForm">
         <div class="modal-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label">{$Think.lang.TEMP_CLIENT_RATE_DATE}</label>
@@ -60,5 +60,6 @@
       str += '0';
     }
     $('span[point]').html(str);
+    var vExRate = $('input[name="exRate"]').val();
   })
 </script>

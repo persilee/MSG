@@ -3,7 +3,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title"> {$__PLACE__.1}</h4>
     </div>
-    <form action="{:U(exRateUpdate)}" method="post" class="form-horizontal exRateUpdateForm">
+    <form action="{:U(exRateUpdate) . '?point=' . $point}" method="post" class="form-horizontal exRateUpdateForm">
         <input name="dateInt" type="hidden" value="{$result.date}"/>
         <input name="seq" type="hidden" value="{$result.seq}" />
         <div class="modal-body">

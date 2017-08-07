@@ -120,7 +120,7 @@ class AutoTaskTools
                     $now_minute = intval(date('i'));
                     //判断当天是否是执行日期
                     if (($exec_month == $now_month) &&
-                        (($exec_day_of_month == $now_day_of_month) || ($exec_day_of_month > $now_day_of_month && $now_day_of_month == $exec_monthend)) &&
+                        (($now_day_of_month >= $exec_day_of_month) || ($exec_day_of_month > $now_day_of_month && $now_day_of_month == $exec_monthend)) &&
                         (($now_hour > $exec_hour) || ($now_hour == $exec_hour && $now_minute >= $exec_minute)))
                     {
                         $flag = true;

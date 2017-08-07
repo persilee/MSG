@@ -35,8 +35,6 @@ class ReportTools
 					'report_id' =>   intval($seq),
 					'name'      =>   $name,
 				);
-				dump($data);
-				dump($name);
 				if (false === $Report_list->add($data)) {
 					$this->returnMsg = $Report_list->getError();
 					$this->returnflg = false;
@@ -46,7 +44,6 @@ class ReportTools
 				$this->returnflg = false;
 			}
 		}
-		dump($this->returnflg);
 		return $this->returnflg;
 	}
 

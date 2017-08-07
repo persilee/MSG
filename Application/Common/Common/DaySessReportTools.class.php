@@ -175,7 +175,6 @@ class DaySessReportTools
             return false;
         }
         $downloadTools = new DownloadTools();
-        dump($this->filename);
         return $downloadTools->downloadFile($this->filename,false, $tempname);
     }
 
@@ -220,23 +219,21 @@ class DaySessReportTools
         if ($quarter != "") {
           $monthDays = cal_days_in_month(CAL_GREGORIAN, 1, date('Y'));
           $sTopThreeTotal = $this->getMonthofdays($monthDays,$topThreeTotalList,$topThreeTotal);
-          dump($sTopThreeTotal);
         }else{
           //如果是月报表取每月发信息总数前三且列出前三24小时的前三，否则取每天24小时的前三
           if (is_array($date)) {
             $monthDays = cal_days_in_month(CAL_GREGORIAN, date('m',strtotime('-1 month')), date('Y'));
             $sTopThreeTotal = $this->getMonthofdays($monthDays,$topThreeTotalList,$topThreeTotal);
           }else{
-            for($i = 1; $i <= 24; $i++){
+            for($i = 0; $i <= 24; $i++){
               foreach ($topThreeTotalList as $key => $value) {
                 if (date('H',$value['comp_time']) == $i) {
-                  $topThreeTotal[$j][$i]++ ;
+                  $topThreeTotal[$i]++ ;
                 }
               }
             }
             arsort($topThreeTotal);
             $topThreeTotal = array_slice($topThreeTotal,0,3,true);
-            dump($topThreeTotal);
             foreach ($topThreeTotal as $key => $value) {
               $sTopThreeTotal .= $key.'时:'.$value.' , ';
             }

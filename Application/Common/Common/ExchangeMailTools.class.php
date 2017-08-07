@@ -95,7 +95,7 @@ class ExchangeMailTools
                     //对客邮件处理
                     if(false !== $this->clientExchangeMail($mailtpl_id, $clientResult)){
                         //邮件成功发送后,写客户信息中的最后发送时间
-                        $Client->where(array('ci_no'=>$clientResult['ci_no']))->setField('inst_send_time',time());
+                        $Client->where(array('ci_no'=>$clientResult['ci_no']))->setField('ex_rate_send_time',time());
                     }
                 }
             }

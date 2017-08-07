@@ -33,8 +33,15 @@
                   <foreach name="clientList" item="client">
                     <div class="bar">
                       <label class="text">{$client.name}</label>
-                      <php>if($clientList[$key][market_send_time] != 0 && (NOW_TIME - $clientList[$key][market_send_time])/60 > 20) echo '<label class="label label-success">Sent</label>'; </php>
-                      <php>if((NOW_TIME - $clientList[$key][market_send_time])/60 <= 20) echo '<label class="label label-default">Waiting</label>'; </php>
+                      <php>
+                        if($clientList[$key][market_send_time] == 0 || (NOW_TIME - $clientList[$key][market_send_time])/60/60 > 24){
+                          echo ' ';
+                        }elseif($clientList[$key][market_send_time] != 0 && (NOW_TIME - $clientList[$key][market_send_time])/60 > 20){
+                          echo '<label class="label label-success">Sent</label>';
+                        }elseif((NOW_TIME - $clientList[$key][market_send_time])/60 <= 20){
+                          echo '<label class="label label-default">Waiting</label>';
+                        }
+                      </php>
                       <label class="text">
                         <input type="checkbox" name="clientArr[{$client.ci_no}]" value="{$client.ci_no}"
                         <php>if((NOW_TIME - $clientList[$key][market_send_time])/60 <= 20) echo 'disabled="disabled"';</php> >

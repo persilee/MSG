@@ -750,6 +750,10 @@ class ClientController extends AdminController
         $point = I('point');
         if (IS_POST) {
             $exRate = I('exRate');
+            $point = I('get.point');
+            if(!empty($exRate)) {
+              $exRate = sprintf('%.'.$point.'f',$exRate);
+            }
             $exRateTools = new ExRateTools();
             if ($exRateTools->addExRate($date, $exchangeCcy, $targetCcy, $exRate)) {
                 LogTools::activeLog(array('date'=>$date,'exchange_ccy'=>$exchangeCcy,'target_ccy'=>$targetCcy));
@@ -785,12 +789,17 @@ class ClientController extends AdminController
             $dateInt = I('dateInt', 0, intval);
             $seq     = I('seq', 0, intval);
             $exRate  = I('exRate');
+            $point = I('get.point');
+            //获取保留的小数位数，小数位不够自动补0
+            if (!empty($exRate)) {
+              $exRate = sprintf('%.'.$point.'f',$exRate);
+            }
             $exRateTools = new ExRateTools();
             if ($exRateTools->updateExRate($dateInt, $seq, $exRate)) {
                 LogTools::activeLog(array('date'=>$dateInt,'seq'=>$seq,'ex_rate'=>$exRate));
                 $this->success(L('SYSTEM_MESSAGE_SUCCESS'), Cookie('__forward__'));
             } else {
-                $this->error($rateTools->getError());
+                $this->error($exRateTools->getError());
             }
         } else {
             $date = I('date');
@@ -943,28 +952,34 @@ class ClientController extends AdminController
                             } elseif ($key == 0) {
                                 $exchangeCcyValue = $cell->getValue();
                             } else {
-                                //判断是否是同种货币，如果是同种货币提示，且强制设置为null
+                                //判断是否是同种货币，如果是同种货币提示，且强制设置为same
                                 if ($targetCcyArr[$key] == $exchangeCcyValue) {
-                                    if (($cell->getValue()) != 0 && ($cell->getValue()) != '' && ($cell->getValue()) != 'false') {
-                                        $exRateValue = '';
-                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
-                                    }
+                                  if ($cell->getValue() == 'false' || $cell->getValue() == '' || $cell->getValue() == null) {
+                                    $exRateValue = 'same';
+                                  }else{
+                                    $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
+                                  }
                                 } else {
+                                  //判断货币对是否存在
                                     if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
                                       $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
                                       $point = $tempArr['value'];
                                       $exRateValue = $cell->getValue();
                                       if (!empty($exRateValue)) {
+                                        //获取保留的小数位数，小数位不够自动补0
                                         $exRateValue = sprintf("%.".$point."f", $exRateValue);
                                       }
+
                                       $map = array(
                                         'date'   => date_to_int('-', $date),
                                         'exchange_ccy'  => $exchangeCcyValue,
                                         'target_ccy'    => $targetCcyArr[$key],
                                     );
+                                  }elseif($cell->getValue() != 'false'){
+                                    $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('SYSTEM_ERROR_NOT_SPECIFY_CURRENCY'));
                                   }
                                 }
-                                if (!empty($exRateValue)) {
+                                if ($exRateValue === floatval(0) || (!empty($exRateValue) && $exRateValue  != null && $exRateValue != 'same')) {
                                   if (is_array($result = $ExRate->where($map)->find())) {
                                       $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
                                   } else {
@@ -973,10 +988,13 @@ class ClientController extends AdminController
                                 }
                                 if (false === $returnCode) {
                                     $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],$exRateTools->getError());
+                                    $returnCode = true;
                                 } else {
-                                    //如果汇率没有指定,则给出提示信息
-                                    if (empty($exRateValue)) {
-                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_INPUT'));
+                                    //货币对存在的情况下，如果汇率没有指定,则给出提示信息
+                                    if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
+                                      if (empty($exRateValue) && $exRateValue != 'same') {
+                                          $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_INPUT'));
+                                      }
                                     }
                                     //如果利差大于参数设置,则出提示信息
                                     $lastDateExRate = $ExRate->where(array('date'=>array('LT',date_to_int('-', $date)),'exchange_ccy'=>$exchangeCcyValue,'target_ccy'=>$targetCcyArr[$key]))->order('date DESC')->getField('ex_rate');
@@ -1498,7 +1516,7 @@ class ClientController extends AdminController
             $data = $Market->find($seq);
             $mailtpl_id = I('mailtpl_id', 0, 'intval');
             $clientArr = I('clientArr');
-        $marketMailTools = new MarketMailTools();
+            $marketMailTools = new MarketMailTools();
             if (false === $marketMailTools->sendMarketMail($data, $mailtpl_id, $clientArr)) {
                 $this->error($marketMailTools->getError());
             }

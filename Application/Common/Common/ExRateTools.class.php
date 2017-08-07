@@ -7,6 +7,7 @@
  */
 
 namespace Common\Common;
+
 Vendor('PHPExcel.PHPExcel');
 Vendor('PHPExcel.PHPExcel.IOFactory');
 
@@ -55,48 +56,49 @@ class ExRateTools
      * @param $remark         备注:string
      * @return bool
      */
-    public function addExRate($date,$exchangeCcy,$targetCcy,$exRate,$remark=""){
+    public function addExRate($date, $exchangeCcy, $targetCcy, $exRate, $remark="")
+    {
         //载入配置项
         // ConfigTools::init();
         //上传日期检查
         if (empty($date)) {
             $this->returnMsg = L('SYSTEM_ERROR_NOT_SPECIFY_RECORD');
             return false;
-        }elseif(!date_check('-',$date)){
+        } elseif (!date_check('-', $date)) {
             $this->returnMsg = L('SYSTEM_ERROR_DATE_FORMAT');
             return false;
-        }else{
-            $date = date_to_int('-',$date);
+        } else {
+            $date = date_to_int('-', $date);
         }
         //兑换货币检查
-        if(!array_key_exists($exchangeCcy,C('EX_ARRAY'))){
+        if (!array_key_exists($exchangeCcy, C('EX_ARRAY'))) {
             $this->returnMsg = L('SYSTEM_ERROR_EXCCY_NOT_EXIST');
             return false;
         }
         //目标货币检查
-        if(empty($targetCcy)){
+        if (empty($targetCcy)) {
             $this->returnMsg = L('SYSTEM_ERROR_NOT_TARCCY_CURRENCY');
             return false;
-        }else{
+        } else {
             $currencyTool = new CurrencyTool();
             $ccyArr = $currencyTool->getCcyArr(1);
-            if(!array_key_exists($targetCcy,$ccyArr)){
+            if (!array_key_exists($targetCcy, $ccyArr)) {
                 $this->returnMsg = L('SYSTEM_ERROR_TARCCY_NOT_EXIST');
                 return false;
             }
         }
         //汇率输入检查
-        if(empty($exRate)){
-            $exRate = 0;
-//            $this->returnMsg = L('CLIENT_ERROR_INTEREST_NOT_INPUT');
-//            return false;
-        }elseif(!RegexTools::amountCheck($exRate,8,3,true)){
+        if (!($exRate === floatval(0)) && empty($exRate)) {
+            // $exRate = 0;
+           $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_INPUT');
+            return false;
+        } elseif (!RegexTools::amountCheck($exRate, 8, 3, true)) {
             $this->returnMsg = L('CLIENT_ERROR_EXRATE_FORMAT_ERR');
             return false;
         }
         //检查当前日期是否已经存在相应兑换货币及目标货币记录
         $ExRate = M('exrate');
-        if($ExRate->where(array('date'=>$date,'exchange_ccy'=>$exchangeCcy,'target_ccy'=>$targetCcy))->count() > 0){
+        if ($ExRate->where(array('date'=>$date,'exchange_ccy'=>$exchangeCcy,'target_ccy'=>$targetCcy))->count() > 0) {
             $this->returnMsg = L('SYSTEM_ERROR_RECORD_EXIST');
             return false;
         }
@@ -114,11 +116,21 @@ class ExRateTools
             'time'               => NOW_TIME,
             'error_msg'          => '',
         );
-        if($ExRate->add($data)){
-            return true;
-        }else{
-            $this->returnMsg = $ExRate->getError();
-            return false;
+        if ($exRate === floatval(0)) {
+            if ($ExRate->add($data)) {
+                $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_INPUT');
+                return false;
+            } else {
+                $this->returnMsg = $ExRate->getError();
+                return false;
+            }
+        } else {
+            if ($ExRate->add($data)) {
+                return true;
+            } else {
+                $this->returnMsg = $ExRate->getError();
+                return false;
+            }
         }
     }
 
@@ -130,17 +142,17 @@ class ExRateTools
      * @param $remark          备注:string
      * @return bool
      */
-    public function updateExRate($dateInt,$seq, $exRate, $remark="")
+    public function updateExRate($dateInt, $seq, $exRate, $remark="")
     {
         if (empty($dateInt) || empty($seq)) {
             $this->returnMsg = L('SYSTEM_ERROR_NOT_SPECIFY_RECORD');
             return false;
         }
-        if(empty($exRate)){
-//            $this->returnMsg = L('CLIENT_ERROR_INTEREST_NOT_INPUT');
-//            return false;
-            $exRate = 0;
-        }elseif(!RegexTools::amountCheck($exRate,8,3,true)){
+        if (!($exRate === floatval(0)) && empty($exRate)) {
+            $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_INPUT');
+            return false;
+            // $exRate = 0;
+        } elseif (!RegexTools::amountCheck($exRate, 8, 3, true)) {
             $this->returnMsg = L('CLIENT_ERROR_EXRATE_FORMAT_ERR');
             return false;
         }
@@ -154,22 +166,37 @@ class ExRateTools
         $exRateResult['remark']          = $remark;
         //$rateResult['update_emp']   = UID;
         //$rateResult['time']         = NOW_TIME;
-        if ($rtnCode = $ExRate->save($exRateResult)) {
-            $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('update_emp',UID);
-            $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('time',time());
-            return true;
-        } elseif(0 === $rtnCode){
-            $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_UPD');
-            return false;
-        }else {
-            $this->returnMsg = $ExRate->getError();
-            return false;
+        if ($exRate === floatval(0)) {
+            if ($rtnCode = $ExRate->save($exRateResult)) {
+                $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('update_emp', UID);
+                $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('time', time());
+                $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_INPUT');
+                return false;
+            } elseif (0 === $rtnCode) {
+                $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_UPD');
+                return false;
+            } else {
+                $this->returnMsg = $ExRate->getError();
+                return false;
+            }
+        } else {
+            if ($rtnCode = $ExRate->save($exRateResult)) {
+                $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('update_emp', UID);
+                $ExRate->where(array('date' => $dateInt, 'seq' => $seq))->setField('time', time());
+                return true;
+            } elseif (0 === $rtnCode) {
+                $this->returnMsg = L('CLIENT_ERROR_EXRATE_NOT_UPD');
+                return false;
+            } else {
+                $this->returnMsg = $ExRate->getError();
+                return false;
+            }
         }
         return true;
     }
 
     // 生成汇率Excel文件
-    public function exRateExcelGen($date,$dir="")
+    public function exRateExcelGen($date, $dir="")
     {
         if (false == $this->returnflg) {
             return false;
@@ -177,7 +204,7 @@ class ExRateTools
         // 生成文件
         $objPHPExcel = new \PHPExcel();
         $objWrite = \PHPExcel_IOFactory::createWriter($objPHPExcel, C('EXCEL_SAVE_TYPE'));
-        if("" == $dir) {
+        if ("" == $dir) {
             $dir = $_SERVER['DOCUMENT_ROOT'] . __ROOT__ . '/Downloads/';
         }
         if (!is_dir($dir)) {
@@ -187,12 +214,12 @@ class ExRateTools
         $this->fileSimpleName = $this->excelName . '_' . UID .'_' . $date . $this->extendName;
         $this->filename = $dir .'/'. $this->fileSimpleName;
         $objWrite->save($this->filename);
-        $this->returnflg = $this->exRateExcelData("",$date);
+        $this->returnflg = $this->exRateExcelData("", $date);
         return $this->returnflg;
     }
 
     // 在已有EXCEL文件基础上写入汇率信息
-    public function exRateExcelData($externalFilename = "",$date)
+    public function exRateExcelData($externalFilename = "", $date)
     {
         if ("" == $externalFilename) {
             $filename = $this->filename;
@@ -220,7 +247,7 @@ class ExRateTools
         //按ccy参数组合队列
         $currencyTool = new CurrencyTool();
         $ccyArr = $currencyTool->getCcyArr(1);
-        foreach ($ccyArr as $ccy_key => $ccy_value){
+        foreach ($ccyArr as $ccy_key => $ccy_value) {
             $colIndex++;
             $objSheel->setCellValue($this->getCellsIndex($colIndex)."1", $ccy_key);
         }
@@ -263,55 +290,58 @@ class ExRateTools
         }
         $downloadTools = new DownloadTools();
         $tempname = $this->excelName . '_' . $this->year . '-' . $this->month . $this->extendName;
-        return $downloadTools->downloadFile($this->filename,true, $tempname);
+        return $downloadTools->downloadFile($this->filename, true, $tempname);
     }
 
-    public function getExDateList($date){
-      if(empty($date)){
-          $map = array('date' => date_to_int('-',date('d-m-Y')));
-      }else{
-          $map = array('date' => date_to_int('-',$date));
-      }
-      $exrate = D('exrate');
-      $exRateArr = $exrate->where($map)->order('exchange_ccy,target_ccy')->select();
-      $list = $this->getList();
-      $exRateParameterArr = $this->getExParameterArr();
+    public function getExDateList($date)
+    {
+        if (empty($date)) {
+            $map = array('date' => date_to_int('-', date('d-m-Y')));
+        } else {
+            $map = array('date' => date_to_int('-', $date));
+        }
+        $exrate = D('exrate');
+        $exRateArr = $exrate->where($map)->order('exchange_ccy,target_ccy')->select();
+        $list = $this->getList();
+        $exRateParameterArr = $this->getExParameterArr();
       //向框架中填充数据
-      foreach($exRateArr as $exRate_value){
+      foreach ($exRateArr as $exRate_value) {
           $list[$exRate_value['exchange_ccy']][$exRate_value['target_ccy']] = $exRate_value['ex_rate'];
       }
-      foreach ($list as $key => $value) {
-        foreach ($value as $vk => $vv) {
-          if (!isset($exRateParameterArr[$key][$vk]) && !empty($exRateParameterArr)) {
-              $list[$key][$vk] = "false";
-          }
+        foreach ($list as $key => $value) {
+            foreach ($value as $vk => $vv) {
+                if (!isset($exRateParameterArr[$key][$vk]) && !empty($exRateParameterArr)) {
+                    $list[$key][$vk] = "false";
+                }
+            }
         }
-      }
-      return $list;
+        return $list;
     }
-    public function getExParameterArr(){
-      $Config = M('Config');
-      $map = array(
+    public function getExParameterArr()
+    {
+        $Config = M('Config');
+        $map = array(
         'name'   => 'EXRATE_PARAMETER',
       );
-      $configArr = $Config->where($map)->find();
-      $exRateParameterArr = json_decode($configArr['value'] ,true);
-      return $exRateParameterArr;
+        $configArr = $Config->where($map)->find();
+        $exRateParameterArr = json_decode($configArr['value'], true);
+        return $exRateParameterArr;
     }
     //取得空的兑换货币与目标货币的框架集合
-    public function  getList(){
+    public function getList()
+    {
         //按ccy参数组合队列
         $currencyTool = new CurrencyTool();
         $targetCcyArr = $currencyTool->getCcyArr(1);
         //按配置的兑换货币与货币组合数据框架
         $list = array();
-        foreach (C('EX_ARRAY') as $exchangeCcy_key => $exchangeCcy_value){
-            foreach ($targetCcyArr as $targetCcyArr_key => $targetCcyArr_value){
-              if ($exchangeCcy_key == $targetCcyArr_key) {
-                $list[$exchangeCcy_key][$targetCcyArr_key] = "false";
-              }else{
-                $list[$exchangeCcy_key][$targetCcyArr_key] = "";
-              }
+        foreach (C('EX_ARRAY') as $exchangeCcy_key => $exchangeCcy_value) {
+            foreach ($targetCcyArr as $targetCcyArr_key => $targetCcyArr_value) {
+                if ($exchangeCcy_key == $targetCcyArr_key) {
+                    $list[$exchangeCcy_key][$targetCcyArr_key] = "false";
+                } else {
+                    $list[$exchangeCcy_key][$targetCcyArr_key] = "";
+                }
             }
         }
         return $list;

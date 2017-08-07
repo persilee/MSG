@@ -1,12 +1,13 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Hipr
- * Date: 16/8/8
+ * User: per
+ * Date: 17/6/18
  * Time: 15:14
  */
 
 namespace Common\Common;
+
 Vendor('PHPExcel.PHPExcel');
 Vendor('PHPExcel.PHPExcel.IOFactory');
 
@@ -14,7 +15,8 @@ class AutoExRateUpload extends AutoTaskTools
 {
     const MAILTPL_TYPE_RATE_UPLOAD         = 'EXRATEUPL';   //汇率上传通知邮件业务类型
 
-    public function exec(){
+    public function exec()
+    {
         $runFlag = 'true';
         while ($runFlag == 'true') {
             $this->echoMsg('H');
@@ -24,11 +26,11 @@ class AutoExRateUpload extends AutoTaskTools
             $exrateArr = C('EX_ARRAY');
             $mail_receiver = C('EX_RATE_UPLOAD_RECEIVER');
             //=============================================//
-            if(file_exists($filename)){
+            if (file_exists($filename)) {
                 // continue;
-            }elseif(file_exists($filename.".xls")){
+            } elseif (file_exists($filename.".xls")) {
                 $filename .= ".xls";
-            }else{
+            } else {
                 $filename .= ".xlsx";
             }
             if (file_exists($filename) && $this->checkTask('AutoExRateUpload')) {
@@ -54,40 +56,49 @@ class AutoExRateUpload extends AutoTaskTools
                             } elseif ($key == 0) {
                                 $exchangeCcyValue = $cell->getValue();
                             } else {
-                                //判断是否是同种货币，如果是同种货币提示，且强制设置为null
-                                if ($targetCcyArr[$key] == $exchangeCcyValue) {
-                                    if (($cell->getValue()) != 0 && ($cell->getValue()) != '' && ($cell->getValue()) != 'false') {
-                                        $exRateValue = '';
-                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
-                                    }
-                                } else {
-                                    if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
-                                      $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
-                                      $point = $tempArr['value'];
-                                      $exRateValue = $cell->getValue();
-                                      if (!empty($exRateValue)) {
-                                        $exRateValue = sprintf("%.".$point."f", $exRateValue);
-                                      }
-                                      $map = array(
-                                        'date'   => date_to_int('-', date('Y-m-d')),
-                                        'exchange_ccy'  => $exchangeCcyValue,
-                                        'target_ccy'    => $targetCcyArr[$key],
-                                    );
-                                  }
-                                }
-                                if (!empty($exRateValue)) {
-                                  if (is_array($result = $ExRate->where($map)->find())) {
-                                      $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
+                                //判断是否是同种货币，如果是同种货币提示，且强制设置为same
+                              if ($targetCcyArr[$key] == $exchangeCcyValue) {
+                                  if ($cell->getValue() == 'false' || $cell->getValue() == '' || $cell->getValue() == null) {
+                                      $exRateValue = 'same';
                                   } else {
-                                      $returnCode = $exRateTools->addExRate(date('Y-m-d'), $exchangeCcyValue, $targetCcyArr[$key], $exRateValue);
+                                      $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_REPEAT'));
                                   }
+                              } else {
+                                //判断货币对是否存在
+                                  if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
+                                    $tempArr = $exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]];
+                                    $point = $tempArr['value'];
+                                    $exRateValue = $cell->getValue();
+                                    if (!empty($exRateValue)) {
+                                      //获取保留的小数位数，小数位不够自动补0
+                                      $exRateValue = sprintf("%.".$point."f", $exRateValue);
+                                    }
+
+                                    $map = array(
+                                      'date'          => date_to_int('-',date('Y-m-d'))+0,
+                                      'exchange_ccy'  => $exchangeCcyValue,
+                                      'target_ccy'    => $targetCcyArr[$key],
+                                  );
+                                }elseif($cell->getValue() != 'false'){
+                                  $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('SYSTEM_ERROR_NOT_SPECIFY_CURRENCY'));
                                 }
+                              }
+                              if ($exRateValue === floatval(0) || (!empty($exRateValue) && $exRateValue  != null && $exRateValue != 'same')) {
+                                if (is_array($result = $ExRate->where($map)->find())) {
+                                    $returnCode = $exRateTools->updateExRate($result['date'], $result['seq'], $exRateValue);
+                                } else {
+                                    $returnCode = $exRateTools->addExRate(date('Y-m-d'), $exchangeCcyValue, $targetCcyArr[$key], $exRateValue);
+                                }
+                              }
                                 if (false === $returnCode) {
                                     $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],$exRateTools->getError());
+                                    $returnCode = true;
                                 } else {
-                                    //如果汇率没有指定,则给出提示信息
-                                    if (empty($exRateValue)) {
-                                        $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_INPUT'));
+                                    //货币对存在的情况下，如果汇率没有指定,则给出提示信息
+                                    if (isset($exRateParameter[$exchangeCcyValue][$targetCcyArr[$key]])) {
+                                      if (empty($exRateValue) && $exRateValue != 'same') {
+                                          $returnArr[] = array($exchangeCcyValue,$targetCcyArr[$key],L('CLIENT_ERROR_EXRATE_NOT_INPUT'));
+                                      }
                                     }
                                     //如果利差大于参数设置,则出提示信息
                                     $lastDateExRate = $ExRate->where(array('date'=>array('LT',date_to_int('-', $date)),'exchange_ccy'=>$exchangeCcyValue,'target_ccy'=>$targetCcyArr[$key]))->order('date DESC')->getField('ex_rate');
@@ -114,7 +125,7 @@ class AutoExRateUpload extends AutoTaskTools
                 //取得汇率上传邮件模板
                 $Mailtpl = M('mailtpl');
                 $mailtpl_id = $Mailtpl->where(array('type'=>self::MAILTPL_TYPE_RATE_UPLOAD))->getField('id');
-                if($mailtpl_id) {
+                if ($mailtpl_id) {
                     //组织当天上传后的结果信息
                     $Currency = M('currency');
                     $targetCcyArr = $Currency->where(array('status' => 1))->order('sort')->getField('id', true);
@@ -137,7 +148,7 @@ class AutoExRateUpload extends AutoTaskTools
                             foreach ($targetCcyArr as $ccyValue) {
                                 if (isset($clientExRateArr[$exchangeCcyKey][$ccyValue])) {
                                     $exRateArr = explode('.', $clientExRateArr[$exchangeCcyKey][$ccyValue]);
-                                    $exRateValue = $exRateArr[0].".".substr($exRateArr[1],0,2);
+                                    $exRateValue = $exRateArr[0].".".substr($exRateArr[1], 0, 2);
                                     //如果有设置,则添加数值
                                     $exRateTableStr .= "<td align='center'>" . $exRateValue . "%</td>";
                                 } else {
@@ -195,13 +206,12 @@ class AutoExRateUpload extends AutoTaskTools
             }
             //写单次执行完成log
             $this->echoMsg('E');
-            if(date('H:i') > '23:20'){
+            if (date('H:i') > '23:20') {
                 $runFlag = 'false';
-            }else{
+            } else {
                 sleep(1200);
             }
         }
-
         return true;
     }
 }
